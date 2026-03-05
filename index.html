@@ -5,7 +5,7 @@
 
 <meta charset="utf-8">
 
-<!-- Giúp layout hiển thị đúng trên mobile -->
+<!-- giúp layout hiển thị đúng trên mobile -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>NL F.Lab – 3D Artist</title>
@@ -14,6 +14,7 @@
 
 /* =================================================
 GLOBAL STYLE
+thiết lập style chung cho toàn site
 ================================================= */
 
 body{
@@ -21,7 +22,7 @@ margin:0;
 background:#0f0f0f;
 color:#e5e5e5;
 
-/* Font system giống Apple */
+/* font system giống Apple */
 font-family:
 -apple-system,
 BlinkMacSystemFont,
@@ -29,7 +30,6 @@ BlinkMacSystemFont,
 Roboto,
 sans-serif;
 
-/* spacing kiểu Apple */
 letter-spacing:0.3px;
 line-height:1.6;
 }
@@ -43,8 +43,9 @@ header{
 padding:140px 12% 60px 12%;
 position:relative;
 overflow:hidden;
-
 }
+
+/* tên brand */
 
 h1{
 font-size:42px;
@@ -53,15 +54,16 @@ margin:0;
 letter-spacing:1px;
 }
 
+/* dòng nghề nghiệp */
 
 .subtitle{
-
 margin-top:18px;
 font-size:18px;
 color:#aaa;
 letter-spacing:1px;
-
 }
+
+/* specialization */
 
 .hero-role{
 margin-top:6px;
@@ -69,11 +71,13 @@ font-size:14px;
 color:#777;
 letter-spacing:2px;
 text-transform:uppercase;
+}
 
-/* =================================
+
+/* =================================================
 HERO BACKGROUND GLOW
-ánh sáng nhẹ phía sau hero
-================================= */
+tạo ánh sáng nền nhẹ phía sau hero
+================================================= */
 
 header::before{
 
@@ -101,8 +105,43 @@ pointer-events:none;
 
 }
 
+
+/* =================================================
+HERO DIVIDER
+đường phân cách hero và content
+================================================= */
+
+.hero-divider{
+width:120px;
+height:1px;
+margin:50px auto;
+
+background:linear-gradient(
+to right,
+transparent,
+rgba(255,255,255,0.6),
+transparent
+);
+
+box-shadow:0 0 8px rgba(255,255,255,0.2);
+}
+
+
+/* text nhỏ "Selected Work" */
+
+.hero-note{
+text-align:center;
+font-size:12px;
+letter-spacing:2px;
+color:#666;
+margin-bottom:40px;
+text-transform:uppercase;
+}
+
+
 /* =================================================
 SECTION BLOCK
+padding chung cho các section
 ================================================= */
 
 .section{
@@ -124,9 +163,65 @@ margin-bottom:20px;
 font-weight:500;
 }
 
-.about p{
-color:#a0a0a0;
-margin-bottom:16px;
+.about-intro{
+color:#aaa;
+max-width:680px;
+font-size:16px;
+line-height:1.7;
+margin-bottom:50px;
+}
+
+
+/* =================================================
+ABOUT HIGHLIGHTS
+================================================= */
+
+.about-highlights{
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(200px,1fr));
+gap:40px;
+margin-bottom:50px;
+}
+
+.highlight-title{
+font-size:13px;
+letter-spacing:1px;
+text-transform:uppercase;
+color:#888;
+margin-bottom:10px;
+}
+
+.highlight-text{
+color:#ddd;
+font-size:15px;
+line-height:1.6;
+}
+
+
+/* =================================================
+SKILLS TAG
+================================================= */
+
+.skills{
+display:flex;
+flex-wrap:wrap;
+gap:14px;
+}
+
+.skill{
+border:1px solid #333;
+padding:8px 14px;
+font-size:13px;
+border-radius:20px;
+background:#141414;
+color:#aaa;
+transition:0.25s;
+}
+
+.skill:hover{
+border-color:#777;
+color:white;
 }
 
 
@@ -184,7 +279,8 @@ overflow:hidden;
 border-radius:8px;
 }
 
-/* Cinematic crop */
+/* ảnh project */
+
 .project img{
 width:100%;
 height:340px;
@@ -193,7 +289,8 @@ display:block;
 transition:0.45s;
 }
 
-/* Gradient overlay */
+/* overlay gradient */
+
 .overlay{
 position:absolute;
 bottom:0;
@@ -208,7 +305,8 @@ opacity:0;
 transition:0.35s;
 }
 
-/* Title project */
+/* title project */
+
 .project-title{
 position:absolute;
 bottom:20px;
@@ -220,7 +318,8 @@ transform:translateY(12px);
 transition:0.35s;
 }
 
-/* Hover animation */
+/* hover effect */
+
 .project:hover img{
 transform:scale(1.06);
 }
@@ -234,123 +333,9 @@ opacity:1;
 transform:translateY(0);
 }
 
-/* =================================
-ABOUT INTRO
-================================= */
-
-.about-intro{
-
-color:#aaa;
-max-width:680px;
-
-font-size:16px;
-
-line-height:1.7;
-
-margin-bottom:50px;
-
-}
-
-
-/* =================================
-HIGHLIGHT GRID
-================================= */
-
-.about-highlights{
-
-display:grid;
-
-grid-template-columns:
-repeat(auto-fit,minmax(200px,1fr));
-
-gap:40px;
-
-margin-bottom:50px;
-
-}
-
-.highlight-title{
-
-font-size:13px;
-
-letter-spacing:1px;
-
-text-transform:uppercase;
-
-color:#888;
-
-margin-bottom:10px;
-
-}
-
-.highlight-text{
-
-color:#ddd;
-
-font-size:15px;
-
-line-height:1.6;
-
-}
-
-
-/* =================================
-SKILLS GRID
-================================= */
-
-.skills{
-
-display:flex;
-
-flex-wrap:wrap;
-
-gap:14px;
-
-}
-
-.skill{
-border:1px solid #333;
-padding:8px 14px;
-font-size:13px;
-border-radius:20px;
-
-background:#141414;   /* nền tag */
-
-color:#aaa;
-
-transition:0.25s;
-}
-
-}
-
-.skill:hover{
-
-border-color:#777;
-
-color:white;
-
-}
 
 /* =================================================
-HERO DIVIDER
-đường phân cách giữa Hero và About
-================================================= */
-
-.hero-divider{
-width:120px;
-height:1px;
-margin:50px auto;
-background:linear-gradient(
-to right,
-transparent,
-rgba(255,255,255,0.6),
-transparent
-);
-box-shadow:0 0 8px rgba(255,255,255,0.2);
-}
-
-/* =================================================
-CONTACT SECTION
+CONTACT
 ================================================= */
 
 .contact{
@@ -384,33 +369,22 @@ color:#555;
 font-size:13px;
 }
 
-a{
-text-decoration:none;
-color:inherit;
-}
 
 /* =================================================
-SECTION FADE ANIMATION
-hiệu ứng hiện dần khi scroll
+SCROLL FADE ANIMATION
 ================================================= */
 
 .fade{
-
 opacity:0;
 transform:translateY(30px);
-
-transition:
-opacity 0.8s ease,
-transform 0.8s ease;
-
+transition:opacity 0.8s ease, transform 0.8s ease;
 }
 
 .fade.show{
-
 opacity:1;
 transform:translateY(0);
-
 }
+
 
 /* =================================================
 MOBILE OPTIMIZATION
@@ -443,7 +417,9 @@ height:260px;
 <body>
 
 
-<!-- HERO -->
+<!-- =================================================
+HERO
+================================================= -->
 
 <header>
 
@@ -460,12 +436,14 @@ Product Visualization
 </header>
 
 <div class="hero-divider"></div>
+
 <div class="hero-note">
 Selected Work
 </div>
 
+
 <!-- =================================================
-ABOUT SECTION
+ABOUT
 ================================================= -->
 
 <div class="section about fade">
@@ -475,82 +453,56 @@ ABOUT SECTION
 <p class="about-intro">
 
 Hi, I'm <strong>Nghia Le</strong>, a 3D Artist with more than
-7 years of experience in product visualization and 3D production
-pipelines.
-
-I specialize in creating clean, production-ready models optimized
-for rendering, visualization, and real-time workflows.
+7 years of experience in product visualization and 3D production pipelines.
 
 </p>
 
 
-<!-- highlight section -->
-
 <div class="about-highlights">
 
-<div class="highlight">
-
-<div class="highlight-title">
-Experience
-</div>
-
+<div>
+<div class="highlight-title">Experience</div>
 <div class="highlight-text">
-7+ years working in professional
-3D production environments
+7+ years in professional 3D production
+</div>
 </div>
 
-</div>
-
-
-<div class="highlight">
-
-<div class="highlight-title">
-Specialization
-</div>
-
+<div>
+<div class="highlight-title">Specialization</div>
 <div class="highlight-text">
-Product visualization,
-hard-surface modeling,
-real-time optimized assets
+Product visualization & hard surface modeling
+</div>
 </div>
 
-</div>
-
-
-<div class="highlight">
-
-<div class="highlight-title">
-Pipeline
-</div>
-
+<div>
+<div class="highlight-title">Pipeline</div>
 <div class="highlight-text">
-Workflow optimization,
-team mentoring,
-production pipeline improvement
+Workflow optimization & team mentoring
+</div>
 </div>
 
 </div>
 
-</div>
 
-
-<!-- skills -->
+<!-- SKILLS -->
 
 <div class="skills">
 
-<div class="skill">3dsMax</div>
+<div class="skill">3ds Max</div>
 <div class="skill">Blender</div>
 <div class="skill">Substance Painter</div>
 <div class="skill">Photoshop</div>
 <div class="skill">V-Ray</div>
 <div class="skill">Hard Surface</div>
-<div class="skill">Product Visualization</div>
 
 </div>
 
 </div>
 
-<!-- FILTER + PROJECT GRID -->
+
+<!-- =================================================
+PROJECT SECTION
+================================================= -->
 
 <div class="section fade">
 
@@ -560,8 +512,6 @@ production pipeline improvement
 <button class="filter-btn" data-filter="A">Project A</button>
 <button class="filter-btn" data-filter="B">Project B</button>
 <button class="filter-btn" data-filter="C">Project C</button>
-<button class="filter-btn" data-filter="D">Project D</button>
-<button class="filter-btn" data-filter="E">Project E</button>
 
 </div>
 
@@ -570,18 +520,17 @@ production pipeline improvement
 </div>
 
 
-<!-- CONTACT -->
+<!-- =================================================
+CONTACT
+================================================= -->
 
 <div class="section contact fade">
 
 <h2>Contact</h2>
 
-<a href="mailto:nghiale.f.lab@gmail.com">Email: nghiale.f.lab@gmail.com</a>
-
+<a href="mailto:nghiale.f.lab@gmail.com">Email</a>
 <a href="#">LinkedIn</a>
-
 <a href="#">ArtStation</a>
-
 <a href="#">Sketchfab</a>
 
 </div>
@@ -589,29 +538,21 @@ production pipeline improvement
 
 <footer>
 
-© NL-FLab
+© NL F.Lab
 
 </footer>
 
 
 <script>
 
-/* ======================================
-PROJECT DATA (demo)
-Sau này có thể chuyển sang JSON
-====================================== */
+/* =================================================
+PROJECT DATA
+================================================= */
 
 const projects=[
 
 {
 title:"Project A – Shoe",
-image:"images/Shoe_001/Hero.jpg",
-link:"projects/Shoe_001.html",
-category:"A"
-},
-
-{
-title:"Project A – Shoe 02",
 image:"images/Shoe_001/Hero.jpg",
 link:"projects/Shoe_001.html",
 category:"A"
@@ -629,27 +570,14 @@ title:"Project C – Watch",
 image:"images/Shoe_001/Hero.jpg",
 link:"projects/Shoe_001.html",
 category:"C"
-},
-
-{
-title:"Project D – Product",
-image:"images/Shoe_001/Hero.jpg",
-link:"projects/Shoe_001.html",
-category:"D"
-},
-
-{
-title:"Project E – Personal",
-image:"images/Shoe_001/Hero.jpg",
-link:"projects/Shoe_001.html",
-category:"E"
 }
 
 ]
 
-/* ======================================
-Render project grid
-====================================== */
+
+/* =================================================
+RENDER PROJECT GRID
+================================================= */
 
 function renderProjects(category){
 
@@ -657,7 +585,7 @@ const grid=document.getElementById("projectGrid")
 
 grid.innerHTML=""
 
-const filtered=category==="all"
+const filtered = category==="all"
 ?projects
 :projects.filter(p=>p.category===category)
 
@@ -693,9 +621,10 @@ grid.appendChild(item)
 
 renderProjects("all")
 
-/* ======================================
-Filter click
-====================================== */
+
+/* =================================================
+FILTER CLICK
+================================================= */
 
 document.querySelectorAll(".filter-btn")
 .forEach(btn=>{
@@ -714,9 +643,10 @@ renderProjects(btn.dataset.filter)
 
 })
 
-/* ======================================
-Fade animation khi scroll
-====================================== */
+
+/* =================================================
+SCROLL FADE ANIMATION
+================================================= */
 
 const fades=document.querySelectorAll(".fade")
 
@@ -725,9 +655,7 @@ const observer=new IntersectionObserver(entries=>{
 entries.forEach(entry=>{
 
 if(entry.isIntersecting){
-
 entry.target.classList.add("show")
-
 }
 
 })
