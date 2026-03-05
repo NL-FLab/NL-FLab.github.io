@@ -24,7 +24,7 @@
       "images/preview_a.webp",
       "images/gray.webp",
       "images/wireframe.webp",
-      "images/normal.webp",
+      "images/normal.webp"
     ]
   },
 
@@ -33,7 +33,7 @@
     "unit": "cm",
 
     "polycount": {
-      "Total": "259k triangles",
+      "Total": "259k triangles"
     },
 
     "textures": "4K PBR",
