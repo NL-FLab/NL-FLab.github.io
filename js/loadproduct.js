@@ -7,7 +7,7 @@ async function loadProjects() {
     
     try {
         // 1. Tải danh sách project chính
-        const response = await fetch("/models/projects.json");
+        const response = await fetch("./models/projects.json");
         if (!response.ok) throw new Error("Không thể load projects.json");
         const projects = await response.json();
 
