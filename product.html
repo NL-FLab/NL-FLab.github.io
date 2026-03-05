@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>NL-FLab Product</title>
+
+<style>
+
+/* ================================
+GLOBAL
+================================ */
+
+body{
+margin:0;
+background: radial-gradient(circle at top,#1a1a1a,#0f0f0f 60%);
+color:#e5e5e5;
+font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+}
+
+/* ================================
+CONTAINER
+================================ */
+
+.container{
+max-width:1100px;
+margin:0 auto;
+padding:30px 24px;
+}
+
+/* ================================
+BACK LINK
+================================ */
+
+.back{
+max-width:1100px;
+margin:30px auto 0 auto;
+padding:0 24px;
+}
+
+.back a{
+font-size:14px;
+color:#777;
+text-decoration:none;
+}
+
+.back a:hover{
+color:#fff;
+}
+
+/* ================================
+TITLE
+================================ */
+
+h1{
+font-weight:500;
+font-size:32px;
+margin-bottom:20px;
+letter-spacing:1px;
+text-shadow:0 0 25px rgba(255,255,255,0.08);
+}
+
+/* ================================
+INFO BLOCK
+================================ */
+
+.info{
+color:#8a8a8a;
+line-height:1.9;
+margin-bottom:30px;
+font-size:15px;
+max-width:420px;
+}
+
+/* ================================
+TOP SECTION
+================================ */
+
+.top-section{
+display:grid;
+grid-template-columns:1fr 1.5fr;
+gap:60px;
+align-items:center;
+margin-top:40px;
+}
+
+/* ================================
+VIEWER
+================================ */
+
+.viewer{
+margin-top:20px;
+}
+
+iframe{
+width:100%;
+aspect-ratio:1/1;
+border:none;
+border-radius:15px;
+background:#1a1a1a;
+box-shadow:0 40px 80px rgba(0,0,0,0.6);
+}
+
+/* ================================
+HERO IMAGE
+================================ */
+
+.hero-section{
+margin-top:60px;
+}
+
+.hero-section img{
+width:100%;
+max-height:520px;
+object-fit:contain;
+border-radius:14px;
+box-shadow:0 40px 90px rgba(0,0,0,0.6);
+cursor:zoom-in;
+transition:transform .35s cubic-bezier(.22,1,.36,1),
+box-shadow .35s ease;
+}
+
+.hero-section img:hover{
+transform:translateY(-6px) scale(1.01);
+box-shadow:0 45px 100px rgba(0,0,0,0.7);
+}
+
+/* ================================
+GALLERY
+================================ */
+
+.image-section{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:40px;
+margin-top:60px;
+}
+
+.image-section img{
+width:100%;
+border-radius:12px;
+object-fit:contain;
+cursor:zoom-in;
+transition:transform .35s cubic-bezier(.22,1,.36,1),
+box-shadow .35s ease;
+}
+
+.image-section img:hover{
+transform:translateY(-6px) scale(1.015);
+box-shadow:0 30px 75px rgba(0,0,0,0.55);
+}
+
+/* ================================
+LIGHTBOX
+================================ */
+
+#lightbox{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.9);
+backdrop-filter:blur(5px);
+z-index:999;
+opacity:0;
+pointer-events:none;
+transition:opacity .5s ease;
+}
+
+#lightbox.active{
+opacity:1;
+pointer-events:auto;
+}
+
+#lightbox img{
+position:absolute;
+border-radius:10px;
+box-shadow:0 30px 80px rgba(0,0,0,0.8);
+}
+
+/* ================================
+RESPONSIVE
+================================ */
+
+@media(max-width:900px){
+
+.top-section{
+grid-template-columns:1fr;
+}
+
+.image-section{
+grid-template-columns:1fr;
+}
+
+iframe{
+height:500px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="back">
+<a href="index.html">← Back to Portfolio</a>
+</div>
+
+<div class="container">
+
+<h1 id="title"></h1>
+
+<div class="top-section">
+
+<div class="info" id="description"></div>
+
+<div class="viewer" id="viewerBlock">
+<iframe id="viewer"></iframe>
+</div>
+
+</div>
+
+<div class="hero-section">
+<img id="hero">
+</div>
+
+<div class="image-section" id="gallery"></div>
+
+</div>
+
+<div id="lightbox">
+<img id="lightbox-img">
+</div>
+
+<script>
+
+/* ================================
+GET PROJECT FROM URL
+================================ */
+
+const params=new URLSearchParams(window.location.search)
+const project=params.get("project")
+
+/* ================================
+LOAD JSON
+================================ */
+
+fetch(`models/${project}/info.json`)
+.then(res=>res.json())
+.then(data=>{
+
+document.getElementById("title").innerText=data.info.title
+
+const tech=data.technical
+
+document.getElementById("description").innerHTML=`
+${data.info.description}
+
+<br><br>
+
+• Scale: ${tech.scale} (${tech.unit})<br>
+• Single shoe: ${tech.polycount.single_shoe}<br>
+• Full pair: ${tech.polycount.pair}<br>
+• ${tech.textures}<br>
+• ${tech.software.join(" – ")} – ${tech.render_engine}
+`
+
+document.getElementById("hero").src=
+`models/${project}/${data.media.hero}`
+
+if(data.viewer.enabled){
+
+document.getElementById("viewer").src=
+`viewer/babylon_viewer.html?model=models/${project}/${data.viewer.model}`
+
+}else{
+
+document.getElementById("viewerBlock").style.display="none"
+
+}
+
+const gallery=document.getElementById("gallery")
+
+data.media.gallery.forEach(img=>{
+
+const el=document.createElement("img")
+
+el.src=`models/${project}/${img}`
+
+el.onclick=()=>openLightbox(el)
+
+gallery.appendChild(el)
+
+})
+
+})
+
+/* ================================
+LIGHTBOX
+================================ */
+
+const lightbox=document.getElementById("lightbox")
+const lightboxImg=document.getElementById("lightbox-img")
+
+function openLightbox(img){
+
+lightboxImg.src=img.src
+
+lightbox.classList.add("active")
+
+lightboxImg.style.top="50%"
+lightboxImg.style.left="50%"
+lightboxImg.style.transform="translate(-50%,-50%)"
+
+}
+
+lightbox.addEventListener("click",()=>{
+lightbox.classList.remove("active")
+})
+
+</script>
+
+</body>
+</html>
