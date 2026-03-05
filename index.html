@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+
+<!-- Giúp layout hiển thị đúng trên mobile -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>NL-FLab – 3D Artist</title>
+
+<style>
+
+/* =================================================
+GLOBAL STYLE
+================================================= */
+
+body{
+margin:0;
+background:#0f0f0f;
+color:#e5e5e5;
+
+/* Font system giống Apple */
+font-family:
+-apple-system,
+BlinkMacSystemFont,
+"Segoe UI",
+Roboto,
+sans-serif;
+
+/* spacing kiểu Apple */
+letter-spacing:0.3px;
+line-height:1.6;
+}
+
+
+/* =================================================
+HERO / HEADER
+================================================= */
+
+header{
+padding:110px 12% 70px 12%;
+}
+
+h1{
+font-size:42px;
+font-weight:500;
+margin:0;
+letter-spacing:1px;
+}
+
+.subtitle{
+margin-top:14px;
+color:#8a8a8a;
+max-width:620px;
+font-size:16px;
+}
+
+
+/* =================================================
+SECTION BLOCK
+================================================= */
+
+.section{
+padding:70px 12%;
+}
+
+
+/* =================================================
+ABOUT SECTION
+================================================= */
+
+.about{
+max-width:720px;
+}
+
+.about h2{
+font-size:22px;
+margin-bottom:20px;
+font-weight:500;
+}
+
+.about p{
+color:#a0a0a0;
+margin-bottom:16px;
+}
+
+
+/* =================================================
+FILTER TAB
+================================================= */
+
+.filter{
+margin-bottom:50px;
+display:flex;
+flex-wrap:wrap;
+gap:22px;
+}
+
+.filter-btn{
+background:none;
+border:none;
+color:#888;
+font-size:14px;
+cursor:pointer;
+padding:6px 0;
+transition:0.25s;
+}
+
+.filter-btn:hover{
+color:white;
+}
+
+.filter-btn.active{
+color:white;
+border-bottom:1px solid #fff;
+}
+
+
+/* =================================================
+PROJECT GRID
+================================================= */
+
+.grid{
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(280px,1fr));
+gap:70px;
+max-width:1100px;
+}
+
+
+/* =================================================
+PROJECT CARD
+================================================= */
+
+.project{
+position:relative;
+overflow:hidden;
+border-radius:8px;
+}
+
+/* Cinematic crop */
+.project img{
+width:100%;
+height:340px;
+object-fit:cover;
+display:block;
+transition:0.45s;
+}
+
+/* Gradient overlay */
+.overlay{
+position:absolute;
+bottom:0;
+left:0;
+width:100%;
+height:60%;
+background:linear-gradient(
+transparent,
+rgba(0,0,0,0.85)
+);
+opacity:0;
+transition:0.35s;
+}
+
+/* Title project */
+.project-title{
+position:absolute;
+bottom:20px;
+left:22px;
+font-size:14px;
+letter-spacing:1px;
+opacity:0;
+transform:translateY(12px);
+transition:0.35s;
+}
+
+/* Hover animation */
+.project:hover img{
+transform:scale(1.06);
+}
+
+.project:hover .overlay{
+opacity:1;
+}
+
+.project:hover .project-title{
+opacity:1;
+transform:translateY(0);
+}
+
+
+/* =================================================
+CONTACT SECTION
+================================================= */
+
+.contact{
+max-width:600px;
+}
+
+.contact h2{
+font-size:22px;
+margin-bottom:20px;
+}
+
+.contact a{
+display:block;
+margin-bottom:10px;
+color:#aaa;
+transition:0.25s;
+}
+
+.contact a:hover{
+color:white;
+}
+
+
+/* =================================================
+FOOTER
+================================================= */
+
+footer{
+padding:80px 12%;
+color:#555;
+font-size:13px;
+}
+
+a{
+text-decoration:none;
+color:inherit;
+}
+
+
+/* =================================================
+MOBILE OPTIMIZATION
+================================================= */
+
+@media (max-width:768px){
+
+header{
+padding:80px 8% 50px 8%;
+}
+
+.section{
+padding:50px 8%;
+}
+
+.grid{
+gap:40px;
+}
+
+.project img{
+height:260px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<!-- HERO -->
+
+<header>
+
+<h1>NL-FLab</h1>
+
+<div class="subtitle">
+3D Artist specializing in product visualization and high-quality modeling.
+</div>
+
+</header>
+
+
+<!-- ABOUT -->
+
+<div class="section about">
+
+<h2>About</h2>
+
+<p>
+3D Artist with over 7 years of experience in product visualization and modeling.
+</p>
+
+<p>
+Experienced with tools such as 3ds Max, Substance, Photoshop, and V-Ray.
+</p>
+
+</div>
+
+
+<!-- FILTER + PROJECT GRID -->
+
+<div class="section">
+
+<div class="filter">
+
+<button class="filter-btn active" data-filter="all">All</button>
+<button class="filter-btn" data-filter="A">Project A</button>
+<button class="filter-btn" data-filter="B">Project B</button>
+<button class="filter-btn" data-filter="C">Project C</button>
+<button class="filter-btn" data-filter="D">Project D</button>
+<button class="filter-btn" data-filter="E">Project E</button>
+
+</div>
+
+<div class="grid" id="projectGrid"></div>
+
+</div>
+
+
+<!-- CONTACT -->
+
+<div class="section contact">
+
+<h2>Contact</h2>
+
+<a href="mailto:lenghia7991@gmail.com">Email: lenghia7991@gmail.com</a>
+
+<a href="#">LinkedIn</a>
+
+<a href="#">ArtStation</a>
+
+<a href="#">Sketchfab</a>
+
+</div>
+
+
+<footer>
+
+© NL-FLab
+
+</footer>
+
+
+<script>
+
+/* ======================================
+PROJECT DATA (demo)
+Sau này có thể chuyển sang JSON
+====================================== */
+
+const projects=[
+
+{
+title:"Project A – Shoe",
+image:"images/Shoe_001/Hero.jpg",
+link:"projects/Shoe_001.html",
+category:"A"
+},
+
+{
+title:"Project A – Shoe 02",
+image:"images/Shoe_001/Hero.jpg",
+link:"projects/Shoe_001.html",
+category:"A"
+},
+
+{
+title:"Project B – Chair",
+image:"images/Shoe_001/Hero.jpg",
+link:"projects/Shoe_001.html",
+category:"B"
+},
+
+{
+title:"Project C – Watch",
+image:"images/Shoe_001/Hero.jpg",
+link:"projects/Shoe_001.html",
+category:"C"
+},
+
+{
+title:"Project D – Product",
+image:"images/Shoe_001/Hero.jpg",
+link:"projects/Shoe_001.html",
+category:"D"
+},
+
+{
+title:"Project E – Personal",
+image:"images/Shoe_001/Hero.jpg",
+link:"projects/Shoe_001.html",
+category:"E"
+}
+
+]
+
+/* ======================================
+Render project grid
+====================================== */
+
+function renderProjects(category){
+
+const grid=document.getElementById("projectGrid")
+
+grid.innerHTML=""
+
+const filtered=category==="all"
+?projects
+:projects.filter(p=>p.category===category)
+
+filtered.forEach(p=>{
+
+const item=document.createElement("a")
+
+item.href=p.link
+
+item.innerHTML=`
+
+<div class="project">
+
+<img src="${p.image}">
+
+<div class="overlay"></div>
+
+<div class="project-title">
+
+${p.title}
+
+</div>
+
+</div>
+
+`
+
+grid.appendChild(item)
+
+})
+
+}
+
+renderProjects("all")
+
+/* ======================================
+Filter click
+====================================== */
+
+document.querySelectorAll(".filter-btn")
+.forEach(btn=>{
+
+btn.addEventListener("click",()=>{
+
+document
+.querySelectorAll(".filter-btn")
+.forEach(b=>b.classList.remove("active"))
+
+btn.classList.add("active")
+
+renderProjects(btn.dataset.filter)
+
+})
+
+})
+
+</script>
+
+</body>
+</html>
