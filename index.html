@@ -581,105 +581,6 @@ CONTACT
 <script>
 
 /* =================================================
-PROJECT DATA
-================================================= */
-
-const projects=[
-
-{
-title:"Project A – Shoe",
-image:"images/Shoe_001/Hero.jpg",
-link:"projects/Shoe_001.html",
-category:"A"
-},
-
-{
-title:"Project B – Chair",
-image:"images/Shoe_001/Hero.jpg",
-link:"projects/Shoe_001.html",
-category:"B"
-},
-
-{
-title:"Project C – Watch",
-image:"images/Shoe_001/Hero.jpg",
-link:"projects/Shoe_001.html",
-category:"C"
-}
-
-]
-
-
-/* =================================================
-RENDER PROJECT GRID
-================================================= */
-
-function renderProjects(category){
-
-const grid=document.getElementById("projectGrid")
-
-grid.innerHTML=""
-
-const filtered = category==="all"
-?projects
-:projects.filter(p=>p.category===category)
-
-filtered.forEach(p=>{
-
-const item=document.createElement("a")
-
-item.href=p.link
-
-item.innerHTML=`
-
-<div class="project">
-
-<img src="${p.image}">
-
-<div class="overlay"></div>
-
-<div class="project-title">
-
-${p.title}
-
-</div>
-
-</div>
-
-`
-
-grid.appendChild(item)
-
-})
-
-}
-
-renderProjects("all")
-
-
-/* =================================================
-FILTER CLICK
-================================================= */
-
-document.querySelectorAll(".filter-btn")
-.forEach(btn=>{
-
-btn.addEventListener("click",()=>{
-
-document
-.querySelectorAll(".filter-btn")
-.forEach(b=>b.classList.remove("active"))
-
-btn.classList.add("active")
-
-renderProjects(btn.dataset.filter)
-
-})
-
-})
-
-
-/* =================================================
 SCROLL FADE ANIMATION
 ================================================= */
 
@@ -700,6 +601,8 @@ entry.target.classList.add("show")
 fades.forEach(el=>observer.observe(el))
 
 </script>
-
+  
+<script src="js/loadproduct.js"></script>
+  
 </body>
 </html>
