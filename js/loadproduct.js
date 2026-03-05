@@ -7,7 +7,7 @@ async function loadProjects() {
     
     try {
         // 1. Tải danh sách project chính
-        const response = await fetch("https://raw.githubusercontent.com/NL-FLab/NL-FLab.github.io/refs/heads/main/models/projects.json");
+        const response = await fetch("./models/projects.json?v=" + new Date().getTime())
         if (!response.ok) throw new Error("Không thể load projects.json");
         const projects = await response.json();
 
