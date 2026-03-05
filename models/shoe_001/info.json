@@ -1,0 +1,58 @@
+{
+  "slug": "shoe_001",
+
+  "info": {
+    "title": "Realistic Sneaker 3D Model - 4K PBR",
+    "category": "footwear",
+    "description": "High-quality 3D sneaker model designed for product visualization, cinematic rendering and real-time applications."
+  },
+
+  "viewer": {
+    "enabled": true,
+    "model": "glb/shoe_001.glb"
+  },
+
+  "media": {
+    "thumbnail": "images/hero.webp",
+    "hero": "images/hero.webp",
+
+    "gallery": [
+      "images/preview.webp",
+      "images/preview_1.webp",
+      "images/preview_2.webp",
+      "images/preview_3.webp",
+      "images/preview_4.webp",
+      "images/preview_5.webp",
+      "images/preview_a.webp",
+      "images/gray.webp",
+      "images/wireframe.webp",
+      "images/uv_density.webp",
+      "images/normal.webp",
+      "images/pbr.webp"
+    ]
+  },
+
+  "technical": {
+    "scale": "real-world",
+    "unit": "cm",
+
+    "polycount": {
+      "single_shoe": "259k triangles",
+      "pair": "518k triangles"
+    },
+
+    "textures": "4k pbr",
+
+    "software": [
+      "blender 5",
+      "substance painter"
+    ],
+
+    "render_engine": "cycles",
+
+    "formats": [
+      "glb",
+      "fbx"
+    ]
+  }
+}
