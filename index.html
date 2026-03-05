@@ -5,8 +5,13 @@
 
 <meta charset="utf-8">
 
+<meta name="description" content="Portfolio of Nghia Le – 3D Artist specializing in product visualization and hard surface modeling">
+
 <!-- giúp layout hiển thị đúng trên mobile -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- icon hiển thị trên tab trình duyệt -->
+<link rel="icon" type="image/png" href="images/favicon.png">
 
 <title>NL F.Lab – 3D Artist</title>
 
@@ -73,6 +78,31 @@ letter-spacing:2px;
 text-transform:uppercase;
 }
 
+/* =================================================
+BRAND + LOGO
+================================================= */
+
+.brand{
+
+display:flex;
+
+align-items:center;
+
+gap:14px;
+
+}
+
+/* logo size */
+
+.logo{
+
+width:36px;
+
+height:36px;
+
+object-fit:contain;
+
+}
 
 /* =================================================
 HERO BACKGROUND GLOW
@@ -424,7 +454,9 @@ HERO
 <header>
 
 <h1>NL F.Lab</h1>
-
+<div class="brand">
+<img src="images/logo.png" class="logo">
+    
 <div class="subtitle">
 3D Artist
 </div>
