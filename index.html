@@ -40,7 +40,10 @@ HERO / HEADER
 ================================================= */
 
 header{
-padding:110px 12% 70px 12%;
+padding:140px 12% 60px 12%;
+position:relative;
+overflow:hidden;
+
 }
 
 h1{
@@ -50,13 +53,53 @@ margin:0;
 letter-spacing:1px;
 }
 
+
 .subtitle{
-margin-top:14px;
-color:#8a8a8a;
-max-width:620px;
-font-size:16px;
+
+margin-top:18px;
+font-size:18px;
+color:#aaa;
+letter-spacing:1px;
+
 }
 
+.hero-role{
+margin-top:6px;
+font-size:14px;
+color:#777;
+letter-spacing:2px;
+text-transform:uppercase;
+
+/* =================================
+HERO BACKGROUND GLOW
+ánh sáng nhẹ phía sau hero
+================================= */
+
+header::before{
+
+content:"";
+
+position:absolute;
+
+top:-200px;
+left:50%;
+
+transform:translateX(-50%);
+
+width:800px;
+height:800px;
+
+background:radial-gradient(
+circle,
+rgba(255,255,255,0.08),
+transparent 60%
+);
+
+filter:blur(80px);
+
+pointer-events:none;
+
+}
 
 /* =================================================
 SECTION BLOCK
@@ -407,12 +450,19 @@ height:260px;
 <h1>NL F.Lab</h1>
 
 <div class="subtitle">
-3D Artist specializing in product visualization and high-quality modeling.
+3D Artist
+</div>
+
+<div class="hero-role">
+Product Visualization
 </div>
 
 </header>
 
 <div class="hero-divider"></div>
+<div class="hero-note">
+Selected Work
+</div>
 
 <!-- =================================================
 ABOUT SECTION
