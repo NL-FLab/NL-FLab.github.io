@@ -2,7 +2,7 @@
 AUTO LOAD PROJECTS
 ====================================== */
 
-fetch("models/projects.json")
+fetch("/models/projects.json")
 
 .then(response => response.json())
 
@@ -12,7 +12,7 @@ const grid = document.getElementById("projectGrid")
 
 projects.forEach(project => {
 
-fetch(`models/${project.slug}/info.json`)
+fetch(`/models/${project.slug}/info.json`)
 
 .then(response => response.json())
 
@@ -26,7 +26,7 @@ item.innerHTML = `
 
 <div class="project">
 
-<img src="models/${project.slug}/${data.media.thumbnail}">
+<img src="/models/${project.slug}/${data.media.thumbnail}">
 
 <div class="project-title">
 ${data.info.title}
