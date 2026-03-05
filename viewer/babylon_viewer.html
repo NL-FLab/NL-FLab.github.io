@@ -2,46 +2,79 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>NL-FLab 3D Viewer</title>
-
-<script src="https://cdn.babylonjs.com/viewer/babylon.viewer.js"></script>
+<title>3D Viewer</title>
 
 <style>
-html, body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    background: #1e1e1e;
+html,body{
+margin:0;
+width:100%;
+height:100%;
+overflow:hidden;
+background:#111;
 }
-babylon {
-    width: 100%;
-    height: 100%;
+
+canvas{
+width:100%;
+height:100%;
+touch-action:none;
 }
 </style>
+
+<script src="https://cdn.babylonjs.com/babylon.js"></script>
+<script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+
 </head>
 
-<babylon id="viewer"
-model=""
-camera-behavior="auto"
-environment="https://assets.babylonjs.com/environments/environmentSpecular.env"
-engine-antialiasing="true"
-hardware-scaling-level="1">
-</babylon>
+<body>
+
+<canvas id="renderCanvas"></canvas>
 
 <script>
-function getModelFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get("model");
-}
 
-const modelPath = getModelFromURL();
+const canvas=document.getElementById("renderCanvas")
 
-if (modelPath) {
-    document.getElementById("viewer")
-        .setAttribute("model", modelPath);
-} else {
-    alert("No model specified in URL.");
+const engine=new BABYLON.Engine(canvas,true)
+
+const scene=new BABYLON.Scene(engine)
+
+const camera=new BABYLON.ArcRotateCamera(
+"camera",
+Math.PI/2,
+Math.PI/2.5,
+2,
+BABYLON.Vector3.Zero(),
+scene
+)
+
+camera.attachControl(canvas,true)
+
+const light=new BABYLON.HemisphericLight(
+"light",
+new BABYLON.Vector3(1,1,0),
+scene
+)
+
+const params=new URLSearchParams(window.location.search)
+
+const model=params.get("model")
+
+BABYLON.SceneLoader.Append(
+"",
+model,
+scene,
+function(){
+scene.createDefaultEnvironment()
 }
+)
+
+engine.runRenderLoop(function(){
+scene.render()
+})
+
+window.addEventListener("resize",function(){
+engine.resize()
+})
+
 </script>
 
 </body>
