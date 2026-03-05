@@ -52,6 +52,32 @@ categories.add(project.info.category)
 }
 })
 
+// =============================
+// TẠO FILTER BUTTON
+// =============================
+
+const filterBar = document.getElementById("filterBar")
+
+// nút ALL
+const allBtn = document.createElement("button")
+allBtn.className = "filter-btn active"
+allBtn.dataset.filter = "all"
+allBtn.textContent = "All"
+
+filterBar.appendChild(allBtn)
+
+// các category
+categories.forEach(cat => {
+
+const btn = document.createElement("button")
+
+btn.className = "filter-btn"
+btn.dataset.filter = cat
+btn.textContent = cat
+
+filterBar.appendChild(btn)
+
+})
 
 results.forEach(project=>{
 
