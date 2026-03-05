@@ -8,7 +8,7 @@
 <!-- Giúp layout hiển thị đúng trên mobile -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>NL-FLab – 3D Artist</title>
+<title>NL F.Lab – 3D Artist</title>
 
 <style>
 
@@ -328,6 +328,28 @@ text-decoration:none;
 color:inherit;
 }
 
+/* =================================================
+SECTION FADE ANIMATION
+hiệu ứng hiện dần khi scroll
+================================================= */
+
+.fade{
+
+opacity:0;
+transform:translateY(30px);
+
+transition:
+opacity 0.8s ease,
+transform 0.8s ease;
+
+}
+
+.fade.show{
+
+opacity:1;
+transform:translateY(0);
+
+}
 
 /* =================================================
 MOBILE OPTIMIZATION
@@ -364,7 +386,7 @@ height:260px;
 
 <header>
 
-<h1>NL-FLab</h1>
+<h1>NL F.Lab</h1>
 
 <div class="subtitle">
 3D Artist specializing in product visualization and high-quality modeling.
@@ -372,12 +394,34 @@ height:260px;
 
 </header>
 
+/* =================================================
+HERO DIVIDER
+đường phân cách giữa Hero và About
+================================================= */
+
+.hero-divider{
+
+width:120px;
+height:1px;
+
+margin:50px auto;
+
+background:linear-gradient(
+to right,
+transparent,
+rgba(255,255,255,0.6),
+transparent
+);
+
+box-shadow:0 0 8px rgba(255,255,255,0.2);
+
+}
 
 <!-- =================================================
 ABOUT SECTION
 ================================================= -->
 
-<div class="section about">
+<div class="section about fade">
 
 <h2>About</h2>
 
@@ -461,7 +505,7 @@ production pipeline improvement
 
 <!-- FILTER + PROJECT GRID -->
 
-<div class="section">
+<div class="section fade">
 
 <div class="filter">
 
@@ -481,7 +525,7 @@ production pipeline improvement
 
 <!-- CONTACT -->
 
-<div class="section contact">
+<div class="section contact fade">
 
 <h2>Contact</h2>
 
@@ -622,6 +666,28 @@ renderProjects(btn.dataset.filter)
 })
 
 })
+
+/* ======================================
+Fade animation khi scroll
+====================================== */
+
+const fades=document.querySelectorAll(".fade")
+
+const observer=new IntersectionObserver(entries=>{
+
+entries.forEach(entry=>{
+
+if(entry.isIntersecting){
+
+entry.target.classList.add("show")
+
+}
+
+})
+
+})
+
+fades.forEach(el=>observer.observe(el))
 
 </script>
 
