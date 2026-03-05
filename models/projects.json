@@ -1,8 +1,4 @@
 [
-  {
-    "slug": "shoe_001"
-  },
-  {
-    "slug": "machine_001"
-  }
+  {"slug": "shoe_001"},
+  {"slug": "machine_001"}
 ]
