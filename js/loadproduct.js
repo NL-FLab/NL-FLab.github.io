@@ -40,6 +40,18 @@ return null
 
 const results = await Promise.all(projectDataPromises)
 
+// =============================
+// LẤY DANH SÁCH CATEGORY
+// =============================
+
+const categories = new Set()
+
+results.forEach(project=>{
+if(project){
+categories.add(project.info.category)
+}
+})
+
 
 results.forEach(project=>{
 
