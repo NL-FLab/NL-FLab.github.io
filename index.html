@@ -191,6 +191,103 @@ opacity:1;
 transform:translateY(0);
 }
 
+/* =================================
+ABOUT INTRO
+================================= */
+
+.about-intro{
+
+color:#aaa;
+max-width:680px;
+
+font-size:16px;
+
+line-height:1.7;
+
+margin-bottom:50px;
+
+}
+
+
+/* =================================
+HIGHLIGHT GRID
+================================= */
+
+.about-highlights{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(200px,1fr));
+
+gap:40px;
+
+margin-bottom:50px;
+
+}
+
+.highlight-title{
+
+font-size:13px;
+
+letter-spacing:1px;
+
+text-transform:uppercase;
+
+color:#888;
+
+margin-bottom:10px;
+
+}
+
+.highlight-text{
+
+color:#ddd;
+
+font-size:15px;
+
+line-height:1.6;
+
+}
+
+
+/* =================================
+SKILLS GRID
+================================= */
+
+.skills{
+
+display:flex;
+
+flex-wrap:wrap;
+
+gap:14px;
+
+}
+
+.skill{
+
+border:1px solid #333;
+
+padding:8px 14px;
+
+font-size:13px;
+
+border-radius:20px;
+
+color:#aaa;
+
+transition:0.25s;
+
+}
+
+.skill:hover{
+
+border-color:#777;
+
+color:white;
+
+}
 
 /* =================================================
 CONTACT SECTION
@@ -277,22 +374,90 @@ height:260px;
 </header>
 
 
-<!-- ABOUT -->
+<!-- =================================================
+ABOUT SECTION
+================================================= -->
 
 <div class="section about">
 
 <h2>About</h2>
 
-<p>
-3D Artist with over 7 years of experience in product visualization and modeling.
+<p class="about-intro">
+
+Hi, I'm <strong>Nghia Le</strong>, a 3D Artist with more than
+7 years of experience in product visualization and 3D production
+pipelines.
+
+I specialize in creating clean, production-ready models optimized
+for rendering, visualization, and real-time workflows.
+
 </p>
 
-<p>
-Experienced with tools such as 3ds Max, Substance, Photoshop, and V-Ray.
-</p>
+
+<!-- highlight section -->
+
+<div class="about-highlights">
+
+<div class="highlight">
+
+<div class="highlight-title">
+Experience
+</div>
+
+<div class="highlight-text">
+7+ years working in professional
+3D production environments
+</div>
 
 </div>
 
+
+<div class="highlight">
+
+<div class="highlight-title">
+Specialization
+</div>
+
+<div class="highlight-text">
+Product visualization,
+hard-surface modeling,
+real-time optimized assets
+</div>
+
+</div>
+
+
+<div class="highlight">
+
+<div class="highlight-title">
+Pipeline
+</div>
+
+<div class="highlight-text">
+Workflow optimization,
+team mentoring,
+production pipeline improvement
+</div>
+
+</div>
+
+</div>
+
+
+<!-- skills -->
+
+<div class="skills">
+
+<div class="skill">3ds Max</div>
+<div class="skill">Substance</div>
+<div class="skill">Photoshop</div>
+<div class="skill">V-Ray</div>
+<div class="skill">Hard Surface</div>
+<div class="skill">Product Visualization</div>
+
+</div>
+
+</div>
 
 <!-- FILTER + PROJECT GRID -->
 
