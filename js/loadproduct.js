@@ -28,8 +28,6 @@ item.innerHTML = `
 
 <img src="models/${project.slug}/${data.media.thumbnail}">
 
-<div class="overlay"></div>
-
 <div class="project-title">
 ${data.info.title}
 </div>
