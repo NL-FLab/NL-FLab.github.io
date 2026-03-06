@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-    <title>NL F.Lab | Product Details</title>
+    <title>NL F.Lab | Portfolio Details</title>
     <style>
         /* =================================================
         GLOBAL & SYNC
@@ -54,21 +54,16 @@
         .tech-list li span { color: #444; text-transform: uppercase; font-size: 10px; letter-spacing: 1px; }
         .tech-list li b { color: #aaa; font-weight: 400; }
 
-        /* 1. BO TRÒN VIEWER */
         .viewer iframe {
             width: 100%; aspect-ratio: 1/1; border: none; 
-            border-radius: 24px; /* Tăng độ bo tròn */
-            background: #111; box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            border-radius: 24px; background: #111; box-shadow: 0 30px 60px rgba(0,0,0,0.4);
         }
 
         /* =================================================
         IMAGES & HOVER EFFECTS
         ================================================= */
-        .hero-section { 
-            margin-bottom: 60px; display: flex; justify-content: center; 
-        }
+        .hero-section { margin-bottom: 60px; display: flex; justify-content: center; }
 
-        /* 1. BO TRÒN ẢNH & 4. HIỂN THỊ TÊN NHỎ */
         .img-wrapper {
             position: relative; overflow: hidden; border-radius: 24px; 
             line-height: 0; cursor: zoom-in;
@@ -82,11 +77,14 @@
 
         .hero-section .img-wrapper { width: 75%; }
 
-        /* Label hiện thị nhỏ ở dưới bên trái */
+        /* Label với nền mờ kiểu Apple */
         .img-caption {
-            position: absolute; bottom: 20px; left: 20px;
-            font-size: 10px; color: rgba(255,255,255,0.5);
-            text-transform: uppercase; letter-spacing: 1.5px;
+            position: absolute; bottom: 15px; left: 15px;
+            font-size: 9px; color: rgba(255,255,255,0.7);
+            text-transform: uppercase; letter-spacing: 1px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            padding: 4px 10px; border-radius: 20px;
             opacity: 0; transform: translateY(10px);
             transition: all 0.5s ease;
             pointer-events: none; z-index: 2;
@@ -95,7 +93,6 @@
         .img-wrapper:hover img { transform: scale(1.03); filter: brightness(1.1); }
         .img-wrapper:hover .img-caption { opacity: 1; transform: translateY(0); }
 
-        /* 2. THANH NGĂN PHÁT SÁNG GIỐNG INDEX */
         .section-divider {
             width: 150px; height: 1px; margin: 80px auto;
             background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 80%);
@@ -105,21 +102,26 @@
         .image-section { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
 
         /* =================================================
-        3. ZOOM ANIMATION (LIGHTBOX)
+        SMOOTH ZOOM LIGHTBOX (SUPER SMOOTH)
         ================================================= */
         #lightbox {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.98);
-            backdrop-filter: blur(25px); z-index: 9999;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+            position: fixed; inset: 0; background: rgba(0,0,0,0);
+            z-index: 9999; pointer-events: none; transition: background 0.5s ease;
         }
-        #lightbox.active { opacity: 1; pointer-events: auto; }
+        #lightbox.active { background: rgba(0,0,0,0.98); pointer-events: auto; }
 
-        #lightbox img { 
-            max-width: 92%; max-height: 92vh; object-fit: contain;
-            transform: scale(0.8); transition: transform 0.5s cubic-bezier(0.2, 1, 0.2, 1);
+        /* Ảnh ảo để animate */
+        #zoom-img {
+            position: fixed; top: 0; left: 0;
+            width: 0; height: 0; border-radius: 24px;
+            object-fit: contain; z-index: 10000;
+            transition: all 0.6s cubic-bezier(0.2, 1, 0.2, 1);
+            will-change: transform, top, left, width, height, border-radius;
+            line-height: 0;
+            pointer-events: none;
         }
-        #lightbox.active img { transform: scale(1); }
+
+        #lightbox.active #zoom-img { border-radius: 4px; pointer-events: auto; }
 
         /* RESPONSIVE */
         @media (max-width: 850px) {
@@ -153,7 +155,7 @@
         <div class="hero-section">
             <div class="img-wrapper" id="heroWrapper">
                 <img id="hero" alt="Master Render">
-                <div class="img-caption">Master View</div>
+                <div class="img-caption" id="heroCaption"></div>
             </div>
         </div>
 
@@ -163,12 +165,19 @@
     </div>
 
     <div id="lightbox">
-        <img id="lightbox-img" alt="Enlarged view">
+        <img id="zoom-img" alt="Zoomed view">
     </div>
 
     <script>
         const params = new URLSearchParams(window.location.search);
         const projectSlug = params.get("project");
+
+        // HÀM MỚI ĐỂ CHUYỂN TÊN FILE THÀNH CAPTION (ví dụ: render_01.jpg -> Render 01)
+        function formatCaption(fileName) {
+            let name = fileName.split('.').slice(0, -1).join('.'); // Bỏ đuôi file
+            name = name.replace(/_/g, ' '); // Thay _ bằng khoảng trắng
+            return name.charAt(0).toUpperCase() + name.slice(1); // Viết hoa chữ cái đầu
+        }
 
         async function loadProduct() {
             if (!projectSlug) return;
@@ -188,9 +197,14 @@
                     <li><span>Pipeline</span> <b>${tech.software[0]} / ${tech.render_engine}</b></li>
                 `;
 
+                // Hero Image & Caption
                 const hero = document.getElementById("hero");
-                hero.src = `models/${projectSlug}/${data.media.hero}`;
-                document.getElementById("heroWrapper").onclick = () => openLightbox(hero.src);
+                const heroFileName = data.media.hero;
+                hero.src = `models/${projectSlug}/${heroFileName}`;
+                document.getElementById("heroCaption").innerText = formatCaption(heroFileName);
+                document.getElementById("heroWrapper").addEventListener('click', function(e) {
+                    openSmoothZoom(this.querySelector('img'), hero.src);
+                });
 
                 if (data.viewer?.enabled) {
                     document.getElementById("viewer").src = `viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
@@ -199,11 +213,12 @@
                     document.querySelector(".top-section").style.gridTemplateColumns = "1fr";
                 }
 
+                // Gallery & Real File Names
                 const configRes = await fetch("models/gallery_config.json");
                 const config = await configRes.json();
                 const gallery = document.getElementById("gallery");
                 
-                config.order.forEach((name, index) => {
+                config.order.forEach((name) => {
                     const wrapper = document.createElement("div");
                     wrapper.className = "img-wrapper";
                     
@@ -213,31 +228,107 @@
                     
                     const caption = document.createElement("div");
                     caption.className = "img-caption";
-                    caption.innerText = `View ${String(index + 1).padStart(2, '0')}`;
+                    caption.innerText = formatCaption(name); // Dùng tên file thực tế
                     
                     wrapper.appendChild(img);
                     wrapper.appendChild(caption);
                     wrapper.onerror = () => wrapper.remove();
-                    wrapper.onclick = () => openLightbox(img.src);
+                    wrapper.addEventListener('click', function(e) {
+                        openSmoothZoom(this.querySelector('img'), img.src);
+                    });
                     
                     gallery.appendChild(wrapper);
                 });
             } catch (err) { console.error(err); }
         }
 
+        // =================================================
+        // HÀM ZOOM SIÊU MƯỢT (JS TRỰC TIẾP)
+        // =================================================
         const lightbox = document.getElementById("lightbox");
-        const lightboxImg = document.getElementById("lightbox-img");
+        const zoomImg = document.getElementById("zoom-img");
+        let activeOriginImg = null; // Lưu lại ảnh gốc đang active
 
-        function openLightbox(src) {
-            lightboxImg.src = src;
+        function openSmoothZoom(originImg, src) {
+            activeOriginImg = originImg; // Lưu ảnh gốc
+            
+            // 1. Tính toán vị trí ảnh gốc
+            const rect = originImg.getBoundingClientRect();
+            
+            // 2. Set vị trí ban đầu cho ảnh ảo trùng khít ảnh gốc
+            zoomImg.style.top = rect.top + 'px';
+            zoomImg.style.left = rect.left + 'px';
+            zoomImg.style.width = rect.width + 'px';
+            zoomImg.style.height = rect.height + 'px';
+            zoomImg.src = src;
+            zoomImg.style.display = 'block';
+            zoomImg.style.transform = 'translate3d(0, 0, 0)'; // Force GPU
+
+            // 3. Kích hoạt nền đen Lightbox
             lightbox.classList.add("active");
-            document.body.style.overflow = "hidden";
+            document.body.style.overflow = "hidden"; // Khóa cuộn trang
+
+            // Ẩn ảnh gốc (nhẹ nhàng) để tạo cảm giác ảnh bung ra
+            originImg.style.opacity = '0';
+
+            // 4. Bắt đầu animate (dùng setTimeout để JS kịp render vị trí ban đầu)
+            setTimeout(() => {
+                // Tính toán kích thước zoom tối đa (contain)
+                const winWidth = window.innerWidth;
+                const winHeight = window.innerHeight;
+                const imgRatio = rect.width / rect.height;
+                const winRatio = winWidth / winHeight;
+
+                let targetWidth, targetHeight, targetTop, targetLeft;
+
+                if (imgRatio > winRatio) {
+                    // Fit chiều rộng
+                    targetWidth = winWidth * 0.9;
+                    targetHeight = targetWidth / imgRatio;
+                    targetTop = (winHeight - targetHeight) / 2;
+                    targetLeft = (winWidth - targetWidth) / 2;
+                } else {
+                    // Fit chiều cao
+                    targetHeight = winHeight * 0.9;
+                    targetWidth = targetHeight * imgRatio;
+                    targetTop = (winHeight - targetHeight) / 2;
+                    targetLeft = (winWidth - targetWidth) / 2;
+                }
+
+                // Set vị trí đích
+                zoomImg.style.top = targetTop + 'px';
+                zoomImg.style.left = targetLeft + 'px';
+                zoomImg.style.width = targetWidth + 'px';
+                zoomImg.style.height = targetHeight + 'px';
+            }, 50);
         }
 
-        lightbox.onclick = () => {
+        // Đóng ngược về vị trí cũ
+        function closeSmoothZoom() {
+            if (!activeOriginImg) return;
+            
+            // 1. Tính toán lại vị trí hiện tại của ảnh gốc (trong trường hợp người dùng cuộn trang - nhưng mình đã khóa rồi)
+            const rect = activeOriginImg.getBoundingClientRect();
+            
+            // 2. Animate ảnh ảo về vị trí gốc
+            zoomImg.style.top = rect.top + 'px';
+            zoomImg.style.left = rect.left + 'px';
+            zoomImg.style.width = rect.width + 'px';
+            zoomImg.style.height = rect.height + 'px';
+
+            // 3. Tắt nền đen Lightbox
             lightbox.classList.remove("active");
-            document.body.style.overflow = "auto";
-        };
+            document.body.style.overflow = "auto"; // Mở cuộn trang
+
+            // 4. Khi animate kết thúc, hiện ảnh gốc và ẩn ảnh ảo
+            setTimeout(() => {
+                activeOriginImg.style.opacity = '1'; // Hiện ảnh gốc
+                zoomImg.style.display = 'none'; // Ẩn ảnh ảo
+                activeOriginImg = null;
+            }, 600); // Trùng với thời gian transition (0.6s)
+        }
+
+        lightbox.addEventListener('click', closeSmoothZoom);
 
         loadProduct();
     </script>
