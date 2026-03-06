@@ -5,6 +5,7 @@ AUTO LOAD PROJECTS
 async function loadProjects(){
 
 const grid = document.getElementById("projectGrid")
+const filterBar = document.getElementById("filterBar")
 
 try{
 
@@ -12,8 +13,29 @@ const response = await fetch("models/projects.json")
 
 if(!response.ok) throw new Error("Cannot load projects.json")
 
-const projects = await response.json()
+let projects = await response.json()
 
+
+/* =============================
+SORT PROJECT
+priority → date
+============================= */
+
+projects.sort((a,b)=>{
+
+const pa = a.priority ?? -1
+const pb = b.priority ?? -1
+
+if(pa !== pb) return pb - pa
+
+return new Date(b.date) - new Date(a.date)
+
+})
+
+
+/* =============================
+LOAD info.json
+============================= */
 
 const projectDataPromises = projects.map(async(project)=>{
 
@@ -37,51 +59,85 @@ return null
 
 })
 
+const results = (await Promise.all(projectDataPromises))
+.filter(p => p !== null)
 
-const results = await Promise.all(projectDataPromises)
 
-// =============================
-// LẤY DANH SÁCH CATEGORY
-// =============================
+
+/* =============================
+GET CATEGORY LIST
+============================= */
 
 const categories = new Set()
 
 results.forEach(project=>{
-if(project){
-categories.add(project.info.category)
-}
+
+if(project.categories){
+
+project.categories.forEach(cat=>{
+categories.add(cat)
 })
 
-// =============================
-// TẠO FILTER BUTTON
-// =============================
+}
 
-const filterBar = document.getElementById("filterBar")
+})
 
-// nút ALL
-const allBtn = document.createElement("button")
-allBtn.className = "filter-btn active"
-allBtn.dataset.filter = "all"
-allBtn.textContent = "All"
 
-filterBar.appendChild(allBtn)
+/* =============================
+CREATE FILTER BUTTONS
+============================= */
 
-// các category
+// FEATURED TAB
+
+const featuredBtn = document.createElement("button")
+
+featuredBtn.className = "filter-btn active"
+featuredBtn.dataset.filter = "featured"
+featuredBtn.textContent = "Featured"
+
+filterBar.appendChild(featuredBtn)
+
+
+// CATEGORY TABS
+
 categories.forEach(cat => {
 
 const btn = document.createElement("button")
 
 btn.className = "filter-btn"
 btn.dataset.filter = cat
-btn.textContent = cat
+
+btn.textContent =
+cat.charAt(0).toUpperCase() + cat.slice(1)
 
 filterBar.appendChild(btn)
 
 })
 
-results.forEach(project=>{
 
-if(!project) return
+/* =============================
+RENDER FUNCTION
+============================= */
+
+function renderProjects(filter){
+
+grid.innerHTML = ""
+
+let filtered = results
+
+if(filter === "featured"){
+
+filtered = results.filter(p => p.featured)
+
+}else{
+
+filtered = results.filter(p =>
+p.categories && p.categories.includes(filter)
+)
+
+}
+
+filtered.forEach(project=>{
 
 const item = document.createElement("a")
 
@@ -109,6 +165,36 @@ ${project.info.title}
 grid.appendChild(item)
 
 })
+
+}
+
+
+/* =============================
+FILTER CLICK EVENT
+============================= */
+
+document.querySelectorAll(".filter-btn").forEach(btn=>{
+
+btn.addEventListener("click",()=>{
+
+document.querySelectorAll(".filter-btn")
+.forEach(b=>b.classList.remove("active"))
+
+btn.classList.add("active")
+
+renderProjects(btn.dataset.filter)
+
+})
+
+})
+
+
+/* =============================
+INITIAL RENDER
+============================= */
+
+renderProjects("featured")
+
 
 }catch(error){
 
