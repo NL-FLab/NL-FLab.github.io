@@ -3,145 +3,144 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>NL F.Lab — Portfolio</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <title>NL F.Lab – 3D Artist Portfolio</title>
 
     <style>
-        /* ================================
-        GLOBAL
-        ================================ */
+        /* =================================================
+        GLOBAL STYLE - FIX KHOẢNG CÁCH CHỮ
+        ================================================= */
         body {
             margin: 0; background: #0c0c0c; color: #e5e5e5;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, sans-serif;
             letter-spacing: 0.02em; line-height: 1.6;
             -webkit-font-smoothing: antialiased;
         }
 
-        .section { padding: 40px 12%; }
-
-        /* ================================
-        APPLE GLASS TAB (XUYÊN THẤU)
-        ================================ */
-        .filter-container {
-            display: flex; justify-content: flex-start; margin-bottom: 50px;
+        header { padding: 80px 12% 20px 12%; position: relative; overflow: hidden; }
+        header::before {
+            content: ""; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+            width: 800px; height: 800px; background: radial-gradient(circle, rgba(255,255,255,0.05), transparent 60%);
+            filter: blur(100px); pointer-events: none;
         }
+
+        .brand { display: flex; align-items: flex-start; gap: 24px; margin-bottom: 5px; }
+        .logo { width: 100px; height: 100px; object-fit: contain; margin-top: 15px; }
+        h1 { font-size: 40px; font-weight: 400; letter-spacing: -0.02em; margin: 0; color: #fff; }
+        .subtitle { font-size: 17px; color: #aaa; font-weight: 300; margin: 0; }
+        .hero-role { margin-top: 4px; font-size: 11px; color: #555; letter-spacing: 3px; text-transform: uppercase; }
+
+        .hero-divider {
+            width: 80px; height: 1px; margin: 25px auto 10px auto;
+            background: rgba(255,255,255,0.2);
+        }
+        .hero-note { text-align: center; font-size: 10px; letter-spacing: 3px; color: #444; text-transform: uppercase; margin-bottom: 25px; }
+
+        .section { padding: 30px 12%; }
+
+        /* =================================================
+        APPLE GLASS TAB - BO TRÒN & XUYÊN THẤU
+        ================================================= */
+        .filter-container { display: flex; margin-bottom: 40px; }
 
         .filter {
-            display: inline-flex;
-            padding: 5px;
-            /* Hiệu ứng kính mờ Apple */
+            display: inline-flex; padding: 5px; position: relative;
             background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 12px;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 40px; /* Bo tròn cực đại kiểu Apple */
             border: 1px solid rgba(255, 255, 255, 0.08);
-            position: relative;
-            /* Bóng đổ bề mặt nhẹ */
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .tab {
-            border: none; background: transparent;
-            color: #888; padding: 8px 22px;
-            cursor: pointer; font-size: 12px; font-weight: 400;
-            border-radius: 8px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative; z-index: 2;
+        .filter-btn {
+            background: transparent; border: none; color: #777; font-size: 11px;
+            cursor: pointer; padding: 10px 24px; border-radius: 40px; transition: all 0.4s ease;
+            text-transform: uppercase; letter-spacing: 1.5px; position: relative; z-index: 2;
         }
+        .filter-btn.active { color: #fff; }
 
-        .tab.active { color: #fff; }
-
-        /* Thanh trượt "Liquid" kiểu Apple */
+        /* Nền chạy xuyên thấu có độ bóng */
         .tab-bg {
-            position: absolute; top: 5px; left: 5px;
-            height: calc(100% - 10px);
+            position: absolute; top: 5px; left: 5px; height: calc(100% - 10px);
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            transition: all 0.5s cubic-bezier(0.2, 1, 0.2, 1);
-            z-index: 1;
-            /* Viền phát sáng nhẹ cho nút đang chọn */
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+            border-radius: 40px; transition: all 0.5s cubic-bezier(0.2, 1, 0.2, 1);
+            z-index: 1; border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
-        /* ================================
+        /* =================================================
         PROJECT GRID - SMOOTH REVEAL
-        ================================ */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 30px;
-            /* Chuyển động mượt khi đổi số lượng project */
+        ================================================= */
+        .grid { 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; 
             transition: all 0.5s ease;
         }
 
-        .project {
-            position: relative; overflow: hidden;
-            border-radius: 16px; aspect-ratio: 1/1;
-            background: #141414;
-            /* Hiệu ứng xuất hiện lúc mới vào */
-            opacity: 0;
-            transform: translateY(20px) scale(0.98);
-            animation: projectReveal 0.8s cubic-bezier(0.2, 1, 0.2, 1) forwards;
+        .project { 
+            position: relative; overflow: hidden; border-radius: 16px; aspect-ratio: 1 / 1; background: #111; 
+            opacity: 0; transform: translateY(20px) scale(0.98);
+            transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 1, 0.2, 1);
         }
+        /* Class để kích hoạt hiệu ứng hiện ảnh mượt */
+        .project.is-visible { opacity: 1; transform: translateY(0) scale(1); }
 
-        @keyframes projectReveal {
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .project img {
-            width: 100%; height: 100%; object-fit: cover; display: block;
+        .project img { 
+            width: 100%; height: 100%; object-fit: cover; display: block; 
             transition: 1s cubic-bezier(0.2, 1, 0.2, 1);
-            /* Tránh giật khi load ảnh */
             will-change: transform, filter;
         }
 
-        /* HOVER CENTER EFFECT */
-        .project:hover img { 
-            transform: scale(1.06); 
-            filter: brightness(0.3) blur(4px); 
-        }
-
+        /* CENTER HOVER */
+        .project:hover img { transform: scale(1.08); filter: brightness(0.3) blur(3px); }
         .project-title {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -40%);
-            width: 80%; text-align: center;
-            font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
-            color: #fff; opacity: 0;
-            transition: 0.6s cubic-bezier(0.2, 1, 0.2, 1);
-            z-index: 2; pointer-events: none;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%);
+            width: 80%; text-align: center; font-size: 13px; font-weight: 400; color: #fff;
+            letter-spacing: 2px; text-transform: uppercase; opacity: 0;
+            transition: 0.5s cubic-bezier(0.2, 1, 0.2, 1); z-index: 2; pointer-events: none;
+        }
+        .project:hover .project-title { opacity: 1; transform: translate(-50%, -50%); }
+
+        /* =================================================
+        ABOUT SECTION
+        ================================================= */
+        .about { max-width: 850px; }
+        .about h2 { font-size: 19px; margin-bottom: 15px; font-weight: 500; color: #fff; }
+        .about-intro { 
+            color: #aaa; font-size: 15px; margin-bottom: 35px; font-weight: 300; 
+            text-align: left; max-width: 750px; hyphens: auto;
+        }
+        .about-intro strong { color: #eee; font-weight: 400; }
+
+        .about-highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 40px; }
+        .highlight-title { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: #555; margin-bottom: 8px; }
+        .highlight-text { color: #bbb; font-size: 13px; font-weight: 300; line-height: 1.6; }
+
+        .skills { display: flex; flex-wrap: wrap; gap: 10px; }
+        .skill {
+            border: 1px solid #222; padding: 6px 16px; font-size: 11px;
+            border-radius: 30px; background: #111; color: #777; transition: 0.3s;
         }
 
-        .project:hover .project-title {
-            opacity: 1; transform: translate(-50%, -50%);
-        }
+        .contact-links { display: flex; flex-wrap: wrap; gap: 35px; }
+        .contact a { color: #555; text-decoration: none; font-size: 12px; transition: 0.3s; letter-spacing: 1px; }
+        .contact a:hover { color: #fff; }
 
-        /* ================================
-        HERO & ABOUT (TỐI ƯU KHOẢNG CÁCH)
-        ================================ */
-        header { padding: 100px 12% 10px 12%; }
-        .hero-divider {
-            width: 80px; height: 1px; margin: 30px auto 10px auto;
-            background: rgba(255,255,255,0.2);
-        }
-        .hero-note { text-align: center; font-size: 10px; color: #444; letter-spacing: 3px; margin-bottom: 30px; }
+        footer { padding: 40px 12%; color: #333; font-size: 10px; border-top: 1px solid #1a1a1a; margin-top: 30px; }
 
-        .about-intro { max-width: 750px; color: #999; font-weight: 300; font-size: 15px; }
-
-        .fade { opacity: 0; transform: translateY(20px); transition: 1s cubic-bezier(0.2, 1, 0.2, 1); }
+        .fade { opacity: 0; transform: translateY(15px); transition: 0.7s ease-out; }
         .fade.show { opacity: 1; transform: translateY(0); }
-
     </style>
 </head>
 
 <body>
-
     <header>
-        <div style="display: flex; align-items: flex-start; gap: 24px;">
-            <img src="images/logo.png" style="width: 100px; height: 100px; object-fit: contain; margin-top: 10px;">
-            <div>
-                <h1 style="font-size: 40px; font-weight: 400; margin: 0;">NL F.Lab</h1>
-                <div style="color: #aaa; font-size: 18px; font-weight: 300;">3D Artist</div>
-                <div style="font-size: 11px; letter-spacing: 3px; color: #555; text-transform: uppercase; margin-top: 5px;">Product Visualization</div>
+        <div class="brand">
+            <img src="images/logo.png" class="logo" alt="NL F.Lab">
+            <div class="hero-text">
+                <h1>NL F.Lab</h1>
+                <div class="subtitle">3D Artist</div>
+                <div class="hero-role">Product Visualization</div>
             </div>
         </div>
     </header>
@@ -149,87 +148,82 @@
     <div class="hero-divider"></div>
     <div class="hero-note">Selected Work</div>
 
-    <section class="section">
+    <section class="section about fade">
+        <h2>About</h2>
+        <div class="about-intro">
+            I am <strong>Nghia Le</strong>, a Senior 3D Artist with over 7 years of professional experience specializing in <strong>Product Visualization</strong> and <strong>Hard Surface Modeling</strong>. 
+            With a solid background in Information Technology, I focus on <strong>Workflow Optimization</strong> and building efficient 3D production systems. 
+            Having served as a <strong>Team Leader</strong> at Loft3DI, I am dedicated to technical precision and premium aesthetics.
+        </div>
+
+        <div class="about-highlights">
+            <div>
+                <div class="highlight-title">Experience</div>
+                <div class="highlight-text">• Team Leader at Loft3DI (2021-Present)<br>• Mentor at Cennos (2018-2021)</div>
+            </div>
+            <div>
+                <div class="highlight-title">Focus</div>
+                <div class="highlight-text">• High-end Furniture Visuals<br>• Workflow Automation</div>
+            </div>
+            <div>
+                <div class="highlight-title">Technical</div>
+                <div class="highlight-text">• 3ds Max, Blender, Substance, V-Ray<br>• Bachelor of IT from HUBT</div>
+            </div>
+        </div>
+
+        <div class="skills">
+            <div class="skill">3ds Max</div><div class="skill">Blender</div><div class="skill">Substance</div><div class="skill">V-Ray</div>
+        </div>
+    </section>
+
+    <section class="section fade">
         <div class="filter-container">
             <div class="filter" id="filterBar">
                 <div class="tab-bg" id="tabBg"></div>
-                <button class="tab active" onclick="filterSelection('all', this)">All</button>
-                <button class="tab" onclick="filterSelection('furniture', this)">Furniture</button>
-                <button class="tab" onclick="filterSelection('decor', this)">Decor</button>
-                <button class="tab" onclick="filterSelection('props', this)">Props</button>
-            </div>
+                </div>
         </div>
-
-        <div class="grid" id="projectGrid">
-            <div class="project furniture">
-                <img src="images/demo1.jpg">
-                <div class="project-title">Modern Oak Chair</div>
-            </div>
-            <div class="project decor">
-                <img src="images/demo2.jpg">
-                <div class="project-title">Glass Vase</div>
-            </div>
-            </div>
+        <div class="grid" id="projectGrid"></div>
     </section>
 
-    <section class="section about fade">
-        <h2 style="font-size: 19px; font-weight: 500;">About</h2>
-        <div class="about-intro">
-            I am <strong>Nghia Le</strong>, a Senior 3D Artist with 7+ years of experience. Having served as a <strong>Team Leader</strong> at Loft3DI, I specialize in transforming complex technical requirements into high-end 3D visuals with a focus on <strong>Workflow Optimization</strong>.
+    <section class="section contact fade">
+        <h2>Contact</h2>
+        <div class="contact-links">
+            <a href="mailto:nghiale.f.lab@gmail.com">Email</a>
+            <a href="#" target="_blank">ArtStation</a>
+            <a href="#" target="_blank">LinkedIn</a>
         </div>
     </section>
+
+    <footer>© NL F.Lab – 2026</footer>
 
     <script>
-        // Xử lý Tab di chuyển kiểu Apple
-        const tabs = document.querySelectorAll('.tab');
-        const tabBg = document.getElementById('tabBg');
-
-        function moveTabBg(el) {
-            tabBg.style.width = el.offsetWidth + 'px';
-            tabBg.style.left = el.offsetLeft + 'px';
-        }
-
-        tabs.forEach(tab => {
-            tab.addEventListener('click', function() {
-                tabs.forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                moveTabBg(this);
-            });
-        });
-
-        // Khởi tạo vị trí tab đầu tiên
-        window.onload = () => moveTabBg(document.querySelector('.tab.active'));
-
-        // Xử lý hiệu ứng xuất hiện ảnh mượt mà khi đổi Tab
-        function filterSelection(c, btn) {
-            const projects = document.querySelectorAll('.project');
-            
-            projects.forEach(proj => {
-                // Hiệu ứng biến mất nhẹ trước khi lọc
-                proj.style.opacity = '0';
-                proj.style.transform = 'scale(0.95)';
-                
-                setTimeout(() => {
-                    if (c === 'all' || proj.classList.contains(c)) {
-                        proj.style.display = 'block';
-                        // Hiệu ứng hiện ra uyển chuyển
-                        setTimeout(() => {
-                            proj.style.opacity = '1';
-                            proj.style.transform = 'scale(1)';
-                        }, 50);
-                    } else {
-                        proj.style.display = 'none';
-                    }
-                }, 300);
-            });
-        }
-
-        // Reveal animation cho các section khác
+        // Xử lý Reveal hiệu ứng cuộn trang
         const observer = new IntersectionObserver(entries => {
-            entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('show'); });
-        });
-        document.querySelectorAll('.fade').forEach(el => observer.observe(el));
-    </script>
+            entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add("show"); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll(".fade").forEach(el => observer.observe(el));
 
+        // Hàm hỗ trợ di chuyển Tab Background (kiểu Apple)
+        function moveTabBg(el) {
+            const bg = document.getElementById('tabBg');
+            if(el && bg) {
+                bg.style.width = el.offsetWidth + 'px';
+                bg.style.left = el.offsetLeft + 'px';
+            }
+        }
+
+        // Tự động kích hoạt hiệu ứng xuất hiện cho ảnh khi chúng được load vào Grid
+        const gridObserver = new MutationObserver(() => {
+            const projects = document.querySelectorAll('.project');
+            projects.forEach((proj, index) => {
+                setTimeout(() => {
+                    proj.classList.add('is-visible');
+                }, index * 100); // Hiện từng cái một cực mượt
+            });
+        });
+
+        gridObserver.observe(document.getElementById('projectGrid'), { childList: true });
+    </script>
+    <script src="js/loadproduct.js"></script>
 </body>
 </html>
