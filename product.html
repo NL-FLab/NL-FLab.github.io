@@ -29,7 +29,7 @@
     .tech-list li { padding: 8px 0; border-bottom: 1px solid #1a1a1a; font-size: 12px; display: flex; justify-content: space-between; }
     .tech-list li span { color: #444; text-transform: uppercase; font-size: 10px; }
     .tech-list li b { color: #aaa; font-weight: 400; }
-    .viewer iframe { width: 100%; aspect-ratio: 1/1; border: none; border-radius: 24px; background: #111; }
+    .viewer iframe { width: 100%; aspect-ratio: 1/1; border: none; border-radius: 24px; background: #111; box-shadow: 0 30px 60px rgba(0,0,0,.4); }
 
     .hero-section { margin-bottom: 60px; display: flex; justify-content: center; }
     .img-wrapper { position: relative; overflow: hidden; border-radius: 24px; line-height: 0; cursor: zoom-in; background: #111; }
@@ -47,7 +47,7 @@
     .img-wrapper:hover img { transform: scale(1.03); filter: brightness(1.1); }
     .img-wrapper:hover .img-caption { opacity: 1; transform: translateY(0); }
 
-    .section-divider { width: 150px; height: 1px; margin: 80px auto; background: radial-gradient(circle,rgba(255,255,255,.6) 0%,rgba(255,255,255,0) 80%); }
+    .section-divider { width: 150px; height: 1px; margin: 80px auto; background: radial-gradient(circle,rgba(255,255,255,0.6) 0%,rgba(255,255,255,0) 80%); }
     .image-section { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
 
     /* LIGHTBOX */
@@ -155,12 +155,16 @@ async function loadProduct() {
 }
 
 /* ===============================
-REFINED ZOOM - NO FLICKER
+APPLE STYLE ZOOM - NO OPACITY - NO FLICKER
 =============================== */
 const lightbox = document.getElementById("lightbox");
 const zoomImg = document.getElementById("zoom-img");
 let activeOriginImg = null;
 let isClosing = false;
+
+// Apple style cubic-bezier
+const appleBezier = "cubic-bezier(0.28, 0.84, 0.42, 1)";
+const duration = ".5s";
 
 function openSmoothZoom(originImg) {
     if (isClosing) return; 
@@ -179,7 +183,7 @@ function openSmoothZoom(originImg) {
     zoomImg.style.width = rect.width + "px";
     zoomImg.style.height = rect.height + "px";
     zoomImg.style.transform = `translate3d(${rect.left}px,${rect.top}px,0)`;
-    zoomImg.style.opacity = "1";
+    zoomImg.style.opacity = "1"; // Luôn rõ nét
 
     zoomImg.offsetHeight; // Force reflow
 
@@ -187,7 +191,7 @@ function openSmoothZoom(originImg) {
     originImg.style.visibility = "hidden";
 
     requestAnimationFrame(() => {
-        zoomImg.style.transition = "transform .45s cubic-bezier(.22,1,.36,1), width .45s cubic-bezier(.22,1,.36,1), height .45s cubic-bezier(.22,1,.36,1), opacity .3s ease";
+        zoomImg.style.transition = `transform ${duration} ${appleBezier}, width ${duration} ${appleBezier}, height ${duration} ${appleBezier}`;
         
         const winW = window.innerWidth;
         const winH = window.innerHeight;
@@ -213,15 +217,16 @@ function closeSmoothZoom() {
 
     const rect = activeOriginImg.getBoundingClientRect();
     
-    // Thu nhỏ về tọa độ hiện tại
+    // Thu nhỏ về tọa độ cũ
+    zoomImg.style.transition = `transform ${duration} ${appleBezier}, width ${duration} ${appleBezier}, height ${duration} ${appleBezier}`;
     zoomImg.style.width = rect.width + "px";
     zoomImg.style.height = rect.height + "px";
     zoomImg.style.transform = `translate3d(${rect.left}px,${rect.top}px,0)`;
-    zoomImg.style.opacity = "0.8"; // Giữ lại một chút opacity để mượt hơn khi khớp ảnh gốc
 
     lightbox.classList.remove("active");
 
     const onEnd = () => {
+        // Hiện ảnh gốc TRƯỚC khi ẩn ảnh ảo để tránh flicker
         if (activeOriginImg) activeOriginImg.style.visibility = "visible";
         zoomImg.style.display = "none";
         document.body.classList.remove("lock-scroll");
@@ -234,7 +239,7 @@ function closeSmoothZoom() {
 
     zoomImg.addEventListener('transitionend', onEnd);
     
-    // Backup plan nếu transitionend ko chạy
+    // Backup plan (450ms để nhanh hơn 500ms một chút, gối đầu frame)
     setTimeout(() => { if(isClosing) onEnd(); }, 500);
 }
 
