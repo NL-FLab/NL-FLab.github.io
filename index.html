@@ -1,461 +1,244 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
-
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>NL F.Lab — 3D Artist</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-
-<style>
-
-/* ================================
-GLOBAL
-================================ */
-
-body{
-
-margin:0;
-background:#0c0c0c;
-color:#e5e5e5;
-font-family:'Inter',sans-serif;
-line-height:1.6;
--webkit-font-smoothing:antialiased;
-
-}
-
-.section{
-
-padding:80px 12%;
-
-}
-
-/* ================================
-HERO
-================================ */
-
-.hero{
-
-padding:120px 12% 80px 12%;
-position:relative;
-
-}
-
-.hero::before{
-
-content:"";
-position:absolute;
-top:-200px;
-left:50%;
-transform:translateX(-50%);
-width:900px;
-height:900px;
-background:radial-gradient(circle,rgba(255,255,255,0.06),transparent 60%);
-filter:blur(120px);
-
-}
-
-.brand{
-
-display:flex;
-align-items:center;
-gap:24px;
-
-}
-
-.logo{
-
-width:90px;
-
-}
-
-.hero-title{
-
-font-size:46px;
-margin:0;
-
-}
-
-.hero-sub{
-
-color:#999;
-margin-top:4px;
-
-}
-
-.hero-role{
-
-margin-top:6px;
-font-size:11px;
-letter-spacing:3px;
-text-transform:uppercase;
-color:#555;
-
-}
-
-/* ================================
-LIQUID TAB
-================================ */
-
-.filter{
-
-position:relative;
-display:inline-flex;
-padding:6px;
-background:#161616;
-border-radius:40px;
-border:1px solid rgba(255,255,255,0.05);
-margin-bottom:50px;
-
-}
-
-.liquid{
-
-position:absolute;
-top:0;
-left:0;
-height:100%;
-background:linear-gradient(135deg,#ffffff22,#ffffff08);
-border-radius:40px;
-transition:all .45s cubic-bezier(.22,1,.36,1);
-box-shadow:0 10px 30px rgba(0,0,0,0.7);
-
-}
-
-.tab{
-
-border:none;
-background:none;
-color:#777;
-padding:10px 26px;
-cursor:pointer;
-font-size:11px;
-letter-spacing:1.5px;
-text-transform:uppercase;
-position:relative;
-z-index:2;
-
-}
-
-.tab.active{
-
-color:#fff;
-
-}
-
-/* ================================
-PROJECT GRID
-================================ */
-
-.grid{
-
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
-gap:34px;
-
-}
-
-.project{
-
-position:relative;
-overflow:hidden;
-border-radius:18px;
-aspect-ratio:1/1;
-background:#000;
-
-}
-
-.project img{
-
-width:100%;
-height:100%;
-object-fit:cover;
-
-transition:1s cubic-bezier(.2,1,.2,1);
-
-}
-
-.project-overlay{
-
-position:absolute;
-inset:0;
-background:linear-gradient(
-transparent,
-rgba(0,0,0,0.7)
-);
-
-opacity:0;
-transition:.5s;
-
-}
-
-.project-title{
-
-position:absolute;
-bottom:30px;
-left:30px;
-
-font-size:14px;
-letter-spacing:2px;
-text-transform:uppercase;
-
-opacity:0;
-transform:translateY(10px);
-transition:.5s;
-
-}
-
-.project:hover img{
-
-transform:scale(1.1);
-
-}
-
-.project:hover .project-overlay{
-
-opacity:1;
-
-}
-
-.project:hover .project-title{
-
-opacity:1;
-transform:translateY(0);
-
-}
-
-/* ================================
-ABOUT
-================================ */
-
-.about{
-
-max-width:800px;
-
-}
-
-.about h2{
-
-font-size:20px;
-
-}
-
-.about p{
-
-color:#aaa;
-
-}
-
-/* ================================
-CONTACT
-================================ */
-
-.contact-links{
-
-display:flex;
-gap:40px;
-margin-top:20px;
-
-}
-
-.contact-links a{
-
-color:#666;
-text-decoration:none;
-
-}
-
-.contact-links a:hover{
-
-color:#fff;
-
-}
-
-/* ================================
-ANIMATION
-================================ */
-
-.fade{
-
-opacity:0;
-transform:translateY(20px);
-transition:.8s;
-
-}
-
-.fade.show{
-
-opacity:1;
-transform:translateY(0);
-
-}
-
-</style>
-
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NL F.Lab — Premium 3D Artist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ================================
+        GLOBAL - DEEP DARK MODE
+        ================================ */
+        body {
+            margin: 0; 
+            background: radial-gradient(circle at 50% 0%, #161616 0%, #0a0a0a 100%); /* Tạo AO cho nền */
+            color: #e5e5e5;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6; letter-spacing: 0.01em;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+        }
+
+        .section { padding: 60px 12%; }
+
+        /* ================================
+        HERO - TYPOGRAPHY CONTRAST
+        ================================ */
+        .hero { padding: 120px 12% 40px 12%; position: relative; }
+        
+        .hero-title { 
+            font-family: 'Syncopate', sans-serif; /* Font mạnh mẽ, tech */
+            font-size: 52px; font-weight: 700; 
+            letter-spacing: -2px; margin: 0; 
+            color: #fff;
+            text-transform: uppercase;
+        }
+        .hero-sub { color: #888; font-size: 18px; font-weight: 300; margin-top: 5px; }
+        .hero-role { 
+            margin-top: 10px; font-size: 10px; letter-spacing: 5px; 
+            text-transform: uppercase; color: #444; font-weight: 700;
+        }
+
+        /* ================================
+        ABOUT - STORYTELLING
+        ================================ */
+        .about { max-width: 900px; }
+        .about h2 { font-size: 14px; letter-spacing: 3px; color: #555; text-transform: uppercase; margin-bottom: 20px; }
+        .about-headline { 
+            font-size: 28px; font-weight: 300; color: #eee; 
+            line-height: 1.4; margin-bottom: 30px; 
+        }
+        .about-headline strong { color: #fff; font-weight: 500; border-bottom: 1px solid #333; }
+
+        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .stat-item { border-left: 1px solid #222; padding-left: 20px; }
+        .stat-num { display: block; font-size: 24px; color: #fff; font-weight: 500; }
+        .stat-label { font-size: 11px; text-transform: uppercase; color: #555; letter-spacing: 1px; }
+
+        /* ================================
+        MAGNETIC LIQUID TAB
+        ================================ */
+        .filter-wrapper { margin: 60px 0; }
+        .filter {
+            position: relative; display: inline-flex;
+            padding: 4px; background: rgba(255,255,255,0.02);
+            border-radius: 50px; border: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(15px);
+        }
+
+        .liquid {
+            position: absolute; top: 4px; left: 4px;
+            height: calc(100% - 8px);
+            background: #fff;
+            border-radius: 40px;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 1;
+        }
+
+        .tab {
+            border: none; background: none; color: #555;
+            padding: 12px 30px; cursor: pointer; font-size: 10px;
+            letter-spacing: 2px; text-transform: uppercase; font-weight: 600;
+            position: relative; z-index: 2; transition: color 0.4s;
+        }
+
+        .tab.active { color: #000; }
+
+        /* ================================
+        PROJECT GRID - TILT PARALLAX
+        ================================ */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 40px; }
+        
+        .project-card {
+            perspective: 1000px; /* Cần thiết cho hiệu ứng Tilt */
+        }
+
+        .project { 
+            position: relative; overflow: hidden; border-radius: 20px; 
+            aspect-ratio: 1/1; background: #111;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+        }
+
+        .project img { 
+            width: 100%; height: 100%; object-fit: cover; display: block; 
+            pointer-events: none;
+            transition: 0.5s;
+        }
+        
+        .project:hover img { transform: scale(1.1); filter: brightness(0.2) blur(5px); }
+
+        .project-title {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%) translateZ(50px);
+            width: 80%; text-align: center; font-size: 14px; font-weight: 500; color: #fff;
+            letter-spacing: 3px; text-transform: uppercase; opacity: 0;
+            transition: 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+        .project:hover .project-title { opacity: 1; transform: translate(-50%, -50%) translateZ(80px); }
+
+        /* ================================
+        CONTACT
+        ================================ */
+        .contact-links { display: flex; gap: 50px; }
+        .contact-links a { 
+            color: #444; text-decoration: none; font-size: 12px; 
+            text-transform: uppercase; letter-spacing: 2px; transition: .4s;
+        }
+        .contact-links a:hover { color: #fff; padding-left: 10px; }
+
+        footer { padding: 40px 12%; border-top: 1px solid #1a1a1a; font-size: 9px; color: #222; letter-spacing: 2px; }
+
+        .fade { opacity: 0; transform: translateY(30px); transition: 1s cubic-bezier(0.2, 1, 0.3, 1); }
+        .fade.show { opacity: 1; transform: translateY(0); }
+    </style>
 </head>
 
 <body>
 
-<!-- HERO -->
-
-<section class="hero">
-
-<div class="brand">
-
-<img src="images/logo.png" class="logo">
-
-<div>
-
-<h1 class="hero-title">NL F.Lab</h1>
-<div class="hero-sub">3D Artist</div>
-<div class="hero-role">Product Visualization</div>
-
-</div>
-
-</div>
-
-</section>
-
-<!-- PROJECTS -->
-
-<section class="section">
-
-<div class="filter" id="tabs">
-
-<div class="liquid" id="liquid"></div>
-
-<button class="tab active">All</button>
-<button class="tab">Furniture</button>
-<button class="tab">Decor</button>
-<button class="tab">Props</button>
-
-</div>
-
-<div class="grid">
-
-<div class="project">
-
-<img src="images/demo1.jpg">
-
-<div class="project-overlay"></div>
-
-<div class="project-title">
-
-Oak Chair
-
-</div>
-
-</div>
-
-<div class="project">
-
-<img src="images/demo2.jpg">
-
-<div class="project-overlay"></div>
-
-<div class="project-title">
-
-Modern Table
-
-</div>
-
-</div>
-
-<div class="project">
-
-<img src="images/demo3.jpg">
-
-<div class="project-overlay"></div>
-
-<div class="project-title">
-
-Lamp
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-<!-- ABOUT -->
-
-<section class="section about fade">
-
-<h2>About</h2>
-
-<p>
-
-I am Nghia Le, a Senior 3D Artist specializing in Product Visualization and Hard Surface Modeling with more than seven years of professional experience.
-
-</p>
-
-</section>
-
-<!-- CONTACT -->
-
-<section class="section fade">
-
-<h2>Contact</h2>
-
-<div class="contact-links">
-
-<a href="#">Email</a>
-<a href="#">ArtStation</a>
-<a href="#">LinkedIn</a>
-
-</div>
-
-</section>
-
-<script>
-
-/* liquid tab */
-
-const tabs=document.querySelectorAll(".tab")
-const liquid=document.getElementById("liquid")
-
-function move(el){
-
-liquid.style.width=el.offsetWidth+"px"
-liquid.style.left=el.offsetLeft+"px"
-
-}
-
-tabs.forEach(tab=>{
-
-tab.onclick=()=>{
-
-tabs.forEach(t=>t.classList.remove("active"))
-tab.classList.add("active")
-move(tab)
-
-}
-
-})
-
-move(document.querySelector(".tab.active"))
-
-/* reveal animation */
-
-const observer=new IntersectionObserver(entries=>{
-
-entries.forEach(e=>{
-
-if(e.isIntersecting)
-e.target.classList.add("show")
-
-})
-
-})
-
-document.querySelectorAll(".fade").forEach(el=>observer.observe(el))
-
-</script>
-
+    <header class="hero">
+        <h1 class="hero-title">NL F.Lab</h1>
+        <div class="hero-sub">3D Visualization Studio</div>
+        <div class="hero-role">Precision & Aesthetics</div>
+    </header>
+
+    <section class="section about fade">
+        <h2>The Profile</h2>
+        <div class="about-headline">
+            Blending <strong>Technical Precision</strong> with <strong>Artistic Soul</strong>. 
+            A Senior 3D Artist and Team Leader focused on engineering the future of <strong>Product Visualization</strong>.
+        </div>
+        
+        <div class="about-grid">
+            <div class="stat-item">
+                <span class="stat-num">07+</span>
+                <span class="stat-label">Years of Experience</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num">Lead</span>
+                <span class="stat-label">at Loft3DI Vietnam</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="filter-wrapper">
+            <div class="filter" id="tabs">
+                <div class="liquid" id="liquid"></div>
+                <button class="tab active" data-filter="all">All Works</button>
+                <button class="tab" data-filter="furniture">Furniture</button>
+                <button class="tab" data-filter="props">Props</button>
+            </div>
+        </div>
+
+        <div class="grid" id="projectGrid">
+            <div class="project-card fade">
+                <div class="project">
+                    <img src="images/demo1.jpg" alt="">
+                    <div class="project-title">Oak Concept Chair</div>
+                </div>
+            </div>
+            <div class="project-card fade">
+                <div class="project">
+                    <img src="images/demo2.jpg" alt="">
+                    <div class="project-title">Minimalist Lamp</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section fade">
+        <h2>Connection</h2>
+        <div class="contact-links">
+            <a href="mailto:nghiale.f.lab@gmail.com">Email</a>
+            <a href="#">ArtStation</a>
+            <a href="#">LinkedIn</a>
+        </div>
+    </section>
+
+    <footer>©2026 NL F.LAB — ALL RIGHTS RESERVED</footer>
+
+    <script>
+        /* 1. LIQUID TAB LOGIC */
+        const tabs = document.querySelectorAll(".tab");
+        const liquid = document.getElementById("liquid");
+        function moveLiquid(el) {
+            liquid.style.width = el.offsetWidth + "px";
+            liquid.style.left = el.offsetLeft + "px";
+        }
+        tabs.forEach(tab => {
+            tab.addEventListener("click", function() {
+                tabs.forEach(t => t.classList.remove("active"));
+                this.classList.add("active");
+                moveLiquid(this);
+            });
+        });
+        window.onload = () => moveLiquid(document.querySelector(".tab.active"));
+
+        /* 2. WORLD-CLASS TILT EFFECT (HIỆU ỨNG NGHIÊNG ẢNH) */
+        const cards = document.querySelectorAll('.project');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const xc = rect.width / 2;
+                const yc = rect.height / 2;
+                const dx = x - xc;
+                const dy = y - yc;
+                // Nghiêng tối đa 10 độ
+                card.style.transform = `rotateY(${dx / 15}deg) rotateX(${-dy / 15}deg)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `rotateY(0deg) rotateX(0deg)`;
+            });
+        });
+
+        /* 3. REVEAL ANIMATION */
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { if(e.isIntersecting) e.target.classList.add("show"); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll(".fade").forEach(el => observer.observe(el));
+    </script>
 </body>
 </html>
