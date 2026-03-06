@@ -4,174 +4,118 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-    <title>NL F.Lab | Product Detail</title>
+    <title>NL F.Lab | Portfolio Detail</title>
     <style>
         /* =================================================
-        GLOBAL & SYNC WITH INDEX
+        GLOBAL & SYNC
         ================================================= */
         body {
-            margin: 0;
-            background: #0c0c0c;
-            color: #e5e5e5;
+            margin: 0; background: #0c0c0c; color: #e5e5e5;
             font-family: 'Inter', -apple-system, sans-serif;
-            overflow-x: hidden;
-            line-height: 1.6;
+            overflow-x: hidden; line-height: 1.6;
             -webkit-font-smoothing: antialiased;
         }
 
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 40px 12%;
-        }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 12% 80px 12%; }
 
         /* BACK BUTTON */
-        .back {
-            padding: 40px 12% 0 12%;
-        }
+        .back { padding: 40px 12% 20px 12%; }
         .back a {
-            font-size: 11px;
-            color: #555;
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: color 0.3s;
+            font-size: 10px; color: #555; text-decoration: none;
+            text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;
         }
         .back a:hover { color: #fff; }
 
         h1 {
-            font-weight: 400;
-            font-size: clamp(28px, 5vw, 40px);
-            margin: 20px 0;
-            letter-spacing: -0.02em;
-            color: #fff;
-            text-shadow: 0 0 20px rgba(255,255,255,0.05);
+            font-weight: 400; font-size: clamp(26px, 4vw, 36px);
+            margin: 10px 0 40px 0; letter-spacing: -0.01em; color: #fff;
         }
 
         /* =================================================
-        TOP SECTION (Technical Info & Viewer)
+        TOP SECTION - CÂN BẰNG LẠI THÔNG TIN
         ================================================= */
         .top-section {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 60px;
-            align-items: start;
-            margin-top: 40px;
-            border-top: 1px solid #1a1a1a;
-            padding-top: 40px;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 80px; align-items: center; /* Căn giữa theo chiều dọc để hết lệch */
+            margin-bottom: 80px;
         }
 
-        .info {
-            color: #888;
-            font-size: 14px;
-            font-weight: 300;
+        .info { color: #888; font-size: 14px; font-weight: 300; }
+        .info strong { 
+            color: #fff; font-weight: 400; display: block; 
+            margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
         }
-        .info strong { color: #fff; font-weight: 400; display: block; margin-bottom: 10px; font-size: 16px; }
+        #description { margin-bottom: 30px; line-height: 1.8; }
 
-        .tech-list {
-            list-style: none;
-            padding: 0;
-            margin: 25px 0;
-            font-size: 13px;
-        }
+        .tech-list { list-style: none; padding: 0; margin: 0; }
         .tech-list li {
-            margin-bottom: 8px;
-            color: #666;
-            display: flex;
-            align-items: center;
+            padding: 8px 0; border-bottom: 1px solid #1a1a1a;
+            font-size: 12px; display: flex; justify-content: space-between;
         }
-        .tech-list li::before {
-            content: "";
-            width: 4px;
-            height: 4px;
-            background: #333;
-            border-radius: 50%;
-            margin-right: 12px;
-        }
+        .tech-list li span { color: #444; text-transform: uppercase; font-size: 10px; letter-spacing: 1px; }
+        .tech-list li b { color: #aaa; font-weight: 400; }
 
         .viewer iframe {
-            width: 100%;
-            aspect-ratio: 1/1;
-            border: none;
-            border-radius: 20px;
-            background: #111;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            width: 100%; aspect-ratio: 1/1; border: none; border-radius: 4px; /* Bo nhẹ kiểu industrial */
+            background: #111; box-shadow: 0 30px 60px rgba(0,0,0,0.4);
         }
 
         /* =================================================
-        HERO IMAGE - SCALE 70% ON WEB
+        HERO & GALLERY - CHUYỂN ĐỘNG CHUYÊN NGHIỆP
         ================================================= */
         .hero-section { 
-            margin-top: 80px;
-            display: flex;
-            justify-content: center;
+            margin-bottom: 60px; display: flex; justify-content: center; 
         }
 
         .hero-section img {
-            width: 70%; /* NHỎ LẠI THEO Ý NGHĨA */
-            height: auto;
-            display: block;
-            border-radius: 16px;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+            width: 75%; height: auto; border-radius: 8px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5);
             cursor: zoom-in;
-            transition: transform 0.6s cubic-bezier(0.2, 1, 0.2, 1);
+            /* Chuyển động cực mượt */
+            transition: transform 0.8s cubic-bezier(0.2, 1, 0.2, 1), 
+                        filter 0.8s cubic-bezier(0.2, 1, 0.2, 1);
         }
 
         .hero-section img:hover {
-            transform: scale(1.02);
+            transform: scale(1.015);
+            filter: brightness(1.1);
         }
 
-        /* GALLERY GRID */
+        /* THANH NGANG TÁCH BIỆT (Divider) */
+        .section-divider {
+            width: 60px; height: 1px; background: #222; margin: 80px auto;
+        }
+
         .image-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-top: 30px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
         }
 
         .image-section img {
-            width: 100%;
-            border-radius: 12px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            cursor: zoom-in;
-            transition: 0.4s;
+            width: 100%; border-radius: 4px; cursor: zoom-in;
+            transition: transform 0.8s cubic-bezier(0.2, 1, 0.2, 1), opacity 0.8s;
         }
-        .image-section img:hover { transform: translateY(-5px); }
+        .image-section img:hover {
+            transform: translateY(-8px);
+            filter: brightness(1.05);
+        }
 
         /* =================================================
         LIGHTBOX
         ================================================= */
         #lightbox {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.98);
-            backdrop-filter: blur(15px);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s ease;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.98);
+            backdrop-filter: blur(20px); z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
         }
-
         #lightbox.active { opacity: 1; pointer-events: auto; }
+        #lightbox img { max-width: 92%; max-height: 92vh; object-fit: contain; }
 
-        #lightbox img {
-            max-width: 90%;
-            max-height: 90vh;
-            object-fit: contain;
-            box-shadow: 0 0 100px rgba(0,0,0,0.5);
-        }
-
-        /* =================================================
-        RESPONSIVE
-        ================================================= */
+        /* RESPONSIVE */
         @media (max-width: 850px) {
-            .container { padding: 20px 6%; }
-            .back { padding: 30px 6% 0 6%; }
+            .container { padding: 0 6% 60px 6%; }
             .top-section { grid-template-columns: 1fr; gap: 40px; }
-            .hero-section img { width: 100%; } /* VỀ 100% TRÊN MOBILE */
+            .hero-section img { width: 100%; }
             .image-section { grid-template-columns: 1fr; }
         }
     </style>
@@ -181,14 +125,15 @@
     <div class="back"><a href="index.html">← Back to Portfolio</a></div>
 
     <div class="container">
-        <h1 id="title">Loading Project...</h1>
+        <h1 id="title">Loading...</h1>
 
         <div class="top-section">
             <div class="info">
-                <strong id="desc-title">Description</strong>
+                <strong>Project Insight</strong>
                 <div id="description"></div>
-                <ul class="tech-list" id="techDetails">
-                    </ul>
+                
+                <strong>Technical Specs</strong>
+                <ul class="tech-list" id="techDetails"></ul>
             </div>
             <div class="viewer" id="viewerBlock">
                 <iframe id="viewer"></iframe>
@@ -196,8 +141,10 @@
         </div>
 
         <div class="hero-section">
-            <img id="hero" alt="Master View">
+            <img id="hero" alt="Master Render">
         </div>
+
+        <div class="section-divider"></div>
 
         <div class="image-section" id="gallery"></div>
     </div>
@@ -211,14 +158,9 @@
         const projectSlug = params.get("project");
 
         async function loadProduct() {
-            if (!projectSlug) {
-                document.getElementById("title").innerText = "No project selected";
-                return;
-            }
-
+            if (!projectSlug) return;
             try {
                 const res = await fetch(`models/${projectSlug}/info.json`);
-                if (!res.ok) throw new Error("404");
                 const data = await res.json();
 
                 document.title = `${data.info.title} | NL F.Lab`;
@@ -227,57 +169,45 @@
 
                 const tech = data.technical;
                 document.getElementById("techDetails").innerHTML = `
-                    <li><strong>Scale:</strong> ${tech.scale} (${tech.unit})</li>
-                    <li><strong>Polycount:</strong> ${tech.polycount.pair} (Pair) / ${tech.polycount.single_shoe} (Single)</li>
-                    <li><strong>Materials:</strong> ${tech.textures}</li>
-                    <li><strong>Software:</strong> ${tech.software.join(", ")}</li>
-                    <li><strong>Engine:</strong> ${tech.render_engine}</li>
+                    <li><span>Dimensions</span> <b>${tech.scale} ${tech.unit}</b></li>
+                    <li><span>Polycount</span> <b>${tech.polycount.pair} tris</b></li>
+                    <li><span>Texturing</span> <b>PBR Workflow</b></li>
+                    <li><span>Pipeline</span> <b>${tech.software[0]} / ${tech.render_engine}</b></li>
                 `;
 
-                // Hero Image
                 const hero = document.getElementById("hero");
                 hero.src = `models/${projectSlug}/${data.media.hero}`;
-                hero.onerror = () => hero.style.display = "none";
                 hero.onclick = () => openLightbox(hero.src);
 
-                // 3D Viewer
                 if (data.viewer?.enabled) {
                     document.getElementById("viewer").src = `viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
                 } else {
                     document.getElementById("viewerBlock").style.display = "none";
+                    document.querySelector(".top-section").style.gridTemplateColumns = "1fr";
                 }
 
-                // Gallery
                 const configRes = await fetch("models/gallery_config.json");
                 const config = await configRes.json();
                 const gallery = document.getElementById("gallery");
-                const basePath = `models/${projectSlug}/images/`;
                 
                 config.order.forEach(name => {
                     const img = document.createElement("img");
-                    img.src = basePath + name;
+                    img.src = `models/${projectSlug}/images/${name}`;
                     img.loading = "lazy";
                     img.onerror = () => img.remove();
                     img.onclick = () => openLightbox(img.src);
                     gallery.appendChild(img);
                 });
-
-            } catch (err) {
-                console.error("Error:", err);
-                document.getElementById("title").innerText = "Project Not Found";
-            }
+            } catch (err) { console.error(err); }
         }
 
-        // Lightbox Logic
         const lightbox = document.getElementById("lightbox");
         const lightboxImg = document.getElementById("lightbox-img");
-
         function openLightbox(src) {
             lightboxImg.src = src;
             lightbox.classList.add("active");
             document.body.style.overflow = "hidden";
         }
-
         lightbox.onclick = () => {
             lightbox.classList.remove("active");
             document.body.style.overflow = "auto";
