@@ -2,14 +2,16 @@
   {
     "slug": "shoe_001",
     "featured": true,
-    "priority": 1
-    "date": "2026-03-05",
+    "priority": 1,
+    "categories": ["footwear"],
+    "date": "2026-03-05"
   },
   {
     "slug": "machine_001",
     "featured": true,
-    "priority": 2
-    "date": "2026-03-06",
+    "categories": ["machine"],
+    "priority": 2,
+    "date": "2026-03-06"
   }
   
 ]
