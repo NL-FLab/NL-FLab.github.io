@@ -9,11 +9,11 @@
 
     <style>
         /* =================================================
-        GLOBAL STYLE - FIX KHOẢNG CÁCH CHỮ
+        GLOBAL & BASE
         ================================================= */
         body {
             margin: 0; background: #0c0c0c; color: #e5e5e5;
-            font-family: 'Inter', -apple-system, sans-serif;
+            font-family: 'Inter', sans-serif;
             letter-spacing: 0.02em; line-height: 1.6;
             -webkit-font-smoothing: antialiased;
         }
@@ -40,96 +40,82 @@
         .section { padding: 30px 12%; }
 
         /* =================================================
-        APPLE GLASS TAB - BO TRÒN & XUYÊN THẤU
+        APPLE TAB - FIX HIỂN THỊ ACTIVE & GLOW
         ================================================= */
         .filter-container { display: flex; margin-bottom: 40px; }
 
         .filter {
-            display: inline-flex; padding: 5px; position: relative;
+            display: inline-flex; padding: 4px; position: relative;
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-radius: 40px; /* Bo tròn cực đại kiểu Apple */
+            border-radius: 40px; 
             border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
 
         .filter-btn {
-            background: transparent; border: none; color: #777; font-size: 11px;
-            cursor: pointer; padding: 10px 24px; border-radius: 40px; transition: all 0.4s ease;
+            background: transparent; border: none; color: #666; font-size: 11px;
+            cursor: pointer; padding: 10px 24px; border-radius: 40px; 
+            transition: color 0.4s ease;
             text-transform: uppercase; letter-spacing: 1.5px; position: relative; z-index: 2;
         }
+        
         .filter-btn.active { color: #fff; }
 
-        /* Nền chạy xuyên thấu có độ bóng */
-        .tab-bg {
-            position: absolute; top: 5px; left: 5px; height: calc(100% - 10px);
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 40px; transition: all 0.5s cubic-bezier(0.2, 1, 0.2, 1);
-            z-index: 1; border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        /* Khối nền của Tab đang chọn - Có viền phát sáng */
+        .tab-indicator {
+            position: absolute; top: 4px; left: 4px; height: calc(100% - 8px);
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 40px; 
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 1;
+            /* Viền phát sáng nhẹ */
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.05);
+            pointer-events: none;
+            opacity: 0; /* Mặc định ẩn, sẽ hiện qua JS */
         }
 
         /* =================================================
-        PROJECT GRID - SMOOTH REVEAL
+        PROJECT GRID - ULTRA SMOOTH REVEAL
         ================================================= */
         .grid { 
             display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; 
-            transition: all 0.5s ease;
         }
 
         .project { 
-            position: relative; overflow: hidden; border-radius: 16px; aspect-ratio: 1 / 1; background: #111; 
-            opacity: 0; transform: translateY(20px) scale(0.98);
-            transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 1, 0.2, 1);
+            position: relative; overflow: hidden; border-radius: 16px; aspect-ratio: 1 / 1; 
+            background: #111; opacity: 0; transform: translateY(15px);
+            /* Chuyển động mượt mà hơn */
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
+                        transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        /* Class để kích hoạt hiệu ứng hiện ảnh mượt */
-        .project.is-visible { opacity: 1; transform: translateY(0) scale(1); }
+
+        .project.is-visible { opacity: 1; transform: translateY(0); }
 
         .project img { 
             width: 100%; height: 100%; object-fit: cover; display: block; 
-            transition: 1s cubic-bezier(0.2, 1, 0.2, 1);
-            will-change: transform, filter;
+            transition: 1.2s cubic-bezier(0.2, 1, 0.2, 1);
         }
 
-        /* CENTER HOVER */
-        .project:hover img { transform: scale(1.08); filter: brightness(0.3) blur(3px); }
+        /* CENTER HOVER EFFECT */
+        .project:hover img { transform: scale(1.05); filter: brightness(0.25) blur(4px); }
         .project-title {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%);
             width: 80%; text-align: center; font-size: 13px; font-weight: 400; color: #fff;
-            letter-spacing: 2px; text-transform: uppercase; opacity: 0;
-            transition: 0.5s cubic-bezier(0.2, 1, 0.2, 1); z-index: 2; pointer-events: none;
+            letter-spacing: 2.5px; text-transform: uppercase; opacity: 0;
+            transition: 0.6s cubic-bezier(0.2, 1, 0.2, 1); z-index: 2; pointer-events: none;
         }
         .project:hover .project-title { opacity: 1; transform: translate(-50%, -50%); }
 
         /* =================================================
-        ABOUT SECTION
+        ABOUT & OTHERS
         ================================================= */
-        .about { max-width: 850px; }
-        .about h2 { font-size: 19px; margin-bottom: 15px; font-weight: 500; color: #fff; }
-        .about-intro { 
-            color: #aaa; font-size: 15px; margin-bottom: 35px; font-weight: 300; 
-            text-align: left; max-width: 750px; hyphens: auto;
-        }
-        .about-intro strong { color: #eee; font-weight: 400; }
-
-        .about-highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 40px; }
-        .highlight-title { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: #555; margin-bottom: 8px; }
-        .highlight-text { color: #bbb; font-size: 13px; font-weight: 300; line-height: 1.6; }
-
-        .skills { display: flex; flex-wrap: wrap; gap: 10px; }
-        .skill {
-            border: 1px solid #222; padding: 6px 16px; font-size: 11px;
-            border-radius: 30px; background: #111; color: #777; transition: 0.3s;
-        }
-
-        .contact-links { display: flex; flex-wrap: wrap; gap: 35px; }
-        .contact a { color: #555; text-decoration: none; font-size: 12px; transition: 0.3s; letter-spacing: 1px; }
-        .contact a:hover { color: #fff; }
-
-        footer { padding: 40px 12%; color: #333; font-size: 10px; border-top: 1px solid #1a1a1a; margin-top: 30px; }
-
-        .fade { opacity: 0; transform: translateY(15px); transition: 0.7s ease-out; }
+        .about-intro { color: #aaa; font-size: 15px; text-align: left; max-width: 750px; }
+        .fade { opacity: 0; transform: translateY(15px); transition: 0.8s ease-out; }
         .fade.show { opacity: 1; transform: translateY(0); }
+        
+        footer { padding: 40px 12%; color: #333; font-size: 10px; border-top: 1px solid #1a1a1a; margin-top: 30px; }
     </style>
 </head>
 
@@ -149,80 +135,65 @@
     <div class="hero-note">Selected Work</div>
 
     <section class="section about fade">
-        <h2>About</h2>
+        <h2 style="font-size: 19px; font-weight: 500; color: #fff;">About</h2>
         <div class="about-intro">
-            I am <strong>Nghia Le</strong>, a Senior 3D Artist with over 7 years of professional experience specializing in <strong>Product Visualization</strong> and <strong>Hard Surface Modeling</strong>. 
-            With a solid background in Information Technology, I focus on <strong>Workflow Optimization</strong> and building efficient 3D production systems. 
-            Having served as a <strong>Team Leader</strong> at Loft3DI, I am dedicated to technical precision and premium aesthetics.
-        </div>
-
-        <div class="about-highlights">
-            <div>
-                <div class="highlight-title">Experience</div>
-                <div class="highlight-text">• Team Leader at Loft3DI (2021-Present)<br>• Mentor at Cennos (2018-2021)</div>
-            </div>
-            <div>
-                <div class="highlight-title">Focus</div>
-                <div class="highlight-text">• High-end Furniture Visuals<br>• Workflow Automation</div>
-            </div>
-            <div>
-                <div class="highlight-title">Technical</div>
-                <div class="highlight-text">• 3ds Max, Blender, Substance, V-Ray<br>• Bachelor of IT from HUBT</div>
-            </div>
-        </div>
-
-        <div class="skills">
-            <div class="skill">3ds Max</div><div class="skill">Blender</div><div class="skill">Substance</div><div class="skill">V-Ray</div>
+            I am <strong>Nghia Le</strong>, a Senior 3D Artist with over 7 years of professional experience specializing in <strong>Product Visualization</strong>. 
+            With an IT background, I focus on <strong>Workflow Optimization</strong>. Former <strong>Team Leader</strong> at Loft3DI.
         </div>
     </section>
 
     <section class="section fade">
         <div class="filter-container">
             <div class="filter" id="filterBar">
-                <div class="tab-bg" id="tabBg"></div>
+                <div class="tab-indicator" id="tabIndicator"></div>
                 </div>
         </div>
         <div class="grid" id="projectGrid"></div>
     </section>
 
-    <section class="section contact fade">
-        <h2>Contact</h2>
-        <div class="contact-links">
-            <a href="mailto:nghiale.f.lab@gmail.com">Email</a>
-            <a href="#" target="_blank">ArtStation</a>
-            <a href="#" target="_blank">LinkedIn</a>
-        </div>
-    </section>
-
     <footer>© NL F.Lab – 2026</footer>
 
     <script>
-        // Xử lý Reveal hiệu ứng cuộn trang
+        // Xử lý Reveal chung
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add("show"); });
         }, { threshold: 0.1 });
         document.querySelectorAll(".fade").forEach(el => observer.observe(el));
 
-        // Hàm hỗ trợ di chuyển Tab Background (kiểu Apple)
-        function moveTabBg(el) {
-            const bg = document.getElementById('tabBg');
-            if(el && bg) {
-                bg.style.width = el.offsetWidth + 'px';
-                bg.style.left = el.offsetLeft + 'px';
+        // HÀM ĐIỀU KHIỂN TAB (Sẽ gọi trong loadproduct.js của ông)
+        function updateTabIndicator(activeBtn) {
+            const indicator = document.getElementById('tabIndicator');
+            if (activeBtn && indicator) {
+                indicator.style.opacity = "1";
+                indicator.style.width = activeBtn.offsetWidth + 'px';
+                indicator.style.left = activeBtn.offsetLeft + 'px';
             }
         }
 
-        // Tự động kích hoạt hiệu ứng xuất hiện cho ảnh khi chúng được load vào Grid
+        // Theo dõi Grid để tạo hiệu ứng xuất hiện ảnh tịnh tiến (Stagger)
         const gridObserver = new MutationObserver(() => {
             const projects = document.querySelectorAll('.project');
             projects.forEach((proj, index) => {
+                // Xóa class cũ để trigger lại animation nếu đổi tab
+                proj.classList.remove('is-visible'); 
                 setTimeout(() => {
                     proj.classList.add('is-visible');
-                }, index * 100); // Hiện từng cái một cực mượt
+                }, index * 80); // Mỗi ảnh cách nhau 80ms, tạo cảm giác lướt rất nhẹ nhàng
             });
+
+            // Cập nhật vị trí indicator khi tab active thay đổi
+            const activeTab = document.querySelector('.filter-btn.active');
+            if(activeTab) updateTabIndicator(activeTab);
         });
 
         gridObserver.observe(document.getElementById('projectGrid'), { childList: true });
+
+        // Lắng nghe click để di chuyển indicator ngay lập tức
+        document.getElementById('filterBar').addEventListener('click', (e) => {
+            if(e.target.classList.contains('filter-btn')) {
+                updateTabIndicator(e.target);
+            }
+        });
     </script>
     <script src="js/loadproduct.js"></script>
 </body>
