@@ -31,12 +31,21 @@
     .hero-section .img-wrapper{ width:50%; margin: 0 auto; }
     .image-section{ display:grid; grid-template-columns:1fr 1fr; gap:40px; }
 
-    /* IMAGE WRAPPER - VIỀN SÁNG TINH TẾ */
-    .img-wrapper{ 
-        position:relative; border-radius:20px; line-height:0; cursor:zoom-in; 
-        background:transparent; 
-        transition: box-shadow .4s ease, outline .4s ease;
-        outline: 1px solid rgba(255,255,255,0);
+/* =========================================
+   SỬA VIỀN TRON MƯỢT VÀ NỔI
+   ========================================= */
+
+/* 1. Trạng thái bình thường: Chỉnh lại Transition */
+.img-wrapper { 
+    position:relative; border-radius:20px; line-height:0; cursor:zoom-in; 
+    background:transparent; 
+    
+    /* CHỈNH LẠI TRANSITION: Sửa tất cả thuộc tính, bao gồm cả outline-width */
+    transition: box-shadow .5s cubic-bezier(0.16, 1, 0.3, 1), 
+                outline .5s cubic-bezier(0.16, 1, 0.3, 1);
+    
+    /* Mặc định là viền Cyan mỏng */
+    outline: 1px solid rgba(0, 255, 255, 0); 
     }
     
     .img-wrapper img{ 
@@ -45,10 +54,13 @@
         filter: brightness(1); /* Đồng nhất độ sáng */
     }
 
-    /* Tùy chọn 1: Xanh Cyan Tron */
-    .img-wrapper:hover {
-        outline: 2px solid rgba(0, 255, 255, 0.6); /* Sáng nét hơn */
-        box-shadow: 0 0 25px rgba(0, 255, 255, 0.2); /* Glow nhẹ bao quanh */
+    /* 2. Trạng thái Hover: Viền dày, Glow rộng */
+    .img-wrapper:hover { 
+        /* Viền Cyan nét, dày 3px để nổi trên ảnh trắng */
+        outline: 3px solid rgba(0, 255, 255, 0.6); 
+    
+        /* Glow rộng, mờ sâu để tạo cảm giác nổi */
+        box-shadow: 0 0 35px rgba(0, 255, 255, 0.25); 
     }
 
     /* CAPTION */
