@@ -3,55 +3,67 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>NL F.Lab — Premium Portfolio</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <title>NL F.Lab – 3D Artist Portfolio</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         /* ================================
-        GLOBAL & BACKGROUND (AO EFFECT)
+        GLOBAL STYLE
         ================================ */
         body {
             margin: 0; background: radial-gradient(circle at 50% 0%, #161616 0%, #0a0a0a 100%);
-            color: #e5e5e5; font-family: 'Inter', sans-serif; line-height: 1.6;
+            color: #e5e5e5; font-family: 'Inter', sans-serif;
+            line-height: 1.6; letter-spacing: 0.02em;
             -webkit-font-smoothing: antialiased; min-height: 100vh;
         }
 
         .section { padding: 40px 12%; }
 
         /* ================================
-        HEADER & LOGO
+        HEADER & LOGO (FIXED)
         ================================ */
-        .header-nav {
-            padding: 60px 12% 20px 12%;
-            display: flex; align-items: center; gap: 30px;
+        header { padding: 100px 12% 20px 12%; position: relative; overflow: hidden; }
+        header::before {
+            content: ""; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+            width: 800px; height: 800px; background: radial-gradient(circle, rgba(255,255,255,0.06), transparent 60%);
+            filter: blur(80px); pointer-events: none;
         }
 
-        .logo-container {
-            width: 80px; height: 80px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);
-            display: flex; align-items: center; justify-content: center;
-            overflow: hidden;
-        }
-
-        .logo-container img {
-            width: 80%; height: 80%; object-fit: contain;
-        }
-
-        .hero-info h1 {
-            font-family: 'Syncopate', sans-serif; font-size: 42px; font-weight: 700;
+        .brand { display: flex; align-items: center; gap: 24px; }
+        .logo { width: 90px; height: 90px; object-fit: contain; }
+        
+        .hero-text h1 { 
+            font-family: 'Syncopate', sans-serif; font-size: 42px; font-weight: 700; 
             letter-spacing: -2px; margin: 0; color: #fff; text-transform: uppercase;
         }
-        .hero-info p { color: #888; font-size: 16px; margin: 2px 0 0 0; font-weight: 300; }
+        .subtitle { font-size: 18px; color: #888; font-weight: 300; margin: 2px 0; }
+        .hero-role { font-size: 10px; color: #444; letter-spacing: 4px; text-transform: uppercase; font-weight: 700; }
+
+        .hero-divider {
+            width: 100px; height: 1px; margin: 30px auto 15px auto;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
+        }
+        .hero-note { text-align: center; font-size: 10px; letter-spacing: 3px; color: #444; text-transform: uppercase; margin-bottom: 20px; }
 
         /* ================================
-        ABOUT SECTION (TRÊN GRID)
+        ABOUT SECTION (OPTIMIZED)
         ================================ */
-        .about-headline { font-size: 24px; font-weight: 300; color: #ccc; max-width: 800px; margin-bottom: 30px; }
-        .about-headline strong { color: #fff; font-weight: 500; }
+        .about { max-width: 900px; }
+        .about h2 { font-size: 14px; letter-spacing: 3px; color: #555; text-transform: uppercase; margin-bottom: 20px; }
+        .about-intro { color: #aaa; font-size: 16px; margin-bottom: 35px; font-weight: 300; text-align: left; max-width: 800px; }
+        .about-intro strong { color: #fff; font-weight: 500; }
+
+        .about-highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-bottom: 40px; }
+        .highlight-title { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: #555; margin-bottom: 8px; }
+        .highlight-text { color: #bbb; font-size: 13px; font-weight: 300; line-height: 1.6; }
+
+        .skills { display: flex; flex-wrap: wrap; gap: 10px; }
+        .skill { border: 1px solid #222; padding: 6px 16px; font-size: 11px; border-radius: 30px; color: #666; transition: 0.3s; }
 
         /* ================================
-        LIQUID GLASS TAB (FIXED CONTEXT)
+        LIQUID TAB (RE-DESIGNED)
         ================================ */
         .filter-wrapper { margin: 40px 0; }
         .filter {
@@ -60,75 +72,108 @@
             border-radius: 50px; border: 1px solid rgba(255,255,255,0.05);
             backdrop-filter: blur(15px);
         }
-
         .liquid {
             position: absolute; top: 4px; left: 4px;
             height: calc(100% - 8px); background: #fff;
             border-radius: 40px; transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
             z-index: 1;
         }
-
         .tab {
-            border: none; background: none; color: #666;
-            padding: 12px 25px; cursor: pointer; font-size: 10px;
+            border: none; background: none; color: #555;
+            padding: 12px 28px; cursor: pointer; font-size: 10px;
             letter-spacing: 2px; text-transform: uppercase; font-weight: 600;
             position: relative; z-index: 2; transition: color 0.4s;
         }
-
         .tab.active { color: #000; }
 
         /* ================================
-        GRID & PROJECT (SYNC WITH JS)
-        ================================ */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 30px; min-height: 400px;
-        }
-
-        /* Đây là cấu trúc mà loadproduct.js của ông sẽ đổ vào */
+        PROJECT GRID & TILT EFFECT
+        =============================== */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 40px; }
         .project-card { perspective: 1000px; opacity: 0; transform: translateY(20px); transition: 0.6s; }
         .project-card.show { opacity: 1; transform: translateY(0); }
 
         .project {
-            position: relative; overflow: hidden; border-radius: 16px;
+            position: relative; overflow: hidden; border-radius: 20px;
             aspect-ratio: 1/1; background: #111; transform-style: preserve-3d;
             transition: transform 0.1s ease-out;
         }
-
-        .project img { width: 100%; height: 100%; object-fit: cover; display: block; transition: 0.5s; }
-        .project:hover img { transform: scale(1.1); filter: brightness(0.3) blur(4px); }
+        .project img { width: 100%; height: 100%; object-fit: cover; display: block; transition: 0.5s; pointer-events: none; }
+        .project:hover img { transform: scale(1.1); filter: brightness(0.25) blur(5px); }
 
         .project-title {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%) translateZ(50px);
-            width: 80%; text-align: center; font-size: 12px; color: #fff;
-            letter-spacing: 2px; text-transform: uppercase; opacity: 0;
+            width: 85%; text-align: center; font-size: 13px; font-weight: 500; color: #fff;
+            letter-spacing: 3px; text-transform: uppercase; opacity: 0;
             transition: 0.4s ease; pointer-events: none;
         }
         .project:hover .project-title { opacity: 1; transform: translate(-50%, -50%) translateZ(80px); }
 
-        footer { padding: 40px 12%; border-top: 1px solid #1a1a1a; font-size: 10px; color: #333; margin-top: 60px; }
+        /* ================================
+        CONTACT & FOOTER
+        ================================ */
+        .contact h2 { font-size: 14px; letter-spacing: 3px; color: #555; text-transform: uppercase; margin-bottom: 20px; }
+        .contact-links { display: flex; gap: 40px; }
+        .contact a { color: #555; text-decoration: none; font-size: 12px; transition: 0.3s; letter-spacing: 2px; text-transform: uppercase; }
+        .contact a:hover { color: #fff; }
+
+        footer { padding: 40px 12%; color: #222; font-size: 9px; border-top: 1px solid #1a1a1a; margin-top: 60px; letter-spacing: 2px; }
+
+        .fade { opacity: 0; transform: translateY(20px); transition: 0.8s ease-out; }
+        .fade.show { opacity: 1; transform: translateY(0); }
     </style>
 </head>
 
 <body>
-
-    <header class="header-nav">
-        <div class="logo-container">
-            <img src="images/logo.png" alt="NL F.Lab Logo">
-        </div>
-        <div class="hero-info">
-            <h1>NL F.Lab</h1>
-            <p>3D Visualization & Product Design</p>
+    <header>
+        <div class="brand">
+            <img src="images/logo.png" class="logo" alt="NL F.Lab">
+            <div class="hero-text">
+                <h1>NL F.Lab</h1>
+                <div class="subtitle">3D Artist Studio</div>
+                <div class="hero-role">Precision & Aesthetics</div>
+            </div>
         </div>
     </header>
 
-    <section class="section">
-        <div class="about-headline">
-            I am <strong>Nghia Le</strong>, a Senior 3D Artist and <strong>Team Leader</strong>. 
-            Focusing on <strong>Technical Precision</strong> and premium aesthetics in product visualization.
+    <div class="hero-divider"></div>
+    <div class="hero-note">Selected Work</div>
+
+    <section class="section about fade">
+        <h2>About</h2>
+        <div class="about-intro">
+            I am <strong>Nghia Le</strong>, a Senior 3D Artist with over <strong>7 years of experience</strong> specializing in <strong>Product Visualization</strong> and <strong>Hard Surface Modeling</strong>. 
+            With a background in <strong>IT</strong>, I focus on <strong>Workflow Optimization</strong> and building efficient production systems. 
+            Having served as a <strong>Team Leader at Loft3DI</strong>, I bridge technical precision with premium aesthetics.
         </div>
 
+        <div class="about-highlights">
+            <div>
+                <div class="highlight-title">Professional Experience</div>
+                <div class="highlight-text">
+                    • <strong>Senior 3D Modeler & Lead</strong> at Loft3DI (2021-Present)<br>
+                    • <strong>3D Mentor & Trainer</strong> at Cennos Software (2018-2021)
+                </div>
+            </div>
+            <div>
+                <div class="highlight-title">Core Expertise</div>
+                <div class="highlight-text">
+                    • High-end Furniture & Product Visuals<br>
+                    • Workflow Automation & Tool Development
+                </div>
+            </div>
+        </div>
+
+        <div class="skills">
+            <div class="skill">3ds Max</div>
+            <div class="skill">Blender</div>
+            <div class="skill">Substance</div>
+            <div class="skill">V-Ray</div>
+            <div class="skill">System Thinking</div>
+        </div>
+    </section>
+
+    <section class="section fade">
         <div class="filter-wrapper">
             <div class="filter" id="tabs">
                 <div class="liquid" id="liquid"></div>
@@ -138,14 +183,23 @@
                 <button class="tab" data-filter="props">Props</button>
             </div>
         </div>
-
+        
         <div class="grid" id="projectGrid"></div>
     </section>
 
-    <footer>© 2026 NL F.LAB — INDEPENDENT 3D STUDIO</footer>
+    <section class="section contact fade">
+        <h2>Contact</h2>
+        <div class="contact-links">
+            <a href="mailto:nghiale.f.lab@gmail.com">Email</a>
+            <a href="#" target="_blank">ArtStation</a>
+            <a href="#" target="_blank">LinkedIn</a>
+        </div>
+    </section>
+
+    <footer>© NL F.LAB — INDEPENDENT 3D STUDIO — 2026</footer>
 
     <script>
-        /* 1. LIQUID TAB LOGIC (Hỗ trợ cả Click & Window Resize) */
+        /* 1. Liquid Tab Interaction */
         const tabs = document.querySelectorAll(".tab");
         const liquid = document.getElementById("liquid");
 
@@ -160,15 +214,15 @@
                 this.classList.add("active");
                 moveLiquid(this);
                 
-                // Gửi sự kiện filter cho file loadproduct.js nếu nó cần
+                // Liên kết với hàm filter của ông (nếu loadproduct.js có hàm filterSelection)
                 if (typeof filterSelection === "function") {
                     filterSelection(this.getAttribute("data-filter"));
                 }
             });
         });
 
-        /* 2. PREMIUM TILT EFFECT (Khởi tạo cho các phần tử động) */
-        function applyTiltEffect() {
+        /* 2. Premium Tilt Effect (Khởi tạo sau khi JS load xong ảnh) */
+        function initTilt() {
             const cards = document.querySelectorAll('.project');
             cards.forEach(card => {
                 card.addEventListener('mousemove', (e) => {
@@ -185,10 +239,16 @@
             });
         }
 
+        /* 3. Reveal Animation */
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { if(e.isIntersecting) e.target.classList.add("show"); });
+        }, { threshold: 0.1 });
+
         window.addEventListener("load", () => {
             moveLiquid(document.querySelector(".tab.active"));
-            // Đợi 1 chút để loadproduct.js render xong ảnh rồi mới apply hiệu ứng
-            setTimeout(applyTiltEffect, 600);
+            document.querySelectorAll(".fade").forEach(el => observer.observe(el));
+            // Đợi loadproduct.js render xong rồi kích hoạt Tilt
+            setTimeout(initTilt, 600);
         });
     </script>
 
