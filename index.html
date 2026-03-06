@@ -9,153 +9,115 @@
 
     <style>
         /* =================================================
-        GLOBAL STYLE - MỀM MẠI & SANG TRỌNG
+        GLOBAL STYLE
         ================================================= */
         body {
             margin: 0; background: #0f0f0f; color: #e5e5e5;
             font-family: 'Inter', -apple-system, sans-serif;
-            letter-spacing: 0.5px; line-height: 1.7;
+            letter-spacing: 0.5px; line-height: 1.6;
             -webkit-font-smoothing: antialiased;
         }
 
-        header { padding: 100px 12% 40px 12%; position: relative; overflow: hidden; }
+        /* THU GỌN HEADER */
+        header { padding: 80px 12% 20px 12%; position: relative; overflow: hidden; }
         header::before {
             content: ""; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
             width: 800px; height: 800px; background: radial-gradient(circle, rgba(255,255,255,0.06), transparent 60%);
             filter: blur(80px); pointer-events: none;
         }
 
-        .brand { display: flex; align-items: flex-start; gap: 24px; margin-bottom: 8px; }
+        .brand { display: flex; align-items: flex-start; gap: 24px; margin-bottom: 5px; }
         .logo { width: 100px; height: 100px; object-fit: contain; margin-top: 15px; }
-        h1 { font-size: 42px; font-weight: 400; letter-spacing: -0.5px; margin: 0; color: #fff; }
-        .subtitle { font-size: 18px; color: #aaa; font-weight: 300; margin: 0; }
-        .hero-role { margin-top: 4px; font-size: 12px; color: #666; letter-spacing: 3px; text-transform: uppercase; }
+        h1 { font-size: 40px; font-weight: 400; letter-spacing: -0.5px; margin: 0; color: #fff; }
+        .subtitle { font-size: 17px; color: #aaa; font-weight: 300; margin: 0; }
+        .hero-role { margin-top: 4px; font-size: 11px; color: #555; letter-spacing: 3px; text-transform: uppercase; }
 
+        /* TỐI ƯU KHOẢNG CÁCH SELECTED WORK */
         .hero-divider {
-            width: 120px; height: 1px; margin: 50px auto;
+            width: 100px; height: 1px; margin: 25px auto 15px auto; /* Thu hẹp margin cực gọn */
             background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
         }
 
         .hero-note {
-            text-align: center; font-size: 11px; letter-spacing: 3px; color: #555;
-            margin-bottom: 40px; text-transform: uppercase;
+            text-align: center; font-size: 10px; letter-spacing: 3px; color: #444;
+            margin-bottom: 20px; text-transform: uppercase; /* Giảm margin bottom */
         }
 
-        .section { padding: 50px 12%; }
+        /* THU GỌN KHOẢNG CÁCH GIỮA CÁC PHẦN */
+        .section { padding: 30px 12%; } /* Giảm từ 50px xuống 30px */
 
         /* =================================================
-        ABOUT SECTION - ENGLISH CONTENT FROM CV
+        ABOUT SECTION - CONTENT FROM CV
         ================================================= */
         .about { max-width: 850px; }
-        .about h2 { font-size: 20px; margin-bottom: 25px; font-weight: 500; color: #fff; }
-        .about-intro { color: #aaa; font-size: 16px; margin-bottom: 45px; font-weight: 300; text-align: justify; }
+        .about h2 { font-size: 19px; margin-bottom: 15px; font-weight: 500; color: #fff; }
+        .about-intro { color: #aaa; font-size: 15px; margin-bottom: 35px; font-weight: 300; text-align: justify; }
         .about-intro strong { color: #eee; font-weight: 400; }
         
-        .about-highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 50px; }
-        .highlight-title { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #555; margin-bottom: 10px; }
-        .highlight-text { color: #bbb; font-size: 14px; font-weight: 300; line-height: 1.6; }
+        .about-highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 40px; }
+        .highlight-title { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: #555; margin-bottom: 8px; }
+        .highlight-text { color: #bbb; font-size: 13px; font-weight: 300; line-height: 1.5; }
 
-        .skills { display: flex; flex-wrap: wrap; gap: 12px; }
+        .skills { display: flex; flex-wrap: wrap; gap: 10px; }
         .skill {
-            border: 1px solid #222; padding: 7px 18px; font-size: 12px;
-            border-radius: 30px; background: #111; color: #888; transition: 0.3s;
+            border: 1px solid #222; padding: 6px 16px; font-size: 11px;
+            border-radius: 30px; background: #111; color: #777; transition: 0.3s;
         }
         .skill:hover { border-color: #555; color: #fff; }
 
         /* =================================================
-        TAB FILTER - MỀM MẠI, GIẢM PHÁT SÁNG
+        TAB FILTER - TIẾT CHẾ ÁNH SÁNG
         ================================================= */
-        .filter { margin-bottom: 50px; display: flex; flex-wrap: wrap; gap: 12px; }
+        .filter { margin-bottom: 40px; display: flex; flex-wrap: wrap; gap: 10px; }
         .filter-btn {
-            background: transparent; border: none; color: #555; font-size: 12px;
-            cursor: pointer; padding: 10px 22px; border-radius: 8px; transition: all 0.4s ease;
+            background: transparent; border: none; color: #555; font-size: 11px;
+            cursor: pointer; padding: 8px 20px; border-radius: 8px; transition: all 0.4s ease;
             text-transform: uppercase; letter-spacing: 1.5px; position: relative;
         }
         .filter-btn:hover { color: #888; }
-        
         .filter-btn.active {
-            color: #fff;
-            background: rgba(255,255,255,0.02);
-            /* Giảm bóng đổ phát sáng (0.3 -> 0.15) */
-            box-shadow: inset 0 -2px 0 0 #fff, 0 5px 15px -5px rgba(255,255,255,0.15);
+            color: #fff; background: rgba(255,255,255,0.02);
+            box-shadow: inset 0 -2px 0 0 #fff, 0 5px 15px -5px rgba(255,255,255,0.1);
         }
-        
         .filter-btn.active::before {
             content: ""; position: absolute; inset: 0; border-radius: 8px; padding: 1px; 
-            /* Giảm độ đậm của viền gradient */
-            background: linear-gradient(to bottom, transparent 40%, rgba(255,255,255,0.05) 70%, rgba(255,255,255,0.4) 100%);
+            background: linear-gradient(to bottom, transparent 50%, rgba(255,255,255,0.3) 100%);
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
         }
 
         /* =================================================
-        PROJECT GRID - CENTER HOVER EFFECT
+        PROJECT GRID - CENTER HOVER
         ================================================= */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 35px;
-        }
-
-        .project { 
-            position: relative; 
-            overflow: hidden; 
-            border-radius: 16px; 
-            aspect-ratio: 1 / 1; 
-            background: #000;
-        }
-
-        .project img {
-            width: 100%; height: 100%; object-fit: cover; display: block;
-            transition: 0.8s cubic-bezier(0.2, 1, 0.2, 1);
-        }
-
-        /* Tiêu đề hiển thị ở CHÍNH GIỮA */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
+        .project { position: relative; overflow: hidden; border-radius: 16px; aspect-ratio: 1 / 1; background: #000; }
+        .project img { width: 100%; height: 100%; object-fit: cover; display: block; transition: 0.8s cubic-bezier(0.2, 1, 0.2, 1); }
         .project-title {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -40%); /* Căn giữa nhưng hơi lệch dưới xíu để trồi lên khi hover */
-            width: 80%;
-            text-align: center;
-            font-size: 14px;
-            font-weight: 400;
-            color: #fff;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            opacity: 0;
-            transition: 0.5s cubic-bezier(0.2, 1, 0.2, 1);
-            z-index: 2;
-            pointer-events: none;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%);
+            width: 80%; text-align: center; font-size: 13px; font-weight: 400; color: #fff;
+            letter-spacing: 2px; text-transform: uppercase; opacity: 0;
+            transition: 0.5s cubic-bezier(0.2, 1, 0.2, 1); z-index: 2; pointer-events: none;
         }
-
-        /* Hiệu ứng di chuột: Ảnh tối + mờ + chữ hiện giữa */
-        .project:hover img { 
-            transform: scale(1.08); 
-            filter: brightness(0.3) blur(2px); /* Tối và mờ nhẹ ảnh */
-        }
-        
-        .project:hover .project-title { 
-            opacity: 1; 
-            transform: translate(-50%, -50%); /* Trồi lên đúng tâm */
-        }
+        .project:hover img { transform: scale(1.08); filter: brightness(0.3) blur(2px); }
+        .project:hover .project-title { opacity: 1; transform: translate(-50%, -50%); }
 
         /* =================================================
         CONTACT & FOOTER
         ================================================= */
-        .contact h2 { font-size: 20px; margin-bottom: 25px; font-weight: 500; }
-        .contact-links { display: flex; flex-wrap: wrap; gap: 40px; }
-        .contact a { color: #666; text-decoration: none; font-size: 13px; transition: 0.3s; letter-spacing: 1px; }
+        .contact h2 { font-size: 19px; margin-bottom: 20px; font-weight: 500; }
+        .contact-links { display: flex; flex-wrap: wrap; gap: 35px; }
+        .contact a { color: #555; text-decoration: none; font-size: 12px; transition: 0.3s; letter-spacing: 1px; }
         .contact a:hover { color: #fff; }
 
-        footer { padding: 60px 12%; color: #333; font-size: 11px; border-top: 1px solid #1a1a1a; margin-top: 40px; }
+        footer { padding: 40px 12%; color: #333; font-size: 10px; border-top: 1px solid #1a1a1a; margin-top: 30px; }
 
-        .fade { opacity: 0; transform: translateY(20px); transition: 0.8s ease-out; }
+        .fade { opacity: 0; transform: translateY(15px); transition: 0.7s ease-out; }
         .fade.show { opacity: 1; transform: translateY(0); }
 
         @media (max-width: 768px) {
-            header { padding: 80px 8%; }
-            .section { padding: 40px 8%; }
+            header { padding: 60px 8% 20px 8%; }
+            .section { padding: 30px 8%; }
             .grid { grid-template-columns: 1fr; }
         }
     </style>
@@ -196,14 +158,13 @@
                 <div class="highlight-title">Core Focus</div>
                 <div class="highlight-text">
                     • High-end Furniture & Product Visuals<br>
-                    • Workflow Automation & Tool Implementation<br>
-                    • Team Mentoring & Quality Control
+                    • Workflow Automation & Tool Implementation
                 </div>
             </div>
             <div>
                 <div class="highlight-title">Technical Expertise</div>
                 <div class="highlight-text">
-                    • 3ds Max, Blender, Substance, V-Ray, Photoshop<br>
+                    • 3ds Max, Blender, Substance, V-Ray<br>
                     • Bachelor of IT from HUBT
                 </div>
             </div>
