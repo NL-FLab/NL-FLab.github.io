@@ -30,38 +30,34 @@ h1{ font-weight:300; font-size:clamp(26px,4vw,36px); margin:10px 0 40px 0; color
 .hero-section{ margin-bottom:60px; display:flex; justify-content:center; }
 .hero-section .img-wrapper{ width:50%; margin:0 auto; }
 
-/* IMAGE WRAPPER */
-.img-wrapper{ position:relative; overflow:hidden; border-radius:20px; line-height:0; cursor:zoom-in; background:#111; }
-.img-wrapper img{ 
-    width:100%; height:auto; 
-    /* Giữ scale mặc định để JS Parallax tính toán dựa trên này */
-    transition: filter .8s ease, transform 0.1s linear; 
-}
+/* IMAGE WRAPPER - ĐÃ BỎ CẮT ẢNH */
+.img-wrapper{ position:relative; border-radius:20px; line-height:0; cursor:zoom-in; background:transparent; transition: transform 0.6s cubic-bezier(.16,1,.3,1); }
+.img-wrapper img{ width:100%; height:auto; border-radius:20px; transition: filter .6s ease; }
 
-/* Tách riêng hiệu ứng Zoom Hover để không bị JS Parallax ghi đè hoàn toàn */
-.img-wrapper:hover img{ filter:brightness(1.08) contrast(1.05); }
+/* Hiệu ứng hover nhẹ nhàng không làm biến dạng khung */
+.img-wrapper:hover{ transform: scale(1.02); }
+.img-wrapper:hover img{ filter: brightness(1.1); }
 
 /* CAPTION */
 .img-caption{
-    position:absolute; bottom:24px; left:24px; font-size:10px; font-weight:300; color:rgba(255,255,255,.95);
+    position:absolute; bottom:20px; left:20px; font-size:10px; font-weight:300; color:rgba(255,255,255,.95);
     text-transform:uppercase; letter-spacing:3px; background:rgba(255,255,255,.03);
     backdrop-filter:blur(15px) saturate(160%); -webkit-backdrop-filter:blur(15px) saturate(160%);
-    padding:10px 22px; border-radius:2px; border:1px solid rgba(255,255,255,.1);
-    opacity:0; transform:translateY(15px); transition:all .6s cubic-bezier(.16,1,.3,1); z-index: 5;
+    padding:8px 18px; border-radius:2px; border:1px solid rgba(255,255,255,.1);
+    opacity:0; transform:translateY(10px); transition:all .5s cubic-bezier(.16,1,.3,1); z-index: 5;
 }
 .img-wrapper:hover .img-caption{ opacity:1; transform:translateY(0); }
 
 /* GRID REVEAL */
 .image-section{ display:grid; grid-template-columns:1fr 1fr; gap:40px; }
-.image-section .img-wrapper{ opacity:0; transform:translateY(40px); transition: opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1); }
+.image-section .img-wrapper{ opacity:0; transform:translateY(30px); transition: opacity .8s ease, transform .8s cubic-bezier(.22,1,.36,1); }
 .image-section .img-wrapper.reveal{ opacity:1; transform:translateY(0); }
 
-/* DIVIDER */
 .section-divider{ width:150px; height:1px; margin:80px auto; background:radial-gradient(circle,rgba(255,255,255,.4),rgba(255,255,255,0)); }
 
 /* LIGHTBOX */
-#lightbox{ position:fixed; inset:0; background:rgba(0,0,0,0); z-index:9999; pointer-events:none; transition:background .35s ease; }
-#lightbox.active{ background:rgba(0,0,0,.96); pointer-events:auto; }
+#lightbox{ position:fixed; inset:0; background:rgba(0,0,0,0); z-index:9999; pointer-events:none; transition:background .4s ease; }
+#lightbox.active{ background:rgba(0,0,0,.97); pointer-events:auto; }
 #zoom-img{ position:fixed; top:0; left:0; z-index:10000; object-fit:contain; border-radius:20px; display:none; pointer-events:none; will-change:transform; transform-origin:top left; }
 
 @media(max-width:850px){
@@ -147,8 +143,6 @@ async function loadProduct(){
         });
 
         initReveal();
-        initParallax();
-
         if(data.viewer?.enabled){
             document.getElementById("viewer").src=`viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
         }else{
@@ -157,38 +151,34 @@ async function loadProduct(){
     }catch(err){ console.error(err); }
 }
 
-/* FLIP ZOOM ENGINE */
 const lightbox=document.getElementById("lightbox");
 const zoomImg=document.getElementById("zoom-img");
 let activeOriginImg=null;
 let animating=false;
-const easing="cubic-bezier(.22,1,.36,1)";
+const easing="cubic-bezier(.28, .84, .42, 1)"; // Apple easing
 
 function openSmoothZoom(originImg){
     if(animating)return;
     activeOriginImg=originImg;
     const rect=originImg.getBoundingClientRect();
-    const startW=rect.width;
-    const startH=rect.height;
-
+    
     zoomImg.src=originImg.src;
     zoomImg.style.display="block";
-    zoomImg.style.width=startW+"px";
-    zoomImg.style.height=startH+"px";
+    zoomImg.style.width=rect.width+"px";
+    zoomImg.style.height=rect.height+"px";
     zoomImg.style.transform=`translate3d(${rect.left}px,${rect.top}px,0) scale(1)`;
     zoomImg.offsetHeight;
 
     const winW=window.innerWidth;
     const winH=window.innerHeight;
-    const imgRatio=startW/startH;
+    const imgRatio=rect.width/rect.height;
     const winRatio=winW/winH;
 
     let targetW,targetH;
     if(imgRatio>winRatio){ targetW=winW*.92; targetH=targetW/imgRatio; }
     else{ targetH=winH*.92; targetW=targetH*imgRatio; }
 
-    const scaleX=targetW/startW;
-    const scaleY=targetH/startH;
+    const scale=targetW/rect.width;
     const targetX=(winW-targetW)/2;
     const targetY=(winH-targetH)/2;
 
@@ -198,8 +188,8 @@ function openSmoothZoom(originImg){
     originImg.style.visibility="hidden";
 
     requestAnimationFrame(()=>{
-        zoomImg.style.transition=`transform .55s ${easing}`;
-        zoomImg.style.transform=`translate3d(${targetX}px,${targetY}px,0) scale(${scaleX},${scaleY})`;
+        zoomImg.style.transition=`transform .5s ${easing}`;
+        zoomImg.style.transform=`translate3d(${targetX}px,${targetY}px,0) scale(${scale})`;
     });
 }
 
@@ -207,7 +197,7 @@ function closeSmoothZoom(){
     if(!activeOriginImg||animating)return;
     animating=true;
     const rect=activeOriginImg.getBoundingClientRect();
-    zoomImg.style.transition=`transform .5s ${easing}`;
+    zoomImg.style.transition=`transform .45s ${easing}`;
     zoomImg.style.transform=`translate3d(${rect.left}px,${rect.top}px,0) scale(1)`;
     lightbox.classList.remove("active");
     setTimeout(()=>{
@@ -217,37 +207,20 @@ function closeSmoothZoom(){
         document.body.style.paddingRight="";
         activeOriginImg=null;
         animating=false;
-    },520);
+    },470);
 }
 
 lightbox.onclick=closeSmoothZoom;
 window.addEventListener("keydown",e=>{ if(e.key==="Escape") closeSmoothZoom(); });
 
-/* SCROLL REVEAL */
 function initReveal(){
-    const elements=document.querySelectorAll(".image-section .img-wrapper");
+    const elements=document.querySelectorAll(".img-wrapper");
     const observer=new IntersectionObserver(entries=>{
         entries.forEach(entry=>{
             if(entry.isIntersecting) entry.target.classList.add("reveal");
         });
-    },{threshold:.15});
+    },{threshold:.1});
     elements.forEach(el=>observer.observe(el));
-}
-
-/* APPLE PARALLAX - Fix Hover + Hero */
-function initParallax(){
-    window.addEventListener("scroll",()=>{
-        const images=document.querySelectorAll(".img-wrapper img");
-        images.forEach(img=>{
-            const rect=img.getBoundingClientRect();
-            // Chỉ chạy parallax khi ảnh nằm trong khung nhìn
-            if(rect.top < window.innerHeight && rect.bottom > 0){
-                const offset=rect.top/window.innerHeight;
-                // Kết hợp scale mặc định (1.035) để không bị giật khi hover
-                img.style.transform=`translateY(${offset*-20}px) scale(1.035)`;
-            }
-        });
-    });
 }
 
 loadProduct();
