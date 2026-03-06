@@ -6,71 +6,130 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <title>NL F.Lab | Portfolio Details</title>
     <style>
+        /* =================================================
+        GLOBAL STYLE
+        ================================================= */
         body {
             margin: 0; background: #0c0c0c; color: #e5e5e5;
             font-family: 'Inter', sans-serif; overflow-x: hidden; line-height: 1.6;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Khi khóa cuộn, vẫn giữ nguyên vị trí trang */
+        /* Khóa cuộn mượt mà */
         body.lock-scroll {
             overflow: hidden !important;
             height: 100vh;
         }
 
         .container { max-width: 1100px; margin: 0 auto; padding: 0 12% 80px 12%; }
-        .back { padding: 40px 12% 20px 12%; }
-        .back a { font-size: 10px; color: #555; text-decoration: none; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; }
-        .back a:hover { color: #fff; }
-        h1 { font-weight: 400; font-size: clamp(26px, 4vw, 36px); margin: 10px 0 40px 0; color: #fff; }
 
-        .top-section { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; margin-bottom: 80px; }
+        .back { padding: 40px 12% 20px 12%; }
+        .back a {
+            font-size: 10px; color: #555; text-decoration: none;
+            text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;
+        }
+        .back a:hover { color: #fff; }
+
+        h1 {
+            font-weight: 400; font-size: clamp(26px, 4vw, 36px);
+            margin: 10px 0 40px 0; letter-spacing: -0.01em; color: #fff;
+        }
+
+        /* TOP SECTION */
+        .top-section {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 80px; align-items: center; margin-bottom: 80px;
+        }
+
         .info { color: #888; font-size: 14px; font-weight: 300; }
-        .info strong { color: #fff; font-weight: 400; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; }
+        .info strong { 
+            color: #fff; font-weight: 400; display: block; 
+            margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
+        }
         #description { margin-bottom: 30px; }
+
         .tech-list { list-style: none; padding: 0; margin: 0; }
-        .tech-list li { padding: 8px 0; border-bottom: 1px solid #1a1a1a; font-size: 12px; display: flex; justify-content: space-between; }
+        .tech-list li {
+            padding: 8px 0; border-bottom: 1px solid #1a1a1a;
+            font-size: 12px; display: flex; justify-content: space-between;
+        }
         .tech-list li span { color: #444; text-transform: uppercase; font-size: 10px; }
         .tech-list li b { color: #aaa; font-weight: 400; }
-        .viewer iframe { width: 100%; aspect-ratio: 1/1; border: none; border-radius: 24px; background: #111; }
 
+        .viewer iframe {
+            width: 100%; aspect-ratio: 1/1; border: none; 
+            border-radius: 24px; background: #111; box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+        }
+
+        /* IMAGES & CAPTION */
         .hero-section { margin-bottom: 60px; display: flex; justify-content: center; }
-        .img-wrapper { position: relative; overflow: hidden; border-radius: 24px; line-height: 0; cursor: zoom-in; background: #111; }
-        .img-wrapper img { width: 100%; transition: transform 0.8s cubic-bezier(0.2, 1, 0.2, 1), filter 0.8s; }
+
+        .img-wrapper {
+            position: relative; overflow: hidden; border-radius: 24px; 
+            line-height: 0; cursor: zoom-in; background: #111;
+        }
+
+        .img-wrapper img {
+            width: 100%; height: auto;
+            transition: transform 0.6s cubic-bezier(0.2, 1, 0.2, 1), filter 0.6s;
+        }
+
         .hero-section .img-wrapper { width: 75%; }
 
+        /* Label với nền mờ kiểu Apple */
         .img-caption {
-            position: absolute; bottom: 15px; left: 15px; font-size: 9px; color: rgba(255,255,255,0.8);
-            text-transform: uppercase; letter-spacing: 1.2px; background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px); padding: 6px 16px; border-radius: 20px; min-width: 100px;
-            text-align: center; opacity: 0; transform: translateY(10px);
-            transition: all 0.5s cubic-bezier(0.2, 1, 0.2, 1); pointer-events: none; z-index: 2;
+            position: absolute; bottom: 15px; left: 15px;
+            font-size: 9px; color: rgba(255,255,255,0.8);
+            text-transform: uppercase; letter-spacing: 1.2px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            padding: 6px 16px; border-radius: 20px;
+            min-width: 100px; text-align: center;
+            opacity: 0; transform: translateY(10px);
+            transition: all 0.4s cubic-bezier(0.2, 1, 0.2, 1);
+            pointer-events: none; z-index: 2;
             border: 1px solid rgba(255,255,255,0.1);
         }
+
         .img-wrapper:hover img { transform: scale(1.03); filter: brightness(1.1); }
         .img-wrapper:hover .img-caption { opacity: 1; transform: translateY(0); }
 
-        .section-divider { width: 150px; height: 1px; margin: 80px auto; background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 80%); }
+        /* THANH NGĂN PHÁT SÁNG */
+        .section-divider {
+            width: 150px; height: 1px; margin: 80px auto;
+            background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 80%);
+        }
+
         .image-section { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
 
-        /* ZOOM UI */
+        /* =================================================
+        ULTIMATE SMOOTH ZOOM UI
+        ================================================= */
         #lightbox {
             position: fixed; inset: 0; background: rgba(0,0,0,0);
-            z-index: 9999; pointer-events: none; transition: background 0.6s ease;
+            z-index: 9999; pointer-events: none; transition: background 0.4s ease;
         }
         #lightbox.active { background: rgba(0,0,0,0.98); pointer-events: auto; }
 
         #zoom-img {
-            position: fixed; z-index: 10000; object-fit: contain; border-radius: 24px;
-            transition: all 0.7s cubic-bezier(0.2, 1, 0.2, 1); pointer-events: none;
-            display: none; will-change: top, left, width, height;
+            position: fixed; top: 0; left: 0;
+            z-index: 10000; object-fit: contain; border-radius: 24px;
+            /* Sử dụng Transform 3D để chạy trên GPU, mượt tuyệt đối */
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                        width 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                        height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        border-radius 0.4s;
+            pointer-events: none; display: none;
+            will-change: transform, width, height;
         }
         #lightbox.active #zoom-img { border-radius: 4px; }
 
+        /* RESPONSIVE */
         @media (max-width: 850px) {
             .container { padding: 0 6% 60px 6%; }
             .top-section { grid-template-columns: 1fr; gap: 40px; }
             .hero-section .img-wrapper { width: 100%; }
+            .image-section { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -89,12 +148,14 @@
             </div>
             <div class="viewer" id="viewerBlock"><iframe id="viewer"></iframe></div>
         </div>
+
         <div class="hero-section">
             <div class="img-wrapper" id="heroWrapper">
                 <img id="hero" alt="">
                 <div class="img-caption" id="heroCaption"></div>
             </div>
         </div>
+
         <div class="section-divider"></div>
         <div class="image-section" id="gallery"></div>
     </div>
@@ -155,46 +216,59 @@
             } catch (err) { console.error(err); }
         }
 
+        // =================================================
+        // ELITE ZOOM LOGIC - ZERO LAG
+        // =================================================
         const lightbox = document.getElementById("lightbox");
         const zoomImg = document.getElementById("zoom-img");
         let activeOriginImg = null;
 
         function openSmoothZoom(originImg) {
+            // Cleanup ảnh cũ nếu đang zoom dở để tránh lỗi đen ảnh
+            if (activeOriginImg) activeOriginImg.style.visibility = "visible";
+
             activeOriginImg = originImg;
             const rect = originImg.getBoundingClientRect();
             
-            // Bù padding tránh giật layout
+            // Khóa cuộn mượt
             const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
             document.body.style.paddingRight = scrollBarWidth + "px";
             document.body.classList.add('lock-scroll');
 
+            // Setup ban đầu (tắt transition để nhảy đúng vị trí)
             zoomImg.src = originImg.src;
             zoomImg.style.display = "block";
             zoomImg.style.transition = "none";
-            zoomImg.style.top = rect.top + "px";
-            zoomImg.style.left = rect.left + "px";
             zoomImg.style.width = rect.width + "px";
             zoomImg.style.height = rect.height + "px";
+            zoomImg.style.transform = `translate3d(${rect.left}px, ${rect.top}px, 0)`;
 
-            zoomImg.offsetWidth; // Force Reflow
+            zoomImg.offsetWidth; // Force Reflow để trình duyệt nhận vị trí xuất phát
 
             lightbox.classList.add("active");
             originImg.style.visibility = "hidden";
 
-            zoomImg.style.transition = "all 0.6s cubic-bezier(0.2, 1, 0.2, 1)";
+            // Bung ra giữa màn hình
+            zoomImg.style.transition = "transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), width 0.4s cubic-bezier(0.4, 0, 0.2, 1), height 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-radius 0.4s";
+            
             const winW = window.innerWidth;
             const winH = window.innerHeight;
             const imgRatio = rect.width / rect.height;
             const winRatio = winW / winH;
 
             let tw, th;
-            if (imgRatio > winRatio) { tw = winW * 0.9; th = tw / imgRatio; }
-            else { th = winH * 0.9; tw = th * imgRatio; }
+            if (imgRatio > winRatio) {
+                tw = winW * 0.95; th = tw / imgRatio;
+            } else {
+                th = winH * 0.95; tw = th * imgRatio;
+            }
 
-            zoomImg.style.top = (winH - th) / 2 + "px";
-            zoomImg.style.left = (winW - tw) / 2 + "px";
+            const tx = (winW - tw) / 2;
+            const ty = (winH - th) / 2;
+
             zoomImg.style.width = tw + "px";
             zoomImg.style.height = th + "px";
+            zoomImg.style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
         }
 
         function closeSmoothZoom() {
@@ -203,25 +277,26 @@
             const currentImg = activeOriginImg;
             const rect = currentImg.getBoundingClientRect();
             
-            zoomImg.style.top = rect.top + "px";
-            zoomImg.style.left = rect.left + "px";
+            // Bay về chính xác vị trí ảnh gốc bằng GPU
             zoomImg.style.width = rect.width + "px";
             zoomImg.style.height = rect.height + "px";
+            zoomImg.style.transform = `translate3d(${rect.left}px, ${rect.top}px, 0)`;
             
             lightbox.classList.remove("active");
 
-            const onFinish = () => {
-                currentImg.style.visibility = "visible";
-                zoomImg.style.display = "none";
-                
-                // MỞ KHÓA LĂN CHUỘT TẠI ĐÂY
-                document.body.classList.remove('lock-scroll');
-                document.body.style.paddingRight = "";
-                
-                zoomImg.removeEventListener('transitionend', onFinish);
-            };
-            zoomImg.addEventListener('transitionend', onFinish);
-            activeOriginImg = null;
+            // Xử lý dọn dẹp sau 0.4s (khớp thời gian animation)
+            setTimeout(() => {
+                // Kiểm tra nếu không có ảnh mới được mở đè lên
+                if (activeOriginImg === null || activeOriginImg === currentImg) {
+                    currentImg.style.visibility = "visible";
+                    zoomImg.style.display = "none";
+                    document.body.classList.remove('lock-scroll');
+                    document.body.style.paddingRight = "";
+                    activeOriginImg = null;
+                }
+            }, 400);
+
+            if (activeOriginImg === currentImg) activeOriginImg = null;
         }
 
         lightbox.onclick = closeSmoothZoom;
