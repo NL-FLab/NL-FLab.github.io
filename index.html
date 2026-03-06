@@ -9,16 +9,16 @@
 
     <style>
         /* =================================================
-        GLOBAL STYLE
+        GLOBAL STYLE - FIX KHOẢNG CÁCH CHỮ
         ================================================= */
         body {
             margin: 0; background: #0f0f0f; color: #e5e5e5;
             font-family: 'Inter', -apple-system, sans-serif;
-            letter-spacing: 0.5px; line-height: 1.6;
+            letter-spacing: 0.02em; /* Fix khoảng cách chữ đều hơn */
+            line-height: 1.6;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* THU GỌN HEADER */
         header { padding: 80px 12% 20px 12%; position: relative; overflow: hidden; }
         header::before {
             content: ""; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
@@ -28,35 +28,42 @@
 
         .brand { display: flex; align-items: flex-start; gap: 24px; margin-bottom: 5px; }
         .logo { width: 100px; height: 100px; object-fit: contain; margin-top: 15px; }
-        h1 { font-size: 40px; font-weight: 400; letter-spacing: -0.5px; margin: 0; color: #fff; }
+        h1 { font-size: 40px; font-weight: 400; letter-spacing: -0.02em; margin: 0; color: #fff; }
         .subtitle { font-size: 17px; color: #aaa; font-weight: 300; margin: 0; }
         .hero-role { margin-top: 4px; font-size: 11px; color: #555; letter-spacing: 3px; text-transform: uppercase; }
 
-        /* TỐI ƯU KHOẢNG CÁCH SELECTED WORK */
         .hero-divider {
-            width: 100px; height: 1px; margin: 25px auto 15px auto; /* Thu hẹp margin cực gọn */
+            width: 100px; height: 1px; margin: 25px auto 15px auto;
             background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
         }
 
         .hero-note {
             text-align: center; font-size: 10px; letter-spacing: 3px; color: #444;
-            margin-bottom: 20px; text-transform: uppercase; /* Giảm margin bottom */
+            margin-bottom: 20px; text-transform: uppercase;
         }
 
-        /* THU GỌN KHOẢNG CÁCH GIỮA CÁC PHẦN */
-        .section { padding: 30px 12%; } /* Giảm từ 50px xuống 30px */
+        .section { padding: 30px 12%; }
 
         /* =================================================
-        ABOUT SECTION - CONTENT FROM CV
+        ABOUT SECTION - FIXED TEXT ALIGNMENT
         ================================================= */
         .about { max-width: 850px; }
         .about h2 { font-size: 19px; margin-bottom: 15px; font-weight: 500; color: #fff; }
-        .about-intro { color: #aaa; font-size: 15px; margin-bottom: 35px; font-weight: 300; text-align: justify; }
+        
+        .about-intro { 
+            color: #aaa; 
+            font-size: 15px; 
+            margin-bottom: 35px; 
+            font-weight: 300; 
+            text-align: left; /* Bỏ justify để chữ đều tăm tắp */
+            max-width: 750px;
+            hyphens: auto;
+        }
         .about-intro strong { color: #eee; font-weight: 400; }
         
         .about-highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 40px; }
         .highlight-title { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: #555; margin-bottom: 8px; }
-        .highlight-text { color: #bbb; font-size: 13px; font-weight: 300; line-height: 1.5; }
+        .highlight-text { color: #bbb; font-size: 13px; font-weight: 300; line-height: 1.6; }
 
         .skills { display: flex; flex-wrap: wrap; gap: 10px; }
         .skill {
@@ -66,7 +73,7 @@
         .skill:hover { border-color: #555; color: #fff; }
 
         /* =================================================
-        TAB FILTER - TIẾT CHẾ ÁNH SÁNG
+        TAB FILTER
         ================================================= */
         .filter { margin-bottom: 40px; display: flex; flex-wrap: wrap; gap: 10px; }
         .filter-btn {
@@ -74,14 +81,13 @@
             cursor: pointer; padding: 8px 20px; border-radius: 8px; transition: all 0.4s ease;
             text-transform: uppercase; letter-spacing: 1.5px; position: relative;
         }
-        .filter-btn:hover { color: #888; }
         .filter-btn.active {
             color: #fff; background: rgba(255,255,255,0.02);
             box-shadow: inset 0 -2px 0 0 #fff, 0 5px 15px -5px rgba(255,255,255,0.1);
         }
         .filter-btn.active::before {
             content: ""; position: absolute; inset: 0; border-radius: 8px; padding: 1px; 
-            background: linear-gradient(to bottom, transparent 50%, rgba(255,255,255,0.3) 100%);
+            background: linear-gradient(to bottom, transparent 50%, rgba(255,255,255,0.2) 100%);
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
@@ -140,11 +146,11 @@
 
     <section class="section about fade">
         <h2>About</h2>
-        <p class="about-intro">
+        <div class="about-intro">
             I am <strong>Nghia Le</strong>, a Senior 3D Artist with over 7 years of professional experience specializing in <strong>Product Visualization</strong> and <strong>Hard Surface Modeling</strong>. 
             With a solid background in Information Technology, I don't just create high-end renders; I focus on <strong>Workflow Optimization</strong> and building efficient 3D production systems. 
             Having served as a <strong>Team Leader</strong> at Loft3DI, I am dedicated to the intersection of technical precision and premium aesthetics, ensuring every project meets the highest industry standards.
-        </p>
+        </div>
         
         <div class="about-highlights">
             <div>
