@@ -2,14 +2,13 @@
 <html lang="vi">
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="Portfolio of Nghia Le – 3D Artist specializing in product visualization and hard surface modeling">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" href="images/favicon.png">
     <title>NL F.Lab – 3D Artist</title>
 
     <style>
         /* =================================================
-        GLOBAL STYLE
+        GLOBAL & HEADER (Giữ nguyên các tinh chỉnh trước)
         ================================================= */
         body {
             margin: 0;
@@ -18,207 +17,154 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             letter-spacing: 0.3px;
             line-height: 1.6;
-            overflow-x: hidden;
         }
 
-        header {
-            padding: 100px 12% 40px 12%; /* Thu nhỏ padding header */
-            position: relative;
-            overflow: hidden;
-        }
-
-        header::before {
-            content: "";
-            position: absolute;
-            top: -200px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 800px;
-            height: 800px;
-            background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 60%);
-            filter: blur(80px);
-            pointer-events: none;
-        }
-
+        header { padding: 100px 12% 40px 12%; position: relative; overflow: hidden; }
         .brand { display: flex; align-items: flex-start; gap: 24px; margin-bottom: 8px; }
-        .logo { 
-            width: 100px; /* Tăng từ 80px lên 100px theo ý ông */
-            height: 100px; 
-            object-fit: contain; 
-            opacity: 1; /* Logo rõ nét hơn */
-            margin-top: 15px;
-        }
+        .logo { width: 100px; height: 100px; object-fit: contain; margin-top: 15px; }
         h1 { font-size: 46px; font-weight: 500; letter-spacing: 0.5px; margin: 0; }
-        .subtitle { font-size: 18px; color: #aaa; letter-spacing: 0.5px; margin: 0; }
+        .subtitle { font-size: 18px; color: #aaa; margin: 0; }
         .hero-role { margin-top: 2px; font-size: 13px; color: #777; letter-spacing: 2px; text-transform: uppercase; }
 
-        .hero-divider {
-            width: 100px;
-            height: 1px;
-            margin: 30px auto; /* Thu nhỏ khoảng cách */
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
-        }
-
-        .hero-note {
-            text-align: center;
-            font-size: 11px;
-            letter-spacing: 2px;
-            color: #555;
-            margin-bottom: 30px;
-            text-transform: uppercase;
-        }
-
-        .section { padding: 50px 12%; } /* Thu nhỏ padding giữa các section từ 70px xuống 50px */
+        .hero-divider { width: 100px; height: 1px; margin: 30px auto; background: rgba(255,255,255,0.2); }
+        .section { padding: 40px 12%; }
 
         /* =================================================
-        ABOUT SECTION
+        ABOUT & SKILLS
         ================================================= */
-        .about { max-width: 720px; }
-        .about h2 { font-size: 22px; margin-bottom: 15px; font-weight: 500; }
-        .about-intro { color: #aaa; max-width: 680px; font-size: 16px; line-height: 1.7; margin-bottom: 35px; }
-        
-        .about-highlights {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-        .highlight-title { font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: #666; margin-bottom: 8px; }
-        .highlight-text { color: #ddd; font-size: 15px; line-height: 1.5; }
-
-        .skills { display: flex; flex-wrap: wrap; gap: 12px; }
-        .skill {
-            border: 1px solid #333;
-            padding: 6px 14px;
-            font-size: 12px;
-            border-radius: 20px;
-            background: #141414;
-            color: #999;
-            transition: 0.25s;
-        }
-        .skill:hover { border-color: #eee; color: white; }
+        .about-intro { color: #aaa; font-size: 16px; margin-bottom: 35px; max-width: 680px; }
+        .about-highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 40px; }
+        .highlight-title { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: #555; margin-bottom: 8px; }
+        .highlight-text { color: #ccc; font-size: 15px; }
+        .skill { border: 1px solid #222; padding: 6px 14px; font-size: 12px; border-radius: 4px; background: #111; color: #888; display: inline-block; margin: 0 8px 8px 0; transition: 0.3s; }
+        .skill:hover { border-color: #fff; color: #fff; }
 
         /* =================================================
-        FILTER TAB - MINIMAL UNDERLINE
+        TAB FILTER - PHƯƠNG ÁN "THE DOT" (TỐI GIẢN CAO CẤP)
         ================================================= */
         .filter {
-            margin-bottom: 40px;
+            margin-bottom: 50px;
             display: flex;
-            flex-wrap: wrap;
-            gap: 35px;
-            border-bottom: 1px solid #222;
+            gap: 45px;
+            border-bottom: 1px solid #1a1a1a;
+            padding-bottom: 5px;
         }
 
         .filter-btn {
             background: none;
             border: none;
-            color: #555;
-            font-size: 13px;
-            font-weight: 500;
+            color: #444;
+            font-size: 12px;
+            font-weight: 600;
             cursor: pointer;
-            padding: 12px 0;
-            position: relative;
-            transition: 0.3s;
+            padding: 10px 0;
             text-transform: uppercase;
-            letter-spacing: 1.2px;
+            letter-spacing: 2px;
+            transition: 0.4s;
+            position: relative;
         }
 
-        .filter-btn:hover { color: #bbb; }
+        .filter-btn:hover { color: #888; }
         .filter-btn.active { color: #fff; }
 
+        /* Dấu chấm chỉ báo cực nhỏ dưới mỗi tab active */
         .filter-btn.active::after {
             content: "";
             position: absolute;
-            bottom: -1px;
-            left: 0;
-            width: 100%;
-            height: 2px;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
             background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #fff;
         }
 
         /* =================================================
-        PROJECT GRID & CARD (TITLE HOVER)
+        PROJECT GRID - SQUARE RATIO (1:1)
         ================================================= */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 40px; /* Thu hẹp gap từ 60px xuống 40px cho gọn */
-            max-width: 1400px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
         }
 
-        .project { position: relative; overflow: hidden; border-radius: 6px; background: #111; }
+        .project { 
+            position: relative; 
+            overflow: hidden; 
+            background: #111;
+            aspect-ratio: 1 / 1; /* ÉP KHUNG HÌNH VUÔNG */
+        }
+
         .project img {
             width: 100%;
-            height: 360px;
-            object-fit: cover;
+            height: 100%;
+            object-fit: cover; /* Đảm bảo ảnh lấp đầy khung vuông */
             display: block;
-            transition: 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: 0.8s cubic-bezier(0.2, 1, 0.2, 1);
         }
 
         .overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 50%); /* Gradient đậm hơn ở đáy */
-            opacity: 0;
-            transition: 0.4s ease;
+            background: rgba(0,0,0,0);
+            transition: 0.5s;
         }
 
         .project-title {
             position: absolute;
-            bottom: 25px;
-            left: 25px;
-            font-size: 15px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -40%); /* Căn giữa hoàn hảo */
+            width: 80%;
+            text-align: center;
+            font-size: 14px;
             font-weight: 500;
-            color: #fff; /* Chữ trắng rõ ràng */
-            letter-spacing: 0.5px;
+            color: #fff;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
             opacity: 0;
-            transform: translateY(15px);
-            transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5); /* Tạo bóng cho chữ dễ đọc trên mọi nền ảnh */
+            transition: 0.5s;
+            pointer-events: none;
+            z-index: 2;
         }
 
-        .project:hover img { transform: scale(1.04); filter: brightness(0.8); }
-        .project:hover .overlay { opacity: 1; }
-        .project:hover .project-title { opacity: 1; transform: translateY(0); }
+        /* Hiệu ứng Hover: Ảnh tối lại và Chữ hiện lên chính giữa */
+        .project:hover img { 
+            transform: scale(1.1); 
+            filter: brightness(0.3) blur(2px); /* Làm mờ nhẹ ảnh để nổi bật chữ */
+        }
+        
+        .project:hover .project-title { 
+            opacity: 1; 
+            transform: translate(-50%, -50%); 
+        }
 
         /* =================================================
-        CONTACT DÀN NGANG
+        CONTACT & FOOTER
         ================================================= */
-        .contact { max-width: 100%; padding-top: 30px; }
-        .contact h2 { font-size: 20px; margin-bottom: 25px; }
-        .contact-links { display: flex; flex-wrap: wrap; gap: 40px; }
-        .contact a {
-            color: #777;
-            text-decoration: none;
-            font-size: 14px;
-            letter-spacing: 0.5px;
-            transition: 0.3s;
-        }
+        .contact-links { display: flex; gap: 40px; margin-top: 20px; }
+        .contact a { color: #666; text-decoration: none; font-size: 13px; transition: 0.3s; }
         .contact a:hover { color: #fff; }
+        footer { padding: 60px 12%; color: #333; font-size: 11px; border-top: 1px solid #1a1a1a; }
 
-        /* FOOTER */
-        footer { padding: 50px 12%; color: #333; font-size: 12px; border-top: 1px solid #1a1a1a; margin-top: 30px;}
-
-        /* ANIMATION */
-        .fade { opacity: 0; transform: translateY(20px); transition: 0.7s ease-out; }
+        .fade { opacity: 0; transform: translateY(20px); transition: 0.8s ease-out; }
         .fade.show { opacity: 1; transform: translateY(0); }
 
         @media (max-width: 768px) {
-            header { padding: 60px 8% 30px 8%; }
-            .logo { width: 80px; height: 80px; }
-            h1 { font-size: 32px; }
-            .section { padding: 40px 8%; }
-            .grid { grid-template-columns: 1fr; gap: 30px; }
-            .project img { height: 280px; }
+            header { padding: 60px 8%; }
+            .grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
+            .filter { gap: 20px; overflow-x: auto; padding-bottom: 15px; }
+            .filter-btn { white-space: nowrap; }
         }
     </style>
 </head>
-
 <body>
 
     <header>
         <div class="brand">
-            <img src="images/logo.png" class="logo" alt="NL F.Lab logo">
+            <img src="images/logo.png" class="logo" alt="NL F.Lab">
             <div class="hero-text">
                 <h1>NL F.Lab</h1>
                 <div class="subtitle">3D Artist</div>
@@ -228,36 +174,17 @@
     </header>
 
     <div class="hero-divider"></div>
-    <div class="hero-note">Selected Work</div>
 
     <section class="section about fade">
         <h2>About</h2>
-        <p class="about-intro">
-            Hi, I'm <strong>Nghia Le</strong>, a 3D Artist with more than 7 years of experience in product visualization and 3D production pipelines.
-        </p>
-
+        <p class="about-intro">Hi, I'm Nghia Le, a 3D Artist with 7+ years of experience specializing in product visualization and high-end 3D production.</p>
         <div class="about-highlights">
-            <div>
-                <div class="highlight-title">Experience</div>
-                <div class="highlight-text">7+ years in professional 3D production</div>
-            </div>
-            <div>
-                <div class="highlight-title">Specialization</div>
-                <div class="highlight-text">Product visualization & hard surface modeling</div>
-            </div>
-            <div>
-                <div class="highlight-title">Pipeline</div>
-                <div class="highlight-text">Workflow optimization & team mentoring</div>
-            </div>
+            <div><div class="highlight-title">Experience</div><div class="highlight-text">7+ Years</div></div>
+            <div><div class="highlight-title">Specialization</div><div class="highlight-text">Hard Surface & Products</div></div>
+            <div><div class="highlight-title">Workflow</div><div class="highlight-text">Optimization & Mentoring</div></div>
         </div>
-
         <div class="skills">
-            <div class="skill">3ds Max</div>
-            <div class="skill">Blender</div>
-            <div class="skill">Substance Painter</div>
-            <div class="skill">Photoshop</div>
-            <div class="skill">V-Ray</div>
-            <div class="skill">Hard Surface</div>
+            <div class="skill">3ds Max</div><div class="skill">Blender</div><div class="skill">Substance</div><div class="skill">V-Ray</div>
         </div>
     </section>
 
@@ -270,23 +197,19 @@
         <h2>Contact</h2>
         <div class="contact-links">
             <a href="mailto:nghiale.f.lab@gmail.com">Email</a>
-            <a href="#" target="_blank">LinkedIn</a>
-            <a href="#" target="_blank">ArtStation</a>
-            <a href="#" target="_blank">Sketchfab</a>
+            <a href="#">ArtStation</a>
+            <a href="#">LinkedIn</a>
         </div>
     </section>
 
-    <footer>© NL F.Lab</footer>
+    <footer>© NL F.Lab – 2026</footer>
 
     <script>
         const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if(entry.isIntersecting) entry.target.classList.add("show");
-            });
+            entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add("show"); });
         }, { threshold: 0.1 });
         document.querySelectorAll(".fade").forEach(el => observer.observe(el));
     </script>
     <script src="js/loadproduct.js"></script>
-
 </body>
 </html>
