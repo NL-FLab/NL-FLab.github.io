@@ -1,5 +1,5 @@
 /* ======================================
-AUTO LOAD PROJECTS
+LOAD PROJECTS
 ====================================== */
 
 async function loadProjects(){
@@ -9,21 +9,17 @@ const filterBar = document.getElementById("filterBar")
 
 try{
 
-// =============================
-// LOAD projects.json
-// =============================
+// LOAD JSON
+const res = await fetch("models/projects.json")
+if(!res.ok) throw new Error("Cannot load projects.json")
 
-const response = await fetch("models/projects.json")
-
-if(!response.ok) throw new Error("Cannot load projects.json")
-
-let projects = await response.json()
+const projects = await res.json()
 
 
-// =============================
+// =====================================
 // SORT PROJECT
 // priority → date
-// =============================
+// =====================================
 
 projects.sort((a,b)=>{
 
@@ -37,144 +33,119 @@ return new Date(b.date) - new Date(a.date)
 })
 
 
-// =============================
-// GET CATEGORY LIST
-// =============================
+// =====================================
+// COLLECT CATEGORIES
+// =====================================
 
 const categories = new Set()
 
-projects.forEach(project=>{
-
-if(project.categories){
-
-project.categories.forEach(cat=>{
-categories.add(cat)
-})
-
-}
-
+projects.forEach(p=>{
+p.categories?.forEach(c=>categories.add(c))
 })
 
 
-// =============================
+// =====================================
 // CREATE FILTER BUTTONS
-// =============================
+// =====================================
 
-// FEATURED TAB
+// FEATURED
 
-const featuredBtn = document.createElement("button")
+createButton("featured","Featured",true)
 
-featuredBtn.className = "filter-btn active"
-featuredBtn.dataset.filter = "featured"
-featuredBtn.textContent = "Featured"
+// CATEGORY
 
-filterBar.appendChild(featuredBtn)
+categories.forEach(cat=>{
 
+const label = cat
+.replace(/-/g," ")
+.replace(/\b\w/g,l=>l.toUpperCase())
 
-// CATEGORY TABS
-
-categories.forEach(cat => {
-
-const btn = document.createElement("button")
-
-btn.className = "filter-btn"
-btn.dataset.filter = cat
-
-btn.textContent =
-cat.charAt(0).toUpperCase() + cat.slice(1)
-
-filterBar.appendChild(btn)
+createButton(cat,label)
 
 })
 
 
-// =============================
-// RENDER FUNCTION
-// =============================
+// =====================================
+// RENDER PROJECTS
+// =====================================
 
-function renderProjects(filter){
+function render(filter){
 
-grid.innerHTML = ""
+grid.innerHTML=""
 
-let filtered = projects
+const filtered = projects.filter(p=>{
 
-// FEATURED FILTER
-if(filter === "featured"){
+if(filter==="featured") return p.featured
 
-filtered = projects.filter(p => p.featured)
+return p.categories?.includes(filter)
 
-}
+})
 
-// CATEGORY FILTER
-else{
+filtered.forEach(p=>{
 
-filtered = projects.filter(p =>
-p.categories && p.categories.includes(filter)
-)
+const card = document.createElement("a")
 
-}
+card.className="project-link"
+card.href=`product.html?project=${p.slug}`
 
-
-// RENDER PROJECT CARD
-
-filtered.forEach(project=>{
-
-const item = document.createElement("a")
-
-item.className="project-link"
-
-item.href=`product.html?project=${project.slug}`
-
-item.innerHTML=`
+card.innerHTML=`
 
 <div class="project">
 
-<img src="models/${project.slug}/${project.thumbnail}" loading="lazy">
+<img src="models/${p.slug}/${p.thumbnail}" loading="lazy">
 
 <div class="project-title">
-${project.title}
+${p.title}
 </div>
 
 </div>
 
 `
 
-grid.appendChild(item)
+grid.appendChild(card)
 
 })
 
 }
 
 
-// =============================
-// FILTER CLICK EVENT
-// =============================
+// =====================================
+// BUTTON HELPER
+// =====================================
 
-document.querySelectorAll(".filter-btn").forEach(btn=>{
+function createButton(filter,label,active=false){
 
-btn.addEventListener("click",()=>{
+const btn=document.createElement("button")
+
+btn.className="filter-btn"
+if(active) btn.classList.add("active")
+
+btn.dataset.filter=filter
+btn.textContent=label
+
+btn.onclick=()=>{
 
 document.querySelectorAll(".filter-btn")
 .forEach(b=>b.classList.remove("active"))
 
 btn.classList.add("active")
 
-renderProjects(btn.dataset.filter)
+render(filter)
 
-})
+}
 
-})
+filterBar.appendChild(btn)
+
+}
 
 
-// =============================
-// INITIAL RENDER
-// =============================
+// FIRST LOAD
 
-renderProjects("featured")
+render("featured")
 
-}catch(error){
+}catch(err){
 
-console.error("Project loading failed",error)
+console.error("Project loading failed",err)
 
 }
 
