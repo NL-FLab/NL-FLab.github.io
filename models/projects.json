@@ -5,7 +5,7 @@
  "thumbnail": "images/hero.webp",
  "featured": true,
  "categories": ["footwear"],
- "priority": 1,
+ "priority": 2,
  "date": "2026-03-05"
 },
 
@@ -15,7 +15,7 @@
  "thumbnail": "images/hero.webp",
  "featured": true,
  "categories": ["machine"],
- "priority": 2,
+ "priority": 1,
  "date": "2026-03-06"
 }
   
