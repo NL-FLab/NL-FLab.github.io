@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" href="images/favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-    <title>NL F.Lab – 3D Artist Portfolio</title>
+    <title>NL F.Lab – High-end 3D Visualization</title>
 
     <style>
         /* =================================================
@@ -13,7 +13,7 @@
         ================================================= */
         body {
             margin: 0; background: #0c0c0c; color: #e5e5e5;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, sans-serif;
             letter-spacing: 0.02em; line-height: 1.6;
             -webkit-font-smoothing: antialiased;
         }
@@ -31,20 +31,40 @@
         .subtitle { font-size: 17px; color: #aaa; font-weight: 300; margin: 0; }
         .hero-role { margin-top: 4px; font-size: 11px; color: #555; letter-spacing: 3px; text-transform: uppercase; }
 
-        /* THANH NGANG PHÁT SÁNG GIỮA, MỜ 2 BÊN */
+        /* THANH NGANG PHÁT SÁNG */
         .hero-divider {
             width: 150px; height: 1px; margin: 35px auto 12px auto;
-            /* Hiệu ứng mờ dần sang 2 bên */
             background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 80%);
-            /* Tạo thêm độ rực nhẹ ở giữa */
             box-shadow: 0 0 10px rgba(255,255,255,0.1);
         }
         .hero-note { text-align: center; font-size: 10px; letter-spacing: 3px; color: #444; text-transform: uppercase; margin-bottom: 30px; }
 
-        .section { padding: 30px 12%; }
+        .section { padding: 40px 12%; }
 
         /* =================================================
-        APPLE TAB - CẬP NHẬT INDICATOR
+        ABOUT & CORE VALUES (EXPERT STYLE)
+        ================================================= */
+        .about { max-width: 900px; }
+        .about h2 { font-size: 18px; font-weight: 500; color: #fff; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
+        .about-intro { font-size: 16px; color: #eee; margin-bottom: 50px; line-height: 1.8; font-weight: 300; }
+        .about-intro strong { color: #fff; font-weight: 500; }
+
+        .core-values { 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 40px; margin-bottom: 60px; border-top: 1px solid #1a1a1a; padding-top: 50px; 
+        }
+        .value-item .v-title { font-size: 10px; letter-spacing: 3px; color: #555; text-transform: uppercase; margin-bottom: 12px; }
+        .value-item .v-text { font-size: 13px; color: #888; font-weight: 300; line-height: 1.7; }
+
+        .about-highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 35px; border-top: 1px solid #1a1a1a; padding-top: 50px; }
+        .highlight-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #555; margin-bottom: 10px; }
+        .highlight-text { color: #bbb; font-size: 13px; font-weight: 300; line-height: 1.7; }
+
+        .skills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+        .skill { border: 1px solid #222; padding: 6px 16px; font-size: 11px; border-radius: 30px; background: #111; color: #777; }
+
+        /* =================================================
+        APPLE TAB - PILL SHAPE & GLASS
         ================================================= */
         .filter-container { display: flex; margin-bottom: 45px; }
         .filter {
@@ -69,7 +89,7 @@
         }
 
         /* =================================================
-        PROJECT GRID - SMOOTH REVEAL
+        PROJECT GRID - STAGGER REVEAL
         ================================================= */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
         .project { 
@@ -80,6 +100,7 @@
         .project.is-visible { opacity: 1; transform: translateY(0); }
         .project img { width: 100%; height: 100%; object-fit: cover; display: block; transition: 1.2s cubic-bezier(0.2, 1, 0.2, 1); }
         .project:hover img { transform: scale(1.05); filter: brightness(0.25) blur(4px); }
+        
         .project-title {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%);
             width: 80%; text-align: center; font-size: 13px; font-weight: 400; color: #fff;
@@ -89,28 +110,23 @@
         .project:hover .project-title { opacity: 1; transform: translate(-50%, -50%); }
 
         /* =================================================
-        ABOUT SECTION - BỔ SUNG THÔNG TIN ĐẦY ĐỦ
+        CONTACT - FIX WHITE COLOR
         ================================================= */
-        .about { max-width: 850px; }
-        .about h2 { font-size: 19px; margin-bottom: 20px; font-weight: 500; color: #fff; }
-        .about-intro { color: #aaa; font-size: 15px; margin-bottom: 35px; font-weight: 300; text-align: left; }
-        .about-intro strong { color: #eee; font-weight: 400; }
-        
-        .about-highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 35px; margin-bottom: 40px; }
-        .highlight-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #555; margin-bottom: 10px; }
-        .highlight-text { color: #bbb; font-size: 13px; font-weight: 300; line-height: 1.7; }
-
-        .skills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-        .skill {
-            border: 1px solid #222; padding: 6px 16px; font-size: 11px;
-            border-radius: 30px; background: #111; color: #777; transition: 0.3s;
+        .contact h2 { font-size: 19px; font-weight: 500; color: #fff; margin-bottom: 25px; }
+        .contact-links { display: flex; flex-wrap: wrap; gap: 45px; }
+        /* Đổi màu text liên kết sang trắng */
+        .contact-links a { 
+            color: #fff; 
+            text-decoration: none; 
+            font-size: 13px; 
+            font-weight: 300;
+            transition: 0.3s; 
+            letter-spacing: 1.5px; 
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 4px;
         }
-        .skill:hover { border-color: #555; color: #fff; }
-
-        /* CONTACT & FOOTER */
-        .contact-links { display: flex; flex-wrap: wrap; gap: 40px; margin-top: 15px; }
-        .contact a { color: #555; text-decoration: none; font-size: 13px; transition: 0.3s; letter-spacing: 1px; }
-        .contact a:hover { color: #fff; }
+        .contact-links a:hover { border-bottom: 1px solid #fff; color: #aaa; }
 
         footer { padding: 40px 12%; color: #333; font-size: 10px; border-top: 1px solid #1a1a1a; margin-top: 50px; }
 
@@ -135,36 +151,52 @@
     <div class="hero-note">Selected Work</div>
 
     <section class="section about fade">
-        <h2>About</h2>
+        <h2>Profile</h2>
         <div class="about-intro">
-            I am <strong>Nghia Le</strong>, a Senior 3D Artist with over 7 years of professional experience specializing in <strong>Product Visualization</strong> and <strong>Hard Surface Modeling</strong>. 
-            With a solid background in Information Technology, I focus on <strong>Workflow Optimization</strong> and building efficient 3D production systems. 
-            Former <strong>Team Leader</strong> at Loft3DI, I am dedicated to technical precision and premium aesthetics.
+            Senior 3D Artist and Team Leader with over 7 years of expertise in <strong>High-end Product Visualization</strong>. 
+            Leveraging a background in <strong>Information Technology</strong>, I specialize in bridging the gap between artistic precision and technical efficiency, 
+            developing optimized production pipelines that meet international industry standards.
+        </div>
+
+        <div class="core-values">
+            <div class="value-item">
+                <div class="v-title">01. Precision</div>
+                <div class="v-text">Executing models with absolute geometric accuracy and real-world scale, ensuring seamless integration for high-fidelity rendering.</div>
+            </div>
+            <div class="value-item">
+                <div class="v-title">02. Optimization</div>
+                <div class="v-text">Implementing smart topology and automated workflows to enhance performance without compromising visual complexity.</div>
+            </div>
+            <div class="value-item">
+                <div class="v-title">03. Leadership</div>
+                <div class="v-text">Proven track record in mentoring teams and managing large-scale 3D projects from conceptual modeling to final delivery.</div>
+            </div>
         </div>
 
         <div class="about-highlights">
             <div>
-                <div class="highlight-title">Professional Experience</div>
+                <div class="highlight-title">Expertise</div>
                 <div class="highlight-text">
-                    • Senior 3D Modeler & Team Leader @ Loft3DI (2021-Present)<br>
-                    • 3D Mentor & Trainer @ Cennos Software (2018-2021)
+                    • Hard Surface Modeling & Retopology<br>
+                    • PBR Texturing & Material Development<br>
+                    • Lighting & Studio Environment Setup
                 </div>
             </div>
             <div>
-                <div class="highlight-title">Technical Expertise</div>
+                <div class="highlight-title">Technical Stack</div>
                 <div class="highlight-text">
-                    • 3ds Max, Blender, Substance, V-Ray, Photoshop<br>
-                    • Bachelor of IT from HUBT (Hanoi Univ. of Business & Tech)
+                    • 3ds Max, Blender, Substance Painter<br>
+                    • V-Ray, Corona, Adobe Creative Suite<br>
+                    • Workflow Scripting & Automation
                 </div>
             </div>
         </div>
 
         <div class="skills">
-            <div class="skill">3ds Max</div>
-            <div class="skill">Blender</div>
-            <div class="skill">Substance</div>
-            <div class="skill">V-Ray</div>
             <div class="skill">Workflow Systems</div>
+            <div class="skill">Product Viz</div>
+            <div class="skill">Team Management</div>
+            <div class="skill">Technical IT</div>
         </div>
     </section>
 
@@ -177,7 +209,7 @@
         <div class="grid" id="projectGrid"></div>
     </section>
 
-    <section class="section fade">
+    <section class="section contact fade">
         <h2>Contact</h2>
         <div class="contact-links">
             <a href="mailto:nghiale.f.lab@gmail.com">Email</a>
@@ -189,11 +221,13 @@
     <footer>© NL F.Lab – 2026</footer>
 
     <script>
+        // Reveal animation
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add("show"); });
         }, { threshold: 0.1 });
         document.querySelectorAll(".fade").forEach(el => observer.observe(el));
 
+        // Apple Tab Indicator logic
         function updateTabIndicator(activeBtn) {
             const indicator = document.getElementById('tabIndicator');
             if (activeBtn && indicator) {
@@ -203,6 +237,7 @@
             }
         }
 
+        // Staggered Image Reveal
         const gridObserver = new MutationObserver(() => {
             const projects = document.querySelectorAll('.project');
             projects.forEach((proj, index) => {
