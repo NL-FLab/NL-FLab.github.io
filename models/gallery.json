@@ -1,0 +1,17 @@
+{
+  "gallery_order": 
+  [
+    "preview.webp",
+    "preview_1.webp",
+    "preview_2.webp",
+    "preview_3.webp",
+    "preview_4.webp",
+    "preview_5.webp",
+    "preview_a.webp",
+    "gray.webp",
+    "wireframe.webp",
+    "uv_density.webp",
+    "normal.webp",
+    "pbr.webp"
+  ]
+}
