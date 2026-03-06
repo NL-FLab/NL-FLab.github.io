@@ -104,9 +104,13 @@
 const params = new URLSearchParams(window.location.search);
 const projectSlug = params.get("project");
 
+// Hàm mới: Chỉ lấy tên file cuối cùng, bỏ qua đường dẫn thư mục
 function formatCaption(fileName) {
-    let name = fileName.split('.').slice(0,-1).join('.');
-    return name.replace(/_/g,' ').toUpperCase();
+    // Tách lấy phần sau dấu gạch chéo cuối cùng (nếu có)
+    let baseName = fileName.split('/').pop(); 
+    // Sau đó mới tách bỏ phần mở rộng (.jpg, .png...)
+    let name = baseName.split('.').slice(0, -1).join('.');
+    return name.replace(/_/g, ' ').toUpperCase();
 }
 
 async function loadProduct() {
