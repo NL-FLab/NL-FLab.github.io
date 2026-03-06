@@ -14,10 +14,11 @@
             color: #e5e5e5;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             overflow-x: hidden;
+            line-height: 1.6;
         }
 
         /* ================================
-        CONTAINER & LAYOUT
+        LAYOUT
         ================================ */
         .container {
             max-width: 1100px;
@@ -42,27 +43,27 @@
 
         h1 {
             font-weight: 500;
-            font-size: clamp(24px, 5vw, 32px); /* Tự co giãn theo màn hình */
-            margin-bottom: 20px;
+            font-size: clamp(24px, 5vw, 32px);
+            margin: 20px 0;
             letter-spacing: 1px;
             text-shadow: 0 0 25px rgba(255,255,255,0.08);
         }
 
         /* ================================
-        INFO & TOP SECTION
+        TOP SECTION (Info & Viewer)
         ================================ */
         .top-section {
             display: grid;
             grid-template-columns: 1fr 1.5fr;
             gap: 40px;
             align-items: start;
-            margin-top: 40px;
+            margin-top: 20px;
         }
 
         .info {
             color: #8a8a8a;
-            line-height: 1.8;
             font-size: 15px;
+            white-space: pre-line; /* Giữ các khoảng xuống dòng từ JSON */
         }
 
         .viewer iframe {
@@ -75,7 +76,7 @@
         }
 
         /* ================================
-        IMAGES (HERO & GALLERY)
+        IMAGES
         ================================ */
         .hero-section { margin-top: 60px; }
 
@@ -100,15 +101,15 @@
         }
 
         /* ================================
-        LIGHTBOX (Đã sửa để tối ưu Mobile)
-        =============================== */
+        LIGHTBOX (Optimized for Mobile)
+        ================================ */
         #lightbox {
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.95);
             backdrop-filter: blur(10px);
             z-index: 9999;
-            display: flex; /* Dùng flex để căn giữa chuẩn nhất */
+            display: flex;
             align-items: center;
             justify-content: center;
             opacity: 0;
@@ -122,12 +123,11 @@
         }
 
         #lightbox img {
-            max-width: 95%;   /* Không quá rộng màn hình */
-            max-height: 95vh; /* Không quá cao màn hình */
+            max-width: 95%;
+            max-height: 95vh;
             object-fit: contain;
             border-radius: 4px;
             box-shadow: 0 0 50px rgba(0,0,0,1);
-            /* Bỏ position absolute cũ để flexbox xử lý */
         }
 
         /* ================================
@@ -170,10 +170,13 @@
         const projectSlug = params.get("project");
 
         async function loadProduct() {
-            if (!projectSlug) return;
+            if (!projectSlug) {
+                document.getElementById("title").innerText = "No project selected";
+                return;
+            }
 
             try {
-                // 1. Load Info
+                // 1. Fetch Project Info
                 const res = await fetch(`models/${projectSlug}/info.json`);
                 if (!res.ok) throw new Error("404");
                 const data = await res.json();
@@ -191,27 +194,37 @@
                     • ${tech.software.join(" – ")} – ${tech.render_engine}
                 `;
 
-                // 2. Hero & Viewer
+                // 2. Hero Image & Error Handling
                 const hero = document.getElementById("hero");
                 hero.src = `models/${projectSlug}/${data.media.hero}`;
+                hero.onerror = () => hero.style.display = "none"; // Ẩn nếu ko có ảnh hero
                 hero.onclick = () => openLightbox(hero.src);
 
+                // 3. 3D Viewer
                 if (data.viewer?.enabled) {
                     document.getElementById("viewer").src = `viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
                 } else {
                     document.getElementById("viewerBlock").style.display = "none";
                 }
 
-                // 3. Gallery (Giữ đúng thứ tự config)
+                // 4. Gallery with Auto-Clean (onerror)
                 const configRes = await fetch("models/gallery_config.json");
                 const config = await configRes.json();
                 const gallery = document.getElementById("gallery");
+                const basePath = `models/${projectSlug}/images/`;
                 
                 config.order.forEach(name => {
                     const img = document.createElement("img");
-                    img.src = `models/${projectSlug}/images/${name}`;
+                    img.src = basePath + name;
                     img.loading = "lazy";
+                    img.alt = "Detail View";
+                    
+                    // Nếu ảnh load lỗi, tự xóa thẻ img
+                    img.onerror = () => img.remove();
+                    
+                    // Nếu load ok, cho phép click mở lightbox
                     img.onclick = () => openLightbox(img.src);
+                    
                     gallery.appendChild(img);
                 });
 
@@ -228,12 +241,12 @@
         function openLightbox(src) {
             lightboxImg.src = src;
             lightbox.classList.add("active");
-            document.body.style.overflow = "hidden"; // Chống cuộn trang khi đang xem ảnh
+            document.body.style.overflow = "hidden"; // Khóa cuộn trang
         }
 
         lightbox.onclick = () => {
             lightbox.classList.remove("active");
-            document.body.style.overflow = "auto";
+            document.body.style.overflow = "auto"; // Mở cuộn trang
         };
 
         loadProduct();
