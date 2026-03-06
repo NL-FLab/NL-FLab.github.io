@@ -19,7 +19,7 @@
     .back { padding: 40px 12% 20px 12%; }
     .back a { font-size: 10px; color: #555; text-decoration: none; text-transform: uppercase; letter-spacing: 2px; transition: .3s; }
     .back a:hover { color: #fff; }
-    h1 { font-weight: 400; font-size: clamp(26px, 4vw, 36px); margin: 10px 0 40px 0; color: #fff; }
+    h1 { font-weight: 300; font-size: clamp(26px, 4vw, 36px); margin: 10px 0 40px 0; color: #fff; letter-spacing: -0.5px; }
 
     .top-section { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; margin-bottom: 80px; }
     .info { color: #888; font-size: 14px; font-weight: 300; }
@@ -32,37 +32,50 @@
     .viewer iframe { width: 100%; aspect-ratio: 1/1; border: none; border-radius: 24px; background: #111; box-shadow: 0 30px 60px rgba(0,0,0,.4); }
 
     .hero-section { margin-bottom: 60px; display: flex; justify-content: center; }
-    .img-wrapper { position: relative; overflow: hidden; border-radius: 24px; line-height: 0; cursor: zoom-in; background: #111; }
-    .img-wrapper img { width: 100%; height: auto; transition: transform .6s cubic-bezier(.2,1,.2,1), filter .6s; }
-    .hero-section .img-wrapper { width: 75%; }
-
-    .img-caption {
-        position: absolute; bottom: 15px; left: 15px; font-size: 9px; color: rgba(255,255,255,.8);
-        text-transform: uppercase; letter-spacing: 1.2px; background: rgba(0,0,0,.6);
-        backdrop-filter: blur(10px); padding: 6px 16px; border-radius: 20px; min-width: 100px;
-        text-align: center; opacity: 0; transform: translateY(10px);
-        transition: all .4s cubic-bezier(.2,1,.2,1); pointer-events: none; z-index: 2;
-        border: 1px solid rgba(255,255,255,.1);
+    
+    /* WRAPPER & HOVER */
+    .img-wrapper { position: relative; overflow: hidden; border-radius: 20px; line-height: 0; cursor: zoom-in; background: #111; }
+    .img-wrapper img { width: 100%; height: auto; transition: transform .8s cubic-bezier(0.16, 1, 0.3, 1); }
+    .hero-section .img-wrapper {
+        width: 50%;
+        margin: 0 auto; /* Thêm dòng này nếu muốn ảnh 50% nằm chính giữa màn hình */
     }
-    .img-wrapper:hover img { transform: scale(1.03); filter: brightness(1.1); }
+    .img-wrapper:hover img { transform: scale(1.02); }
+
+    /* MODERN CAPTION - GLASSMORPHISM */
+    .img-caption {
+        position: absolute;
+        bottom: 24px;
+        left: 24px;
+        font-size: 10px;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.95);
+        text-transform: uppercase;
+        letter-spacing: 3px; /* Giãn chữ cực sang */
+        
+        background: rgba(255, 255, 255, 0.03); 
+        backdrop-filter: blur(15px) saturate(160%);
+        -webkit-backdrop-filter: blur(15px) saturate(160%);
+        
+        padding: 10px 22px;
+        border-radius: 2px; /* Góc vuông nhẹ tạo cảm giác kỹ thuật */
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        
+        opacity: 0;
+        transform: translateY(15px);
+        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: none;
+        z-index: 2;
+    }
     .img-wrapper:hover .img-caption { opacity: 1; transform: translateY(0); }
 
-    .section-divider { width: 150px; height: 1px; margin: 80px auto; background: radial-gradient(circle,rgba(255,255,255,0.6) 0%,rgba(255,255,255,0) 80%); }
+    .section-divider { width: 150px; height: 1px; margin: 80px auto; background: radial-gradient(circle,rgba(255,255,255,0.4) 0%,rgba(255,255,255,0) 80%); }
     .image-section { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
 
     /* LIGHTBOX */
-    #lightbox {
-        position: fixed; inset: 0; background: rgba(0,0,0,0);
-        z-index: 9999; pointer-events: none; transition: background .4s ease;
-    }
-    #lightbox.active { background: rgba(0,0,0,.96); pointer-events: auto; }
-
-    #zoom-img {
-        position: fixed; top: 0; left: 0; z-index: 10000;
-        object-fit: contain; border-radius: 24px; display: none;
-        pointer-events: none; will-change: transform, width, height;
-        transform: translate3d(0,0,0);
-    }
+    #lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0); z-index: 9999; pointer-events: none; transition: background .4s ease; }
+    #lightbox.active { background: rgba(0,0,0,.97); pointer-events: auto; }
+    #zoom-img { position: fixed; top: 0; left: 0; z-index: 10000; object-fit: contain; border-radius: 20px; display: none; pointer-events: none; will-change: transform, width, height; transform: translate3d(0,0,0); }
 
     @media(max-width:850px){
         .container{ padding:0 6% 60px 6%; }
@@ -104,11 +117,9 @@
 const params = new URLSearchParams(window.location.search);
 const projectSlug = params.get("project");
 
-// Hàm mới: Chỉ lấy tên file cuối cùng, bỏ qua đường dẫn thư mục
+// Hàm chuẩn: Chỉ lấy tên file, bỏ đường dẫn thư mục và đuôi file
 function formatCaption(fileName) {
-    // Tách lấy phần sau dấu gạch chéo cuối cùng (nếu có)
     let baseName = fileName.split('/').pop(); 
-    // Sau đó mới tách bỏ phần mở rộng (.jpg, .png...)
     let name = baseName.split('.').slice(0, -1).join('.');
     return name.replace(/_/g, ' ').toUpperCase();
 }
@@ -159,16 +170,13 @@ async function loadProduct() {
 }
 
 /* ===============================
-APPLE STYLE ZOOM - NO OPACITY - NO FLICKER
+APPLE STYLE ZOOM LOGIC
 =============================== */
 const lightbox = document.getElementById("lightbox");
 const zoomImg = document.getElementById("zoom-img");
 let activeOriginImg = null;
 let isClosing = false;
-
-// Apple style cubic-bezier
 const appleBezier = "cubic-bezier(0.28, 0.84, 0.42, 1)";
-const duration = ".5s";
 
 function openSmoothZoom(originImg) {
     if (isClosing) return; 
@@ -187,15 +195,15 @@ function openSmoothZoom(originImg) {
     zoomImg.style.width = rect.width + "px";
     zoomImg.style.height = rect.height + "px";
     zoomImg.style.transform = `translate3d(${rect.left}px,${rect.top}px,0)`;
-    zoomImg.style.opacity = "1"; // Luôn rõ nét
+    zoomImg.style.opacity = "1";
 
-    zoomImg.offsetHeight; // Force reflow
+    zoomImg.offsetHeight;
 
     lightbox.classList.add("active");
     originImg.style.visibility = "hidden";
 
     requestAnimationFrame(() => {
-        zoomImg.style.transition = `transform ${duration} ${appleBezier}, width ${duration} ${appleBezier}, height ${duration} ${appleBezier}`;
+        zoomImg.style.transition = `transform .5s ${appleBezier}, width .5s ${appleBezier}, height .5s ${appleBezier}`;
         
         const winW = window.innerWidth;
         const winH = window.innerHeight;
@@ -220,9 +228,7 @@ function closeSmoothZoom() {
     isClosing = true;
 
     const rect = activeOriginImg.getBoundingClientRect();
-    
-    // Thu nhỏ về tọa độ cũ
-    zoomImg.style.transition = `transform ${duration} ${appleBezier}, width ${duration} ${appleBezier}, height ${duration} ${appleBezier}`;
+    zoomImg.style.transition = `transform .5s ${appleBezier}, width .5s ${appleBezier}, height .5s ${appleBezier}`;
     zoomImg.style.width = rect.width + "px";
     zoomImg.style.height = rect.height + "px";
     zoomImg.style.transform = `translate3d(${rect.left}px,${rect.top}px,0)`;
@@ -230,21 +236,16 @@ function closeSmoothZoom() {
     lightbox.classList.remove("active");
 
     const onEnd = () => {
-        // Hiện ảnh gốc TRƯỚC khi ẩn ảnh ảo để tránh flicker
         if (activeOriginImg) activeOriginImg.style.visibility = "visible";
         zoomImg.style.display = "none";
         document.body.classList.remove("lock-scroll");
         document.body.style.paddingRight = "";
-        
         activeOriginImg = null;
         isClosing = false;
         zoomImg.removeEventListener('transitionend', onEnd);
     };
-
     zoomImg.addEventListener('transitionend', onEnd);
-    
-    // Backup plan (450ms để nhanh hơn 500ms một chút, gối đầu frame)
-    setTimeout(() => { if(isClosing) onEnd(); }, 500);
+    setTimeout(() => { if(isClosing) onEnd(); }, 550);
 }
 
 function forceCloseImmediate() {
