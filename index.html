@@ -1,212 +1,461 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/png" href="images/favicon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-    <title>NL F.Lab – 3D Artist Portfolio</title>
 
-    <style>
-        /* =================================================
-        GLOBAL STYLE - FIX KHOẢNG CÁCH CHỮ
-        ================================================= */
-        body {
-            margin: 0; background: #0f0f0f; color: #e5e5e5;
-            font-family: 'Inter', -apple-system, sans-serif;
-            letter-spacing: 0.02em; /* Fix khoảng cách chữ đều hơn */
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-        }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-        header { padding: 80px 12% 20px 12%; position: relative; overflow: hidden; }
-        header::before {
-            content: ""; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
-            width: 800px; height: 800px; background: radial-gradient(circle, rgba(255,255,255,0.06), transparent 60%);
-            filter: blur(80px); pointer-events: none;
-        }
+<title>NL F.Lab — 3D Artist</title>
 
-        .brand { display: flex; align-items: flex-start; gap: 24px; margin-bottom: 5px; }
-        .logo { width: 100px; height: 100px; object-fit: contain; margin-top: 15px; }
-        h1 { font-size: 40px; font-weight: 400; letter-spacing: -0.02em; margin: 0; color: #fff; }
-        .subtitle { font-size: 17px; color: #aaa; font-weight: 300; margin: 0; }
-        .hero-role { margin-top: 4px; font-size: 11px; color: #555; letter-spacing: 3px; text-transform: uppercase; }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
-        .hero-divider {
-            width: 100px; height: 1px; margin: 25px auto 15px auto;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
-        }
+<style>
 
-        .hero-note {
-            text-align: center; font-size: 10px; letter-spacing: 3px; color: #444;
-            margin-bottom: 20px; text-transform: uppercase;
-        }
+/* ================================
+GLOBAL
+================================ */
 
-        .section { padding: 30px 12%; }
+body{
 
-        /* =================================================
-        ABOUT SECTION - FIXED TEXT ALIGNMENT
-        ================================================= */
-        .about { max-width: 850px; }
-        .about h2 { font-size: 19px; margin-bottom: 15px; font-weight: 500; color: #fff; }
-        
-        .about-intro { 
-            color: #aaa; 
-            font-size: 15px; 
-            margin-bottom: 35px; 
-            font-weight: 300; 
-            text-align: left; /* Bỏ justify để chữ đều tăm tắp */
-            max-width: 750px;
-            hyphens: auto;
-        }
-        .about-intro strong { color: #eee; font-weight: 400; }
-        
-        .about-highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 40px; }
-        .highlight-title { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: #555; margin-bottom: 8px; }
-        .highlight-text { color: #bbb; font-size: 13px; font-weight: 300; line-height: 1.6; }
+margin:0;
+background:#0c0c0c;
+color:#e5e5e5;
+font-family:'Inter',sans-serif;
+line-height:1.6;
+-webkit-font-smoothing:antialiased;
 
-        .skills { display: flex; flex-wrap: wrap; gap: 10px; }
-        .skill {
-            border: 1px solid #222; padding: 6px 16px; font-size: 11px;
-            border-radius: 30px; background: #111; color: #777; transition: 0.3s;
-        }
-        .skill:hover { border-color: #555; color: #fff; }
+}
 
-        /* =================================================
-        TAB FILTER
-        ================================================= */
-        .filter { margin-bottom: 40px; display: flex; flex-wrap: wrap; gap: 10px; }
-        .filter-btn {
-            background: transparent; border: none; color: #555; font-size: 11px;
-            cursor: pointer; padding: 8px 20px; border-radius: 8px; transition: all 0.4s ease;
-            text-transform: uppercase; letter-spacing: 1.5px; position: relative;
-        }
-        .filter-btn.active {
-            color: #fff; background: rgba(255,255,255,0.02);
-            box-shadow: inset 0 -2px 0 0 #fff, 0 5px 15px -5px rgba(255,255,255,0.1);
-        }
-        .filter-btn.active::before {
-            content: ""; position: absolute; inset: 0; border-radius: 8px; padding: 1px; 
-            background: linear-gradient(to bottom, transparent 50%, rgba(255,255,255,0.2) 100%);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
-        }
+.section{
 
-        /* =================================================
-        PROJECT GRID - CENTER HOVER
-        ================================================= */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
-        .project { position: relative; overflow: hidden; border-radius: 16px; aspect-ratio: 1 / 1; background: #000; }
-        .project img { width: 100%; height: 100%; object-fit: cover; display: block; transition: 0.8s cubic-bezier(0.2, 1, 0.2, 1); }
-        .project-title {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%);
-            width: 80%; text-align: center; font-size: 13px; font-weight: 400; color: #fff;
-            letter-spacing: 2px; text-transform: uppercase; opacity: 0;
-            transition: 0.5s cubic-bezier(0.2, 1, 0.2, 1); z-index: 2; pointer-events: none;
-        }
-        .project:hover img { transform: scale(1.08); filter: brightness(0.3) blur(2px); }
-        .project:hover .project-title { opacity: 1; transform: translate(-50%, -50%); }
+padding:80px 12%;
 
-        /* =================================================
-        CONTACT & FOOTER
-        ================================================= */
-        .contact h2 { font-size: 19px; margin-bottom: 20px; font-weight: 500; }
-        .contact-links { display: flex; flex-wrap: wrap; gap: 35px; }
-        .contact a { color: #555; text-decoration: none; font-size: 12px; transition: 0.3s; letter-spacing: 1px; }
-        .contact a:hover { color: #fff; }
+}
 
-        footer { padding: 40px 12%; color: #333; font-size: 10px; border-top: 1px solid #1a1a1a; margin-top: 30px; }
+/* ================================
+HERO
+================================ */
 
-        .fade { opacity: 0; transform: translateY(15px); transition: 0.7s ease-out; }
-        .fade.show { opacity: 1; transform: translateY(0); }
+.hero{
 
-        @media (max-width: 768px) {
-            header { padding: 60px 8% 20px 8%; }
-            .section { padding: 30px 8%; }
-            .grid { grid-template-columns: 1fr; }
-        }
-    </style>
+padding:120px 12% 80px 12%;
+position:relative;
+
+}
+
+.hero::before{
+
+content:"";
+position:absolute;
+top:-200px;
+left:50%;
+transform:translateX(-50%);
+width:900px;
+height:900px;
+background:radial-gradient(circle,rgba(255,255,255,0.06),transparent 60%);
+filter:blur(120px);
+
+}
+
+.brand{
+
+display:flex;
+align-items:center;
+gap:24px;
+
+}
+
+.logo{
+
+width:90px;
+
+}
+
+.hero-title{
+
+font-size:46px;
+margin:0;
+
+}
+
+.hero-sub{
+
+color:#999;
+margin-top:4px;
+
+}
+
+.hero-role{
+
+margin-top:6px;
+font-size:11px;
+letter-spacing:3px;
+text-transform:uppercase;
+color:#555;
+
+}
+
+/* ================================
+LIQUID TAB
+================================ */
+
+.filter{
+
+position:relative;
+display:inline-flex;
+padding:6px;
+background:#161616;
+border-radius:40px;
+border:1px solid rgba(255,255,255,0.05);
+margin-bottom:50px;
+
+}
+
+.liquid{
+
+position:absolute;
+top:0;
+left:0;
+height:100%;
+background:linear-gradient(135deg,#ffffff22,#ffffff08);
+border-radius:40px;
+transition:all .45s cubic-bezier(.22,1,.36,1);
+box-shadow:0 10px 30px rgba(0,0,0,0.7);
+
+}
+
+.tab{
+
+border:none;
+background:none;
+color:#777;
+padding:10px 26px;
+cursor:pointer;
+font-size:11px;
+letter-spacing:1.5px;
+text-transform:uppercase;
+position:relative;
+z-index:2;
+
+}
+
+.tab.active{
+
+color:#fff;
+
+}
+
+/* ================================
+PROJECT GRID
+================================ */
+
+.grid{
+
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+gap:34px;
+
+}
+
+.project{
+
+position:relative;
+overflow:hidden;
+border-radius:18px;
+aspect-ratio:1/1;
+background:#000;
+
+}
+
+.project img{
+
+width:100%;
+height:100%;
+object-fit:cover;
+
+transition:1s cubic-bezier(.2,1,.2,1);
+
+}
+
+.project-overlay{
+
+position:absolute;
+inset:0;
+background:linear-gradient(
+transparent,
+rgba(0,0,0,0.7)
+);
+
+opacity:0;
+transition:.5s;
+
+}
+
+.project-title{
+
+position:absolute;
+bottom:30px;
+left:30px;
+
+font-size:14px;
+letter-spacing:2px;
+text-transform:uppercase;
+
+opacity:0;
+transform:translateY(10px);
+transition:.5s;
+
+}
+
+.project:hover img{
+
+transform:scale(1.1);
+
+}
+
+.project:hover .project-overlay{
+
+opacity:1;
+
+}
+
+.project:hover .project-title{
+
+opacity:1;
+transform:translateY(0);
+
+}
+
+/* ================================
+ABOUT
+================================ */
+
+.about{
+
+max-width:800px;
+
+}
+
+.about h2{
+
+font-size:20px;
+
+}
+
+.about p{
+
+color:#aaa;
+
+}
+
+/* ================================
+CONTACT
+================================ */
+
+.contact-links{
+
+display:flex;
+gap:40px;
+margin-top:20px;
+
+}
+
+.contact-links a{
+
+color:#666;
+text-decoration:none;
+
+}
+
+.contact-links a:hover{
+
+color:#fff;
+
+}
+
+/* ================================
+ANIMATION
+================================ */
+
+.fade{
+
+opacity:0;
+transform:translateY(20px);
+transition:.8s;
+
+}
+
+.fade.show{
+
+opacity:1;
+transform:translateY(0);
+
+}
+
+</style>
+
 </head>
 
 <body>
-    <header>
-        <div class="brand">
-            <img src="images/logo.png" class="logo" alt="NL F.Lab">
-            <div class="hero-text">
-                <h1>NL F.Lab</h1>
-                <div class="subtitle">3D Artist</div>
-                <div class="hero-role">Product Visualization</div>
-            </div>
-        </div>
-    </header>
 
-    <div class="hero-divider"></div>
-    <div class="hero-note">Selected Work</div>
+<!-- HERO -->
 
-    <section class="section about fade">
-        <h2>About</h2>
-        <div class="about-intro">
-            I am <strong>Nghia Le</strong>, a Senior 3D Artist with over 7 years of professional experience specializing in <strong>Product Visualization</strong> and <strong>Hard Surface Modeling</strong>. 
-            With a solid background in Information Technology, I don't just create high-end renders; I focus on <strong>Workflow Optimization</strong> and building efficient 3D production systems. 
-            Having served as a <strong>Team Leader</strong> at Loft3DI, I am dedicated to the intersection of technical precision and premium aesthetics, ensuring every project meets the highest industry standards.
-        </div>
-        
-        <div class="about-highlights">
-            <div>
-                <div class="highlight-title">Professional Experience</div>
-                <div class="highlight-text">
-                    • Senior 3D Modeler & Team Leader at Loft3DI (2021-Present)<br>
-                    • 3D Mentor & Trainer at Cennos Software (2018-2021)
-                </div>
-            </div>
-            <div>
-                <div class="highlight-title">Core Focus</div>
-                <div class="highlight-text">
-                    • High-end Furniture & Product Visuals<br>
-                    • Workflow Automation & Tool Implementation
-                </div>
-            </div>
-            <div>
-                <div class="highlight-title">Technical Expertise</div>
-                <div class="highlight-text">
-                    • 3ds Max, Blender, Substance, V-Ray<br>
-                    • Bachelor of IT from HUBT
-                </div>
-            </div>
-        </div>
+<section class="hero">
 
-        <div class="skills">
-            <div class="skill">3ds Max</div>
-            <div class="skill">Blender</div>
-            <div class="skill">Substance</div>
-            <div class="skill">V-Ray</div>
-            <div class="skill">Workflow Systems</div>
-        </div>
-    </section>
+<div class="brand">
 
-    <section class="section fade">
-        <div class="filter" id="filterBar"></div>
-        <div class="grid" id="projectGrid"></div>
-    </section>
+<img src="images/logo.png" class="logo">
 
-    <section class="section contact fade">
-        <h2>Contact</h2>
-        <div class="contact-links">
-            <a href="mailto:nghiale.f.lab@gmail.com">Email</a>
-            <a href="#" target="_blank">ArtStation</a>
-            <a href="#" target="_blank">LinkedIn</a>
-        </div>
-    </section>
+<div>
 
-    <footer>© NL F.Lab – 2026</footer>
+<h1 class="hero-title">NL F.Lab</h1>
+<div class="hero-sub">3D Artist</div>
+<div class="hero-role">Product Visualization</div>
 
-    <script>
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add("show"); });
-        }, { threshold: 0.1 });
-        document.querySelectorAll(".fade").forEach(el => observer.observe(el));
-    </script>
-    <script src="js/loadproduct.js"></script>
+</div>
+
+</div>
+
+</section>
+
+<!-- PROJECTS -->
+
+<section class="section">
+
+<div class="filter" id="tabs">
+
+<div class="liquid" id="liquid"></div>
+
+<button class="tab active">All</button>
+<button class="tab">Furniture</button>
+<button class="tab">Decor</button>
+<button class="tab">Props</button>
+
+</div>
+
+<div class="grid">
+
+<div class="project">
+
+<img src="images/demo1.jpg">
+
+<div class="project-overlay"></div>
+
+<div class="project-title">
+
+Oak Chair
+
+</div>
+
+</div>
+
+<div class="project">
+
+<img src="images/demo2.jpg">
+
+<div class="project-overlay"></div>
+
+<div class="project-title">
+
+Modern Table
+
+</div>
+
+</div>
+
+<div class="project">
+
+<img src="images/demo3.jpg">
+
+<div class="project-overlay"></div>
+
+<div class="project-title">
+
+Lamp
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ABOUT -->
+
+<section class="section about fade">
+
+<h2>About</h2>
+
+<p>
+
+I am Nghia Le, a Senior 3D Artist specializing in Product Visualization and Hard Surface Modeling with more than seven years of professional experience.
+
+</p>
+
+</section>
+
+<!-- CONTACT -->
+
+<section class="section fade">
+
+<h2>Contact</h2>
+
+<div class="contact-links">
+
+<a href="#">Email</a>
+<a href="#">ArtStation</a>
+<a href="#">LinkedIn</a>
+
+</div>
+
+</section>
+
+<script>
+
+/* liquid tab */
+
+const tabs=document.querySelectorAll(".tab")
+const liquid=document.getElementById("liquid")
+
+function move(el){
+
+liquid.style.width=el.offsetWidth+"px"
+liquid.style.left=el.offsetLeft+"px"
+
+}
+
+tabs.forEach(tab=>{
+
+tab.onclick=()=>{
+
+tabs.forEach(t=>t.classList.remove("active"))
+tab.classList.add("active")
+move(tab)
+
+}
+
+})
+
+move(document.querySelector(".tab.active"))
+
+/* reveal animation */
+
+const observer=new IntersectionObserver(entries=>{
+
+entries.forEach(e=>{
+
+if(e.isIntersecting)
+e.target.classList.add("show")
+
+})
+
+})
+
+document.querySelectorAll(".fade").forEach(el=>observer.observe(el))
+
+</script>
+
 </body>
 </html>
