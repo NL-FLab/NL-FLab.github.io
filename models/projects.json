@@ -8,7 +8,7 @@
   },
   {
     "slug": "machine_001",
-    "featured": true,
+    "featured": false,
     "categories": ["machine"],
     "priority": 1,
     "date": "2026-03-06"
