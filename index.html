@@ -2,79 +2,113 @@
 <html lang="vi">
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="Portfolio of Nghia Le – 3D Artist specializing in product visualization and hard surface modeling">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" href="images/favicon.png">
     <title>NL F.Lab – 3D Artist</title>
 
     <style>
-        /* --- GIỮ NGUYÊN GLOBAL STYLE CỦA ÔNG --- */
+        /* =================================================
+        GIỮ NGUYÊN STYLE GỐC CỦA NGHĨA
+        ================================================= */
         body { margin: 0; background: #0f0f0f; color: #e5e5e5; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; letter-spacing: 0.3px; line-height: 1.6; }
-
         header { padding: 140px 12% 60px 12%; position: relative; overflow: hidden; }
         .brand { display: flex; align-items: flex-start; gap: 18px; margin-bottom: 12px; }
         .logo { width: 80px; height: 80px; object-fit: contain; opacity: 0.9; margin-top: 27px; }
         h1 { font-size: 46px; font-weight: 500; letter-spacing: 0.5px; margin: 0; }
         .subtitle { font-size: 18px; color: #aaa; letter-spacing: 0.5px; margin: 0; }
         .hero-role { margin-top: 2px; font-size: 13px; color: #777; letter-spacing: 2px; text-transform: uppercase; }
-
-        /* HERO GLOW - Tối ưu hiệu năng bằng will-change */
+        
         header::before {
             content: ""; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
-            width: 800px; height: 800px;
-            background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 60%);
-            filter: blur(80px); pointer-events: none; will-change: transform;
+            width: 800px; height: 800px; background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 60%);
+            filter: blur(80px); pointer-events: none;
         }
 
-        .hero-divider { width: 120px; height: 1px; margin: 50px auto; background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent); box-shadow: 0 0 8px rgba(255,255,255,0.2); }
+        .hero-divider { width: 120px; height: 1px; margin: 50px auto; background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent); }
         .hero-note { text-align: center; font-size: 12px; letter-spacing: 2px; color: #666; margin-bottom: 40px; text-transform: uppercase; }
-
         .section { padding: 70px 12%; }
 
-        /* SKILLS */
-        .skills { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
-        .skill { border: 1px solid #333; padding: 6px 16px; font-size: 12px; border-radius: 20px; background: #141414; color: #999; transition: 0.3s; }
-        .skill:hover { border-color: #fff; color: #fff; background: #1a1a1a; }
+        /* GIỮ NGUYÊN ABOUT STYLE CỦA ÔNG */
+        .about { max-width: 720px; }
+        .about h2 { font-size: 22px; margin-bottom: 20px; font-weight: 500; }
+        .about-intro { color: #aaa; max-width: 680px; font-size: 16px; line-height: 1.7; margin-bottom: 50px; }
+        .about-highlights { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 40px; margin-bottom: 50px; }
+        .highlight-title { font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: #888; margin-bottom: 10px; }
+        .highlight-text { color: #ddd; font-size: 15px; line-height: 1.6; }
 
-        /* FILTER BAR */
-        .filter { margin-bottom: 50px; display: flex; flex-wrap: wrap; gap: 24px; min-height: 40px; }
-        .filter-btn { background: none; border: none; color: #666; font-size: 13px; cursor: pointer; padding: 8px 0; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
-        .filter-btn:hover, .filter-btn.active { color: #fff; }
-        .filter-btn.active { border-bottom: 2px solid #fff; }
+        .skills { display: flex; flex-wrap: wrap; gap: 14px; }
+        .skill { border: 1px solid #333; padding: 8px 14px; font-size: 13px; border-radius: 20px; background: #141414; color: #aaa; transition: 0.25s; }
+        .skill:hover { border-color: #777; color: white; }
 
-        /* PROJECT GRID - Sửa lỗi co giãn card */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* auto-fill thay vì auto-fit */
-            gap: 50px;
-            max-width: 1400px;
-            min-height: 400px; /* Tránh giật layout khi load JS */
+        /* =================================================
+        NÂNG CẤP FILTER TAB (HÌNH KHỐI CHUYÊN NGHIỆP)
+        ================================================= */
+        .filter {
+            margin-bottom: 60px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px; /* Thu hẹp khoảng cách nút */
+            padding: 6px;
+            background: rgba(255,255,255,0.03); /* Nền mờ cực nhẹ */
+            border-radius: 50px;
+            width: fit-content;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        /* PROJECT CARD */
-        .project-link { text-decoration: none; color: inherit; display: block; }
-        .project { position: relative; overflow: hidden; border-radius: 10px; background: #1a1a1a; }
-        .project img { width: 100%; height: 380px; object-fit: cover; display: block; transition: 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
-        .overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%); opacity: 0; transition: 0.4s ease; }
-        .project-title { position: absolute; bottom: 24px; left: 24px; font-size: 15px; letter-spacing: 1px; font-weight: 500; opacity: 0; transform: translateY(10px); transition: 0.4s ease; }
+        .filter-btn {
+            background: transparent;
+            border: none;
+            color: #777;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 10px 24px;
+            border-radius: 40px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            text-transform: capitalize; /* Chữ hoa đầu mỗi từ */
+            letter-spacing: 0.5px;
+        }
+
+        .filter-btn:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .filter-btn.active {
+            color: #000;
+            background: #fff; /* Nút active màu trắng nổi bật */
+            box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+        }
+
+        /* =================================================
+        PROJECT GRID & CARD (GIỮ NGUYÊN LOGIC CỦA ÔNG)
+        ================================================= */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 60px; max-width: 1200px; }
+        .project { position: relative; overflow: hidden; border-radius: 8px; background: #111; }
+        .project img { width: 100%; height: 340px; object-fit: cover; display: block; transition: 0.5s ease; }
+        .overlay { position: absolute; inset: 0; background: linear-gradient(transparent, rgba(0,0,0,0.85)); opacity: 0; transition: 0.35s; }
+        .project-title { position: absolute; bottom: 20px; left: 22px; font-size: 14px; letter-spacing: 1px; opacity: 0; transform: translateY(12px); transition: 0.35s; }
 
         .project:hover img { transform: scale(1.05); }
         .project:hover .overlay, .project:hover .project-title { opacity: 1; transform: translateY(0); }
 
         /* CONTACT & FOOTER */
-        .contact a { display: inline-block; margin-right: 30px; margin-bottom: 10px; color: #888; text-decoration: none; font-size: 14px; transition: 0.3s; }
-        .contact a:hover { color: #fff; }
-        footer { padding: 60px 12%; color: #444; font-size: 12px; border-top: 1px solid #1a1a1a; }
+        .contact { max-width: 600px; }
+        .contact h2 { font-size: 22px; margin-bottom: 20px; }
+        .contact a { display: block; margin-bottom: 10px; color: #aaa; text-decoration: none; transition: 0.25s; }
+        .contact a:hover { color: white; }
+        footer { padding: 80px 12%; color: #555; font-size: 13px; border-top: 1px solid #1a1a1a; margin-top: 50px;}
 
         /* ANIMATION */
-        .fade { opacity: 0; transform: translateY(20px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .fade { opacity: 0; transform: translateY(30px); transition: 0.8s ease; }
         .fade.show { opacity: 1; transform: translateY(0); }
 
         @media (max-width: 768px) {
-            header { padding: 100px 8% 40px 8%; }
-            .grid { grid-template-columns: 1fr; gap: 30px; }
-            .project img { height: 300px; }
-            h1 { font-size: 36px; }
+            header { padding: 80px 8% 50px 8%; }
+            .section { padding: 50px 8%; }
+            .grid { grid-template-columns: 1fr; gap: 40px; }
+            .project img { height: 260px; }
+            .filter { border-radius: 15px; padding: 10px; } /* Mobile bớt cong */
         }
     </style>
 </head>
@@ -83,7 +117,7 @@
 
     <header>
         <div class="brand">
-            <img src="images/logo.png" class="logo" alt="NL F.Lab Logo">
+            <img src="images/logo.png" class="logo" alt="NL F.Lab logo">
             <div class="hero-text">
                 <h1>NL F.Lab</h1>
                 <div class="subtitle">3D Artist</div>
@@ -95,10 +129,10 @@
     <div class="hero-divider"></div>
     <div class="hero-note">Selected Work</div>
 
-    <section class="section about fade">
+    <div class="section about fade">
         <h2>About</h2>
         <p class="about-intro">
-            Hi, I'm <strong>Nghia Le</strong>, a 3D Artist with more than 7 years of experience in product visualization and 3D production pipelines. I focus on high-quality assets that reflect precision and aesthetic standards.
+            Hi, I'm <strong>Nghia Le</strong>, a 3D Artist with more than 7 years of experience in product visualization and 3D production pipelines.
         </p>
 
         <div class="about-highlights">
@@ -117,48 +151,41 @@
         </div>
 
         <div class="skills">
-            <span class="skill">3ds Max</span>
-            <span class="skill">Blender</span>
-            <span class="skill">Substance Painter</span>
-            <span class="skill">Photoshop</span>
-            <span class="skill">V-Ray</span>
-            <span class="skill">Unreal Engine</span>
+            <div class="skill">3ds Max</div>
+            <div class="skill">Blender</div>
+            <div class="skill">Substance Painter</div>
+            <div class="skill">Photoshop</div>
+            <div class="skill">V-Ray</div>
+            <div class="skill">Hard Surface</div>
         </div>
-    </section>
+    </div>
 
-    <section class="section fade">
-        <div class="filter" id="filterBar"></div>
+    <div class="section fade">
+        <div class="filter" id="filterBar">
+            </div>
         <div class="grid" id="projectGrid">
             </div>
-    </section>
+    </div>
 
-    <section class="section contact fade">
+    <div class="section contact fade">
         <h2>Contact</h2>
-        <div class="contact-links">
-            <a href="mailto:nghiale.f.lab@gmail.com">Email</a>
-            <a href="https://artstation.com/" target="_blank">ArtStation</a>
-            <a href="https://linkedin.com/" target="_blank">LinkedIn</a>
-            <a href="https://sketchfab.com/" target="_blank">Sketchfab</a>
-        </div>
-    </section>
+        <a href="mailto:nghiale.f.lab@gmail.com">Email</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">ArtStation</a>
+        <a href="#">Sketchfab</a>
+    </div>
 
-    <footer>
-        <p>© 2026 NL F.Lab. All rights reserved.</p>
-    </footer>
+    <footer>© NL F.Lab</footer>
 
     <script>
-        /* SCROLL FADE ANIMATION */
+        // Animation xử lý cuộn trang
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
-                if(entry.isIntersecting) {
-                    entry.target.classList.add("show");
-                }
+                if(entry.isIntersecting) entry.target.classList.add("show");
             });
-        }, { threshold: 0.1 });
-
+        });
         document.querySelectorAll(".fade").forEach(el => observer.observe(el));
     </script>
-    
     <script src="js/loadproduct.js"></script>
 </body>
 </html>
