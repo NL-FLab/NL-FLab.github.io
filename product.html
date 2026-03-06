@@ -6,128 +6,71 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <title>NL F.Lab | Portfolio Details</title>
     <style>
-        /* =================================================
-        GLOBAL & SYNC
-        ================================================= */
         body {
             margin: 0; background: #0c0c0c; color: #e5e5e5;
-            font-family: 'Inter', -apple-system, sans-serif;
-            overflow-x: hidden; line-height: 1.6;
+            font-family: 'Inter', sans-serif; overflow-x: hidden; line-height: 1.6;
             -webkit-font-smoothing: antialiased;
         }
 
+        /* Khi khóa cuộn, vẫn giữ nguyên vị trí trang */
+        body.lock-scroll {
+            overflow: hidden !important;
+            height: 100vh;
+        }
+
         .container { max-width: 1100px; margin: 0 auto; padding: 0 12% 80px 12%; }
-
-        /* BACK BUTTON */
         .back { padding: 40px 12% 20px 12%; }
-        .back a {
-            font-size: 10px; color: #555; text-decoration: none;
-            text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;
-        }
+        .back a { font-size: 10px; color: #555; text-decoration: none; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; }
         .back a:hover { color: #fff; }
+        h1 { font-weight: 400; font-size: clamp(26px, 4vw, 36px); margin: 10px 0 40px 0; color: #fff; }
 
-        h1 {
-            font-weight: 400; font-size: clamp(26px, 4vw, 36px);
-            margin: 10px 0 40px 0; letter-spacing: -0.01em; color: #fff;
-        }
-
-        /* TOP SECTION */
-        .top-section {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 80px; align-items: center; margin-bottom: 80px;
-        }
-
+        .top-section { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; margin-bottom: 80px; }
         .info { color: #888; font-size: 14px; font-weight: 300; }
-        .info strong { 
-            color: #fff; font-weight: 400; display: block; 
-            margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
-        }
-        #description { margin-bottom: 30px; line-height: 1.8; }
-
+        .info strong { color: #fff; font-weight: 400; display: block; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; }
+        #description { margin-bottom: 30px; }
         .tech-list { list-style: none; padding: 0; margin: 0; }
-        .tech-list li {
-            padding: 8px 0; border-bottom: 1px solid #1a1a1a;
-            font-size: 12px; display: flex; justify-content: space-between;
-        }
-        .tech-list li span { color: #444; text-transform: uppercase; font-size: 10px; letter-spacing: 1px; }
+        .tech-list li { padding: 8px 0; border-bottom: 1px solid #1a1a1a; font-size: 12px; display: flex; justify-content: space-between; }
+        .tech-list li span { color: #444; text-transform: uppercase; font-size: 10px; }
         .tech-list li b { color: #aaa; font-weight: 400; }
+        .viewer iframe { width: 100%; aspect-ratio: 1/1; border: none; border-radius: 24px; background: #111; }
 
-        .viewer iframe {
-            width: 100%; aspect-ratio: 1/1; border: none; 
-            border-radius: 24px; background: #111; box-shadow: 0 30px 60px rgba(0,0,0,0.4);
-        }
-
-        /* =================================================
-        IMAGES & CAPTION
-        ================================================= */
         .hero-section { margin-bottom: 60px; display: flex; justify-content: center; }
-
-        .img-wrapper {
-            position: relative; overflow: hidden; border-radius: 24px; 
-            line-height: 0; cursor: zoom-in; background: #111;
-        }
-
-        .img-wrapper img {
-            width: 100%; height: auto;
-            transition: transform 0.8s cubic-bezier(0.2, 1, 0.2, 1), filter 0.8s;
-        }
-
+        .img-wrapper { position: relative; overflow: hidden; border-radius: 24px; line-height: 0; cursor: zoom-in; background: #111; }
+        .img-wrapper img { width: 100%; transition: transform 0.8s cubic-bezier(0.2, 1, 0.2, 1), filter 0.8s; }
         .hero-section .img-wrapper { width: 75%; }
 
-        /* Label với nền mờ kiểu Apple - Đã chỉnh lại Width */
         .img-caption {
-            position: absolute; bottom: 15px; left: 15px;
-            font-size: 9px; color: rgba(255,255,255,0.8);
-            text-transform: uppercase; letter-spacing: 1.2px;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            padding: 6px 16px; border-radius: 20px;
-            min-width: 100px; text-align: center;
-            opacity: 0; transform: translateY(10px);
-            transition: all 0.5s cubic-bezier(0.2, 1, 0.2, 1);
-            pointer-events: none; z-index: 2;
+            position: absolute; bottom: 15px; left: 15px; font-size: 9px; color: rgba(255,255,255,0.8);
+            text-transform: uppercase; letter-spacing: 1.2px; background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px); padding: 6px 16px; border-radius: 20px; min-width: 100px;
+            text-align: center; opacity: 0; transform: translateY(10px);
+            transition: all 0.5s cubic-bezier(0.2, 1, 0.2, 1); pointer-events: none; z-index: 2;
             border: 1px solid rgba(255,255,255,0.1);
         }
-
         .img-wrapper:hover img { transform: scale(1.03); filter: brightness(1.1); }
         .img-wrapper:hover .img-caption { opacity: 1; transform: translateY(0); }
 
-        /* THANH NGĂN PHÁT SÁNG */
-        .section-divider {
-            width: 150px; height: 1px; margin: 80px auto;
-            background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 80%);
-            box-shadow: 0 0 10px rgba(255,255,255,0.1);
-        }
-
+        .section-divider { width: 150px; height: 1px; margin: 80px auto; background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 80%); }
         .image-section { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
 
-        /* =================================================
-        SMOOTH ZOOM LIGHTBOX (FIXED VERSION)
-        ================================================= */
+        /* ZOOM UI */
         #lightbox {
             position: fixed; inset: 0; background: rgba(0,0,0,0);
             z-index: 9999; pointer-events: none; transition: background 0.6s ease;
         }
         #lightbox.active { background: rgba(0,0,0,0.98); pointer-events: auto; }
 
-        /* Ảnh ảo để thực hiện chuyển động zoom */
         #zoom-img {
-            position: fixed; z-index: 10000;
-            object-fit: contain; border-radius: 24px;
-            transition: all 0.7s cubic-bezier(0.2, 1, 0.2, 1);
-            pointer-events: none; will-change: all;
-            display: none;
+            position: fixed; z-index: 10000; object-fit: contain; border-radius: 24px;
+            transition: all 0.7s cubic-bezier(0.2, 1, 0.2, 1); pointer-events: none;
+            display: none; will-change: top, left, width, height;
         }
-
-        /* Phẳng hóa bo tròn khi ảnh ra giữa */
         #lightbox.active #zoom-img { border-radius: 4px; }
 
-        /* RESPONSIVE */
         @media (max-width: 850px) {
             .container { padding: 0 6% 60px 6%; }
             .top-section { grid-template-columns: 1fr; gap: 40px; }
             .hero-section .img-wrapper { width: 100%; }
-            .image-section { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -137,37 +80,28 @@
 
     <div class="container">
         <h1 id="title">Loading...</h1>
-
         <div class="top-section">
             <div class="info">
                 <strong>Project Insight</strong>
                 <div id="description"></div>
-                
                 <strong>Technical Specs</strong>
                 <ul class="tech-list" id="techDetails"></ul>
             </div>
-            <div class="viewer" id="viewerBlock">
-                <iframe id="viewer"></iframe>
-            </div>
+            <div class="viewer" id="viewerBlock"><iframe id="viewer"></iframe></div>
         </div>
-
         <div class="hero-section">
             <div class="img-wrapper" id="heroWrapper">
                 <img id="hero" alt="">
                 <div class="img-caption" id="heroCaption"></div>
             </div>
         </div>
-
         <div class="section-divider"></div>
-
         <div class="image-section" id="gallery"></div>
     </div>
 
-    <div id="lightbox">
-        <img id="zoom-img" alt="">
-    </div>
+    <div id="lightbox"><img id="zoom-img" alt=""></div>
 
-<script>
+    <script>
         const params = new URLSearchParams(window.location.search);
         const projectSlug = params.get("project");
 
@@ -210,7 +144,7 @@
                     cap.innerText = formatCaption(name);
                     wrapper.append(img, cap);
                     wrapper.onclick = () => openSmoothZoom(img);
-                    gallery.appendChild(wrapper);
+                    gallery.append(wrapper);
                 });
 
                 if (data.viewer?.enabled) {
@@ -221,26 +155,19 @@
             } catch (err) { console.error(err); }
         }
 
-        // =================================================
-        // ULTIMATE SMOOTH ZOOM - NO JUMP - NO DARK BUG
-        // =================================================
         const lightbox = document.getElementById("lightbox");
         const zoomImg = document.getElementById("zoom-img");
         let activeOriginImg = null;
 
         function openSmoothZoom(originImg) {
-            // Nếu đang có một ảnh đang zoom, đóng nó lại ngay lập tức trước khi mở cái mới
-            if (activeOriginImg) closeSmoothZoom();
-
             activeOriginImg = originImg;
             const rect = originImg.getBoundingClientRect();
             
-            // 1. Xử lý Scrollbar jump (Bù padding để trang web không bị giật)
+            // Bù padding tránh giật layout
             const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
             document.body.style.paddingRight = scrollBarWidth + "px";
-            document.body.style.overflow = "hidden";
+            document.body.classList.add('lock-scroll');
 
-            // 2. Setup ảnh ảo
             zoomImg.src = originImg.src;
             zoomImg.style.display = "block";
             zoomImg.style.transition = "none";
@@ -254,7 +181,6 @@
             lightbox.classList.add("active");
             originImg.style.visibility = "hidden";
 
-            // 3. Animation bung ra
             zoomImg.style.transition = "all 0.6s cubic-bezier(0.2, 1, 0.2, 1)";
             const winW = window.innerWidth;
             const winH = window.innerHeight;
@@ -262,11 +188,8 @@
             const winRatio = winW / winH;
 
             let tw, th;
-            if (imgRatio > winRatio) {
-                tw = winW * 0.9; th = tw / imgRatio;
-            } else {
-                th = winH * 0.9; tw = th * imgRatio;
-            }
+            if (imgRatio > winRatio) { tw = winW * 0.9; th = tw / imgRatio; }
+            else { th = winH * 0.9; tw = th * imgRatio; }
 
             zoomImg.style.top = (winH - th) / 2 + "px";
             zoomImg.style.left = (winW - tw) / 2 + "px";
@@ -277,7 +200,7 @@
         function closeSmoothZoom() {
             if (!activeOriginImg) return;
             
-            const currentImg = activeOriginImg; // Tạo bản sao để tránh bị ghi đè khi click nhanh
+            const currentImg = activeOriginImg;
             const rect = currentImg.getBoundingClientRect();
             
             zoomImg.style.top = rect.top + "px";
@@ -287,22 +210,22 @@
             
             lightbox.classList.remove("active");
 
-            const finishClose = () => {
+            const onFinish = () => {
                 currentImg.style.visibility = "visible";
-                // Chỉ ẩn zoomImg nếu đây là ảnh cuối cùng đang được đóng
-                if (activeOriginImg === currentImg) {
-                    zoomImg.style.display = "none";
-                    document.body.style.overflow = "";
-                    document.body.style.paddingRight = "";
-                }
-                zoomImg.removeEventListener('transitionend', finishClose);
+                zoomImg.style.display = "none";
+                
+                // MỞ KHÓA LĂN CHUỘT TẠI ĐÂY
+                document.body.classList.remove('lock-scroll');
+                document.body.style.paddingRight = "";
+                
+                zoomImg.removeEventListener('transitionend', onFinish);
             };
-            
-            zoomImg.addEventListener('transitionend', finishClose);
-            activeOriginImg = null; 
+            zoomImg.addEventListener('transitionend', onFinish);
+            activeOriginImg = null;
         }
 
         lightbox.onclick = closeSmoothZoom;
+        window.addEventListener('keydown', (e) => { if (e.key === "Escape") closeSmoothZoom(); });
 
         loadProduct();
     </script>
