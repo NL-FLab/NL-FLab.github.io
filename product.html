@@ -12,7 +12,7 @@
             --text-main: #e5e5e5;
             --text-dim: #888;
             --accent: #222;
-            --glow-color: rgba(0, 255, 255, 0.4); /* Màu phát sáng Cyan */
+            --glow-color: rgba(0, 255, 255, 0.6); 
             --ease: cubic-bezier(0.2, 0, 0.2, 1); 
         }
 
@@ -44,10 +44,7 @@
             border-left: 2px solid #222; padding-left: 12px;
         }
 
-        #description { 
-            color: var(--text-dim); font-size: 14px; line-height: 1.8; 
-            margin: 0; text-align: justify; letter-spacing: 0.01em;
-        }
+        #description { color: var(--text-dim); font-size: 14px; line-height: 1.8; margin: 0; text-align: justify; }
 
         .tech-list{list-style:none; padding:0; margin:0;}
         .tech-list li{
@@ -55,7 +52,7 @@
             font-size: 12px; display: flex; justify-content: space-between;
         }
         .tech-list li span{color: var(--accent); text-transform: uppercase; letter-spacing: 1px;}
-        .tech-list li b{font-weight: 400; color: #aaa; letter-spacing: 0.02em;}
+        .tech-list li b{font-weight: 400; color: #aaa;}
 
         .viewer-container {
             width:100%; aspect-ratio:16/9; border-radius:8px;
@@ -65,6 +62,7 @@
         .viewer-container.loaded { opacity: 1; }
         .viewer-container iframe{ width:100%; height:100%; border:none; }
 
+        /* HERO - 40% Width */
         .hero-section {
             margin: 0 auto 60px auto;
             width: 40%;
@@ -85,6 +83,7 @@
             opacity: 0.2;
         }
 
+        /* GALLERY - 3 Cột (30%) */
         .image-section{
             display:grid; 
             grid-template-columns: repeat(3, 1fr); 
@@ -93,33 +92,49 @@
 
         .img-wrapper{
             position:relative; border-radius:12px; cursor:zoom-in;
-            background:#111; overflow:hidden;
+            background:#111; overflow:visible; /* Để lộ phần shadow phát sáng */
             aspect-ratio: 1/1;
-            /* Cấu trúc mask để chặn sáng cạnh trên */
-            mask-image: linear-gradient(to top, rgba(0,0,0,1) 85%, rgba(0,0,0,0));
-            -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 85%, rgba(0,0,0,0));
-            
-            transition: transform 0.6s var(--ease), box-shadow 0.6s var(--ease);
-            border: 1px solid rgba(255,255,255,0.03);
-            will-change: transform, box-shadow;
+            transition: transform 0.6s var(--ease);
         }
         
         .img-wrapper img{
             width:100%; height:100%; object-fit:cover;
+            border-radius:12px;
             opacity:0; transition:opacity 1.2s var(--ease);
+            border: 1px solid rgba(255,255,255,0.05);
         }
         .img-wrapper img.loaded{opacity:1;}
 
-        /* HIỆU ỨNG PHÁT SÁNG "U-SHAPE" NÂNG CAO */
+        /* HIỆU ỨNG PHÁT SÁNG U-SHAPE (DI CHUỘT) */
         .img-wrapper:hover {
             transform: translateY(-10px);
-            border-color: rgba(0, 255, 255, 0.2);
-            /* Phức tạp: Tạo cảm giác cạnh bên rõ dần và cạnh đáy mạnh nhất */
-            box-shadow: 
-                0 -5px 15px -10px var(--glow-color), /* Vùng sáng mờ trên (cực nhẹ) */
-                0 0 25px 3px var(--glow-color),       /* Sáng tỏa chính */
-                10px 10px 15px -10px var(--glow-color), /* Đẩy sáng mạnh cạnh đáy-bên */
-                -10px 10px 15px -10px var(--glow-color); 
+        }
+
+        .img-wrapper::after {
+            content: '';
+            position: absolute;
+            inset: -2px; /* Lệch ra ngoài một chút để tạo viền */
+            border-radius: 14px;
+            /* Gradient cho viền: Trên trong suốt, dưới Cyan */
+            background: linear-gradient(to bottom, transparent 30%, var(--glow-color) 100%);
+            -webkit-mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            padding: 2px; /* Độ dày của viền sáng */
+            opacity: 0;
+            transition: opacity 0.5s var(--ease);
+            pointer-events: none;
+        }
+
+        .img-wrapper:hover::after {
+            opacity: 1;
+            /* Thêm shadow phát sáng lan tỏa vùng dưới */
+            box-shadow: 0 15px 30px -10px var(--glow-color);
         }
 
         .img-caption{
@@ -128,6 +143,7 @@
             background:rgba(0,0,0,0.85); backdrop-filter: blur(8px);
             padding:5px 10px; border-radius:2px;
             opacity:0; transition:.4s var(--ease);
+            z-index: 2;
         }
         .img-wrapper:hover .img-caption{opacity:1;}
 
@@ -232,11 +248,12 @@
             document.getElementById("title").innerText = data.info.title;
             document.getElementById("description").innerText = data.info.description;
             
-            // Fix lại Specs: Bỏ Year, Sửa lại Tris
+            // DỮ LIỆU CHUẨN: Lấy đúng biến polycount
             const tech = data.technical;
             document.getElementById("techDetails").innerHTML = `
                 <li><span>Dimensions</span><b>${tech.scale} ${tech.unit}</b></li>
-                <li><span>Geometry</span><b>${tech.polycount.total} TRIS</b></li> <li><span>Software</span><b>${tech.software[0]}</b></li>
+                <li><span>Geometry</span><b>${tech.polycount} TRIS</b></li>
+                <li><span>Software</span><b>${tech.software[0]}</b></li>
                 <li><span>Engine</span><b>${tech.render_engine}</b></li>
                 <li><span>Workflow</span><b>PBR Metallic/Roughness</b></li>
             `;
@@ -252,7 +269,6 @@
                 document.getElementById("viewerBlock").style.display = "none";
             }
 
-            // Hero
             const heroUrl = `models/${projectSlug}/${data.media.hero}`;
             validateImage(heroUrl).then((imgObj) => {
                 const hImg = document.getElementById("hero");
@@ -264,7 +280,6 @@
                 document.getElementById("heroWrapper").onclick = () => openSmoothZoom(hImg);
             }).catch(() => {});
 
-            // Gallery
             const configRes = await fetch("models/gallery_config.json");
             const config = await configRes.json();
             const gallery = document.getElementById("gallery");
@@ -293,7 +308,6 @@
         } catch(err) { console.error(err); }
     }
 
-    // ZOOM ENGINE
     const lightbox = document.getElementById("lightbox");
     const zoomImg = document.getElementById("zoom-img");
     let activeOriginImg = null;
