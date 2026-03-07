@@ -143,11 +143,11 @@
         try {
             const res = await fetch(`models/${projectSlug}/info.json`);
             if(!res.ok) throw new Error("404");
-
             const data = await res.json();
+            
+            // 1. Render Text ngay lập tức
             document.getElementById("title").innerText = data.info.title;
             document.getElementById("description").innerText = data.info.description;
-
             const tech = data.technical;
             document.getElementById("techDetails").innerHTML = `
                 <li><span>Dimensions</span><b>${tech.scale} ${tech.unit}</b></li>
@@ -156,40 +156,41 @@
                 <li><span>Pipeline</span><b>${tech.software[0]} / ${tech.render_engine}</b></li>
             `;
 
-            // Preload & Load Hero
+            // 2. Load Hero độc lập (Parallel with other tasks)
             const heroSrc = `models/${projectSlug}/${data.media.hero}`;
-            const preloadLink = document.createElement("link");
-            preloadLink.rel = "preload"; preloadLink.as = "image"; preloadLink.href = heroSrc;
-            document.head.appendChild(preloadLink);
-
-            let needReveal = false;
-            try {
-                const hImg = await loadImage(heroSrc);
+            loadImage(heroSrc).then(hImg => {
                 const heroEl = document.getElementById("hero");
                 heroEl.src = hImg.src;
                 document.getElementById("heroCaption").innerText = formatCaption(data.media.hero);
                 document.getElementById("heroReveal").style.display = "block";
                 document.getElementById("heroWrapper").onclick = () => openSmoothZoom(heroEl);
-                needReveal = true;
-            } catch(e) { console.warn("Hero fail"); }
+                initReveal();
+            }).catch(() => console.warn("Hero fail"));
 
-            // Gallery logic with DocumentFragment
+            // 3. Load Gallery song song (Promise.all)
             const configRes = await fetch("models/gallery_config.json");
-            if(!configRes.ok) throw new Error("Gallery Config fail");
             const config = await configRes.json();
-            
             const gallery = document.getElementById("gallery");
+
+            // Kích hoạt load tất cả ảnh cùng lúc
+            const loadPromises = config.order.map(name => 
+                loadImage(`models/${projectSlug}/images/${name}`)
+                    .then(imgObj => ({ name, imgObj }))
+                    .catch(() => null)
+            );
+
+            const results = await Promise.all(loadPromises);
             const fragment = document.createDocumentFragment();
             let galleryCount = 0;
 
-            for(const name of config.order){
-                try {
-                    const imgObj = await loadImage(`models/${projectSlug}/images/${name}`);
+            results.forEach(result => {
+                if(result){
+                    const { name, imgObj } = result;
                     const revealContainer = document.createElement("div");
                     revealContainer.className = "img-reveal-container";
                     revealContainer.innerHTML = `
                         <div class="img-wrapper">
-                            <img src="${imgObj.src}" decoding="async">
+                            <img src="${imgObj.src}" decoding="async" loading="lazy">
                             <div class="img-caption">${formatCaption(name)}</div>
                         </div>
                     `;
@@ -198,15 +199,14 @@
                     };
                     fragment.appendChild(revealContainer);
                     galleryCount++;
-                    needReveal = true;
-                } catch(e) { console.warn("Img fail:", name); }
-            }
+                }
+            });
 
             gallery.appendChild(fragment);
             if(galleryCount === 0) gallery.style.display = "none";
-            if(needReveal) initReveal();
+            initReveal();
 
-            // Viewer
+            // 4. Viewer load sau cùng
             if(data.viewer?.enabled){
                 document.getElementById("viewer").src = `viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
             } else {
@@ -215,17 +215,16 @@
 
         } catch(err) {
             console.error("System Error:", err);
-            // Fallback UI
             document.getElementById("title").innerText = "Project Not Found";
-            document.getElementById("description").innerText = "The requested project data is missing or moved.";
-            document.getElementById("techDetails").innerHTML = ""; // Dọn dẹp specs
+            document.getElementById("description").innerText = "The requested project data is missing.";
+            document.getElementById("techDetails").innerHTML = "";
             document.getElementById("viewerBlock").style.display = "none";
             document.querySelector(".hero-section").style.display = "none";
             document.getElementById("gallery").style.display = "none";
         }
     }
 
-    // Lightbox Zoom (Smooth Apple-style)
+    // Lightbox Logic (Apple Style)
     const lightbox = document.getElementById("lightbox");
     const zoomImg = document.getElementById("zoom-img");
     let activeOriginImg = null;
