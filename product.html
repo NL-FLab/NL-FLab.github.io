@@ -55,18 +55,24 @@ align-items:center;
 margin-bottom:80px;
 }
 
+/* info */
+
 .info{
-color:#888;
+color:#aaa;
 font-size:14px;
+max-width:420px;
 }
 
 .info strong{
 display:block;
 font-size:11px;
 letter-spacing:2px;
-margin-bottom:12px;
+margin-bottom:14px;
 color:#fff;
+text-transform:uppercase;
 }
+
+/* tech list */
 
 .tech-list{
 list-style:none;
@@ -77,14 +83,28 @@ margin:0;
 .tech-list li{
 display:flex;
 justify-content:space-between;
-font-size:12px;
-padding:8px 0;
+font-size:13px;
+padding:10px 0;
 border-bottom:1px solid #1a1a1a;
 }
 
+.tech-list li span{
+color:#666;
+letter-spacing:1px;
+text-transform:uppercase;
+font-size:10px;
+}
+
+.tech-list li b{
+color:#e5e5e5;
+font-weight:400;
+}
+
+/* viewer */
+
 .viewer iframe{
 width:100%;
-aspect-ratio:1/1;
+aspect-ratio:16/9;
 border:none;
 border-radius:24px;
 background:#111;
@@ -276,13 +296,11 @@ transform:scale(1);
 <script>
 
 const params=new URLSearchParams(window.location.search)
-
 const projectSlug=params.get("project")
 
 function formatCaption(fileName){
 
 let base=fileName.split('/').pop()
-
 let name=base.split('.').slice(0,-1).join('.')
 
 return name.replace(/_/g,' ').toUpperCase()
@@ -298,26 +316,24 @@ if(!projectSlug)return
 try{
 
 const res=await fetch(`models/${projectSlug}/info.json`)
-
 const data=await res.json()
 
 title.innerText=data.info.title
-
 description.innerText=data.info.description
 
 const tech=data.technical
 
-techDetails.innerHTML=`
+/* render technical specs */
 
-<li><span>Dimensions</span><b>${tech.scale} ${tech.unit}</b></li>
+let techHTML=""
 
-<li><span>Geometry</span><b>${tech.polycount.pair} TRIS</b></li>
+for(const key in tech){
 
-<li><span>Materials</span><b>PBR WORKFLOW</b></li>
+techHTML+=`<li><span>${key}</span><b>${tech[key]}</b></li>`
 
-<li><span>Pipeline</span><b>${tech.software[0]} / ${tech.render_engine}</b></li>
+}
 
-`
+techDetails.innerHTML=techHTML
 
 /* hero */
 
@@ -328,15 +344,12 @@ heroCaption.innerText=formatCaption(data.media.hero)
 heroWrapper.onclick=()=>openZoom(hero)
 
 hero.onerror=()=>{
-
 document.querySelector(".hero-section").style.display="none"
-
 }
 
 /* gallery */
 
 const configRes=await fetch("models/gallery_config.json")
-
 const config=await configRes.json()
 
 config.order.forEach(name=>{
@@ -386,13 +399,11 @@ console.error(e)
 /* zoom simple */
 
 const lightbox=document.getElementById("lightbox")
-
 const lightboxImg=document.getElementById("lightbox-img")
 
 function openZoom(img){
 
 lightboxImg.src=img.src
-
 lightbox.classList.add("active")
 
 }
