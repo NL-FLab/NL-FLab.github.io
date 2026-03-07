@@ -9,8 +9,9 @@
         :root {
             --bg: #0c0c0c;
             --text-main: #e5e5e5;
-            --accent: #333;
-            --apple-ease: cubic-bezier(.28, .84, .42, 1);
+            --text-dim: #888;
+            --accent: #1a1a1a;
+            --apple-bezier: cubic-bezier(0.28, 0.84, 0.42, 1);
         }
 
         body { margin:0; background:var(--bg); color:var(--text-main); font-family:'Inter',sans-serif; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
@@ -21,37 +22,46 @@
         .back a { font-size:10px; color:#555; text-decoration:none; text-transform:uppercase; letter-spacing:2px; transition:.3s; }
         .back a:hover { color:#fff; }
         
-        h1 { font-weight:300; font-size:clamp(26px,4vw,36px); margin:10px 0 40px 0; color:#fff; }
+        h1 { font-weight:300; font-size:clamp(26px,4vw,36px); margin:10px 0 40px 0; color:#fff; letter-spacing:-0.5px; }
 
-        .top-section { display:grid; grid-template-columns:1fr 1fr; gap:80px; margin-bottom:80px; }
-        .info strong { color:#fff; display:block; margin-bottom:12px; font-size:11px; text-transform:uppercase; letter-spacing:2px; border-left: 2px solid #222; padding-left: 12px; }
-        #description { margin-bottom:30px; color: #888; font-size: 14px; text-align: justify; }
+        /* Layout Specs */
+        .top-section { display:grid; grid-template-columns:1fr 1fr; gap:80px; margin-bottom:80px; align-items:start; }
+        .info strong { color:#fff; display:block; margin-bottom:12px; font-size:11px; text-transform:uppercase; letter-spacing:2px; border-left: 2px solid #333; padding-left: 12px; }
+        #description { margin-bottom:30px; color: var(--text-dim); font-size: 14px; text-align: justify; line-height: 1.8; }
         .tech-list { list-style:none; padding:0; margin:0; }
         .tech-list li { padding:10px 0; border-bottom:1px solid #1a1a1a; font-size:12px; display:flex; justify-content:space-between; }
         .tech-list li span { color:#444; text-transform:uppercase; font-size:10px; }
         .tech-list li b { color:#aaa; font-weight:400; }
-        .viewer iframe { width:100%; aspect-ratio:16/9; border:none; border-radius:12px; background:#111; }
+        .viewer iframe { width:100%; aspect-ratio:16/9; border:none; border-radius:12px; background:#111; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
 
+        /* Gallery Grid */
         .image-section { display:grid; grid-template-columns:1fr 1fr; gap:40px; }
-        .img-reveal-container { opacity:0; transform:translateY(30px); transition: opacity .8s ease, transform .8s var(--apple-ease); }
+        .img-reveal-container { opacity:0; transform:translateY(30px); transition: opacity .8s ease, transform .8s var(--apple-bezier); }
         .img-reveal-container.reveal { opacity:1; transform:translateY(0); }
 
-        .img-wrapper { position:relative; border-radius:15px; overflow:hidden; cursor:zoom-in; background:#111; transition: transform .5s var(--apple-ease); }
+        .img-wrapper { position:relative; border-radius:15px; overflow:hidden; cursor:zoom-in; background:#111; transition: transform 0.5s var(--apple-bezier); }
         .img-wrapper:hover { transform: translateY(-8px); }
-        .img-wrapper img { width:100%; display: block; transition: opacity 1s ease; opacity: 0; }
+        .img-wrapper img { width:100%; display: block; opacity: 0; transition: opacity 1s ease; }
         .img-wrapper img.loaded { opacity: 1; }
 
         .img-caption {
             position:absolute; bottom:20px; left:20px; font-size:9px; color:#fff;
             text-transform:uppercase; letter-spacing:2px; background:rgba(0,0,0,0.6);
-            backdrop-filter:blur(10px); padding:6px 14px; border-radius:2px; 
-            opacity:0; transform:translateY(10px); transition: .4s ease;
+            backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+            padding:6px 14px; border-radius:2px; opacity:0; transform:translateY(10px); transition: .4s ease;
         }
         .img-wrapper:hover .img-caption { opacity:1; transform:translateY(0); }
 
+        /* LIGHTBOX SYSTEM (THE "CORE") */
         #lightbox { position:fixed; inset:0; background:rgba(0,0,0,0); z-index:9999; pointer-events:none; transition:background .5s ease; }
-        #lightbox.active { background:rgba(0,0,0,.96); pointer-events:auto; }
-        #zoom-img { position:fixed; top:0; left:0; z-index:10000; object-fit:contain; border-radius:12px; display:none; pointer-events:none; will-change:transform; transform-origin:top left; }
+        #lightbox.active { background:rgba(0,0,0,.97); pointer-events:auto; }
+        
+        #zoom-img { 
+            position:fixed; top:0; left:0; z-index:10000; 
+            object-fit:contain; border-radius:12px; display:none; 
+            pointer-events:none; will-change:transform; 
+            transform-origin: top left; /* Giữ neo ở góc để tính tọa độ rect */
+        }
 
         @media(max-width:850px){ .top-section { grid-template-columns:1fr; } .image-section { grid-template-columns:1fr; } }
     </style>
@@ -61,7 +71,7 @@
 <div class="back"><a href="index.html">← Back to Portfolio</a></div>
 
 <div class="container">
-    <h1 id="title">Loading Project...</h1>
+    <h1 id="title">Loading...</h1>
     <div class="top-section">
         <div class="info">
             <strong>Project Insight</strong>
@@ -81,24 +91,23 @@
     const projectSlug = params.get("project");
     const lightbox = document.getElementById("lightbox");
     const zoomImg = document.getElementById("zoom-img");
+    
     let activeOriginImg = null;
     let animating = false;
-    const appleBezier = "cubic-bezier(.28, .84, .42, 1)";
+    const appleBezier = "cubic-bezier(0.28, 0.84, 0.42, 1)";
 
+    // Helpers
     function formatCaption(n){
         return n.split('/').pop().split('.').slice(0,-1).join('.').replace(/_/g,' ').toUpperCase();
     }
 
-    // Observer hiệu ứng xuất hiện
     const revealObserver = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-            if(entry.isIntersecting) {
-                entry.target.classList.add("reveal");
-                revealObserver.unobserve(entry.target);
-            }
+        entries.forEach(e => {
+            if(e.isIntersecting) { e.target.classList.add("reveal"); revealObserver.unobserve(e.target); }
         });
     }, {threshold: 0.1});
 
+    // 1. LOAD DỮ LIỆU NHƯ CŨ
     async function loadProduct(){
         if(!projectSlug) return;
         try {
@@ -111,8 +120,8 @@
             document.getElementById("techDetails").innerHTML = `
                 <li><span>Dimensions</span><b>${tech.scale} ${tech.unit}</b></li>
                 <li><span>Geometry</span><b>${tech.polycount.Total || tech.polycount.pair} TRIS</b></li>
-                <li><span>Materials</span><b>PBR WORKFLOW</b></li>
                 <li><span>Software</span><b>${tech.software[0]} / ${tech.render_engine}</b></li>
+                <li><span>Materials</span><b>4K PBR TEXTURES</b></li>
             `;
 
             if(data.viewer?.enabled) document.getElementById("viewer").src = `viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
@@ -123,42 +132,47 @@
             const gallery = document.getElementById("gallery");
 
             config.order.forEach(name => {
-                const revealContainer = document.createElement("div");
-                revealContainer.className = "img-reveal-container";
-                revealContainer.innerHTML = `
+                const container = document.createElement("div");
+                container.className = "img-reveal-container";
+                container.innerHTML = `
                     <div class="img-wrapper">
                         <img src="models/${projectSlug}/images/${name}">
                         <div class="img-caption">${formatCaption(name)}</div>
                     </div>`;
-                gallery.appendChild(revealContainer);
-                revealObserver.observe(revealContainer);
+                gallery.appendChild(container);
+                revealObserver.observe(container);
                 
-                const img = revealContainer.querySelector('img');
+                const img = container.querySelector('img');
                 img.onload = () => img.classList.add("loaded");
-                revealContainer.querySelector('.img-wrapper').onclick = () => openSmoothZoom(img);
+                container.querySelector('.img-wrapper').onclick = () => openSmoothZoom(img);
             });
         } catch(err) { console.error(err); }
     }
 
+    // 2. LOGIC ZOOM APPLE MƯỢT MÀ (THAY THẾ PHẦN LỖI)
     function openSmoothZoom(originImg){
         if(animating) return;
         activeOriginImg = originImg;
         
+        // Tránh giật màn hình khi ẩn scrollbar
         const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
         document.body.style.paddingRight = scrollBarWidth + "px";
         document.body.classList.add("lock-scroll");
         
         const rect = originImg.getBoundingClientRect();
+        
+        // Sync ảnh zoom với ảnh gốc
         zoomImg.src = originImg.src;
         zoomImg.style.display = "block";
         zoomImg.style.width = rect.width + "px";
         zoomImg.style.height = rect.height + "px";
         zoomImg.style.transition = "none";
-        // Đặt tại vị trí chính xác của ảnh gốc
+        // Bắt đầu từ tọa độ của ảnh nhỏ
         zoomImg.style.transform = `translate3d(${rect.left}px, ${rect.top}px, 0) scale(1)`;
         
-        zoomImg.offsetHeight; // Force reflow
+        zoomImg.offsetHeight; // force reflow
 
+        // Tính toán kích thước zoom tối đa
         const winW = window.innerWidth;
         const winH = window.innerHeight;
         const imgRatio = rect.width / rect.height;
@@ -166,9 +180,9 @@
 
         let targetW, targetH;
         if(imgRatio > winRatio){ 
-            targetW = winW * .92; targetH = targetW / imgRatio; 
+            targetW = winW * 0.92; targetH = targetW / imgRatio; 
         } else { 
-            targetH = winH * .92; targetW = targetH * imgRatio; 
+            targetH = winH * 0.92; targetW = targetH * imgRatio; 
         }
 
         const scale = targetW / rect.width;
@@ -176,10 +190,11 @@
         const targetY = (winH - targetH) / 2;
 
         lightbox.classList.add("active");
-        originImg.style.visibility = "hidden";
+        originImg.style.visibility = "hidden"; // Ẩn ảnh gốc phía dưới cho mượt
 
         requestAnimationFrame(() => {
-            zoomImg.style.transition = `transform .5s ${appleBezier}`;
+            zoomImg.style.transition = `transform 0.5s ${appleBezier}`;
+            // Bay vào giữa màn hình
             zoomImg.style.transform = `translate3d(${targetX}px, ${targetY}px, 0) scale(${scale})`;
         });
     }
@@ -188,10 +203,11 @@
         if(!activeOriginImg || animating) return;
         animating = true;
         
+        // Lấy lại tọa độ Rect hiện tại (đề phòng user đã scroll)
         const rect = activeOriginImg.getBoundingClientRect();
         
-        // Quay về đúng tọa độ rect.left/top của ảnh gốc với scale(1)
-        zoomImg.style.transition = `transform .45s ${appleBezier}, opacity .3s ease`;
+        // Zoom-out bay về đúng vị trí Rect đó
+        zoomImg.style.transition = `transform 0.45s ${appleBezier}, opacity 0.3s ease`;
         zoomImg.style.transform = `translate3d(${rect.left}px, ${rect.top}px, 0) scale(1)`;
         
         lightbox.classList.remove("active");
@@ -206,6 +222,7 @@
         }, 470);
     }
 
+    // Event Listeners
     lightbox.onclick = closeSmoothZoom;
     window.addEventListener("keydown", e => { if(e.key === "Escape") closeSmoothZoom(); });
     window.addEventListener("resize", () => { if(activeOriginImg) closeSmoothZoom(); });
