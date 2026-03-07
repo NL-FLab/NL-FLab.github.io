@@ -38,24 +38,26 @@
         }
         .hero-note { text-align: center; font-size: 10px; letter-spacing: 3px; color: #444; text-transform: uppercase; margin-bottom: 30px; }
 
-        .section { padding: 40px 12%; }
+        .section { padding: 30px 12%; } /* Giảm nhẹ padding để các phần gần nhau hơn */
 
         /* =================================================
-        ABOUT & CORE VALUES (ORIGINAL CONTENT)
+        ABOUT & CORE VALUES
         ================================================= */
         .about { max-width: 900px; }
         .about h2 { font-size: 18px; font-weight: 500; color: #fff; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
-        .about-intro { font-size: 16px; color: #eee; margin-bottom: 50px; line-height: 1.8; font-weight: 300; }
+        .about-intro { font-size: 16px; color: #eee; margin-bottom: 40px; line-height: 1.8; font-weight: 300; }
         .about-intro strong { color: #fff; font-weight: 500; }
 
+        /* BỎ BORDER Ở ĐÂY */
         .core-values { 
             display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
-            gap: 40px; margin-bottom: 60px; border-top: 1px solid #1a1a1a; padding-top: 50px; 
+            gap: 40px; margin-bottom: 50px; padding-top: 20px; 
         }
         .value-item .v-title { font-size: 10px; letter-spacing: 3px; color: #555; text-transform: uppercase; margin-bottom: 12px; }
         .value-item .v-text { font-size: 13px; color: #888; font-weight: 300; line-height: 1.7; }
 
-        .about-highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 35px; border-top: 1px solid #1a1a1a; padding-top: 50px; }
+        /* BỎ BORDER Ở ĐÂY */
+        .about-highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 35px; padding-top: 30px; }
         .highlight-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #555; margin-bottom: 10px; }
         .highlight-text { color: #bbb; font-size: 13px; font-weight: 300; line-height: 1.7; }
 
@@ -63,31 +65,24 @@
         .skill { border: 1px solid #222; padding: 6px 16px; font-size: 11px; border-radius: 30px; background: #111; color: #777; }
 
         /* CV DOWNLOAD */
-        .cv-container { margin-top: 40px; }
+        .cv-container { margin-top: 35px; }
         .cv-download-btn {
-            display: inline-flex; align-items: center; padding: 10px 24px;
+            display: inline-flex; align-items: center; padding: 10px 22px;
             background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 50px; color: #fff; text-decoration: none; font-size: 10px;
-            letter-spacing: 1.5px; text-transform: uppercase; transition: all 0.3s ease;
+            letter-spacing: 1.5px; text-transform: uppercase; transition: 0.3s ease;
             backdrop-filter: blur(10px);
         }
         .cv-download-btn:hover { background: #fff; color: #000; transform: translateY(-2px); border-color: #fff; }
 
         /* =================================================
-        PORTFOLIO SECTION (NO BORDER)
+        PORTFOLIO SECTION (LIỀN MẠCH)
         ================================================= */
         .portfolio-header {
-            margin-top: 80px; /* Khoảng cách vừa phải để tạo nhịp nghỉ */
+            margin-top: 60px; /* Thu hẹp khoảng cách với phần trên */
             margin-bottom: 30px;
         }
-        .section-title { 
-            font-size: 11px; 
-            font-weight: 400; 
-            color: #555; 
-            margin: 0; 
-            letter-spacing: 4px; 
-            text-transform: uppercase;
-        }
+        .section-title { font-size: 11px; font-weight: 400; color: #555; margin: 0; letter-spacing: 4px; text-transform: uppercase; }
 
         .filter-container { display: flex; margin-bottom: 40px; }
         .filter {
@@ -118,6 +113,7 @@
         .project.is-visible { opacity: 1; transform: translateY(0); }
         .project img { width: 100%; height: 100%; object-fit: cover; transition: 1.2s cubic-bezier(0.2, 1, 0.2, 1); }
         .project:hover img { transform: scale(1.05); filter: brightness(0.3) blur(2px); }
+        
         .project-title {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%);
             width: 80%; text-align: center; font-size: 11px; color: #fff;
@@ -126,8 +122,8 @@
         }
         .project:hover .project-title { opacity: 1; transform: translate(-50%, -50%); }
 
-        /* CONTACT */
-        .contact { border-top: 1px solid #1a1a1a; margin-top: 80px; padding-top: 60px; }
+        /* CONTACT (BỎ BORDER) */
+        .contact { margin-top: 60px; padding-top: 40px; }
         .contact h2 { font-size: 19px; font-weight: 500; color: #fff; margin-bottom: 25px; }
         .contact-links { display: flex; flex-wrap: wrap; gap: 45px; }
         .contact-links a { 
@@ -136,7 +132,7 @@
         }
         .contact-links a:hover { border-bottom: 1px solid #fff; color: #aaa; }
 
-        footer { padding: 40px 12%; color: #333; font-size: 10px; border-top: 1px solid #1a1a1a; margin-top: 50px; }
+        footer { padding: 40px 12%; color: #333; font-size: 10px; margin-top: 40px; }
 
         .fade { opacity: 0; transform: translateY(15px); transition: 0.8s ease-out; }
         .fade.show { opacity: 1; transform: translateY(0); }
