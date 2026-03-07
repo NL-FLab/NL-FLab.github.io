@@ -2,40 +2,45 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>NL-FLab | Stable 3D Viewer</title>
+    <title>NL-FLab | Stable System</title>
     <script src="https://cdn.babylonjs.com/viewer/babylon.viewer.js"></script>
     <style>
-        html, body { width: 100%; height: 100%; margin: 0; background: #111; font-family: sans-serif; overflow: hidden; }
+        html, body { width: 100%; height: 100%; margin: 0; background: #111; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
         #viewer-container { width: 100%; height: 100%; position: relative; }
         babylon { width: 100%; height: 100%; }
 
         #control-panel {
             position: absolute; top: 20px; right: 20px; width: 220px;
-            background: rgba(25, 25, 25, 0.9); border: 1px solid #333; border-radius: 8px;
-            padding: 15px; z-index: 10; color: #eee;
+            background: rgba(30, 30, 30, 0.95); border: 1px solid #444; border-radius: 8px;
+            padding: 15px; z-index: 999; color: #eee; box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
         h3 { font-size: 11px; color: #00bcd4; text-transform: uppercase; margin: 0 0 15px 0; letter-spacing: 1px; }
         .group { margin-bottom: 15px; }
-        .label { font-size: 9px; color: #666; margin-bottom: 8px; text-transform: uppercase; }
+        .label { font-size: 9px; color: #777; margin-bottom: 8px; text-transform: uppercase; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
         
         button {
-            background: #222; border: 1px solid #444; color: #aaa; padding: 8px;
+            background: #252525; border: 1px solid #444; color: #bbb; padding: 10px;
             cursor: pointer; font-size: 10px; border-radius: 4px; transition: 0.2s;
         }
-        button:hover { border-color: #00bcd4; color: #fff; }
-        button.active { background: #004d40; border-color: #00bcd4; color: #fff; }
+        button:hover { background: #333; border-color: #00bcd4; color: #fff; }
+        button.active { background: #004d40; border-color: #00bcd4; color: #fff; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div id="viewer-container">
-    <babylon id="nl-viewer" extends="default" disable-camera-behavior="true" engine-antialiasing="true"></babylon>
+    <babylon id="nl-viewer" 
+        extends="default" 
+        camera-behavior="false" 
+        telemetry="false"
+        engine-antialiasing="true">
+    </babylon>
 
     <div id="control-panel">
-        <h3>NL-FLab Diagnostics</h3>
+        <h3>NL-FLab Engine</h3>
         <div class="group">
-            <div class="label">Display Mode</div>
+            <div class="label">Render Mode</div>
             <div class="grid">
                 <button id="btn-shaded" class="active">Shaded</button>
                 <button id="btn-wire">Wireframe</button>
@@ -44,8 +49,8 @@
         <div class="group">
             <div class="label">Analysis</div>
             <div class="grid">
-                <button id="btn-normal">Normal</button>
-                <button id="btn-reset">Reset</button>
+                <button id="btn-normal">Normal Map</button>
+                <button id="btn-reset">Reset View</button>
             </div>
         </div>
     </div>
@@ -53,50 +58,56 @@
 
 <script>
     const viewerElement = document.getElementById("nl-viewer");
-    let scene = null;
+    let bjsViewer = null;
 
-    // 1. Lấy Model từ URL
+    // 1. Xử lý Model URL
     const params = new URLSearchParams(window.location.search);
     const modelUrl = params.get("model");
     if (modelUrl) viewerElement.setAttribute("model", modelUrl);
 
-    // 2. Chờ Scene sẵn sàng
-    viewerElement.onSceneInitObservable.add((s) => {
-        scene = s;
+    // 2. Lắng nghe Viewer hoàn tất khởi tạo
+    BabylonViewer.viewerManager.getViewerPromiseById("nl-viewer").then((viewer) => {
+        bjsViewer = viewer;
         
-        // Cấu hình camera thủ công một lần duy nhất để chống nhảy to nhỏ
-        scene.createDefaultCamera(true, true, true);
-        const camera = scene.activeCamera;
-        
-        // Tắt mọi tính năng tự động của camera gây giật
-        camera.useFramingBehavior = false; 
-        camera.useAutoRotationBehavior = false;
-        
-        console.log("Scene initialized - Camera Locked.");
+        viewer.onSceneInitObservable.add((scene) => {
+            // Tắt tính năng framing gây giật khi thay đổi material
+            if (viewer.sceneManager.camera && viewer.sceneManager.camera.framingBehavior) {
+                viewer.sceneManager.camera.framingBehavior.enabled = false;
+            }
+            
+            console.log("NL-FLab: System Ready.");
+        });
     });
 
-    // 3. Gán sự kiện cho các Button (Cách này ổn định hơn onclick trực tiếp)
-    document.getElementById('btn-shaded').addEventListener('click', () => updateView('shaded'));
-    document.getElementById('btn-wire').addEventListener('click', () => updateView('wireframe'));
-    document.getElementById('btn-normal').addEventListener('click', () => updateView('normal'));
-    document.getElementById('btn-reset').addEventListener('click', () => {
-        if (scene && scene.activeCamera) scene.activeCamera.restoreState();
-    });
-
-    function updateView(mode) {
-        if (!scene) return;
-
+    // 3. Logic điều khiển - Truy cập sâu vào Core
+    function applyChange(type) {
+        if (!bjsViewer || !bjsViewer.sceneManager.scene) return;
+        
+        const scene = bjsViewer.sceneManager.scene;
+        
         scene.materials.forEach(mat => {
-            mat.wireframe = (mode === 'wireframe');
-            mat.debugMode = (mode === 'normal' ? 1 : 0);
+            // Reset
+            mat.wireframe = false;
+            mat.debugMode = 0;
+
+            if (type === 'wire') mat.wireframe = true;
+            if (type === 'normal') mat.debugMode = 1;
         });
 
-        // Cập nhật trạng thái nút bấm
-        document.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
-        if (mode === 'shaded') document.getElementById('btn-shaded').classList.add('active');
-        if (mode === 'wireframe') document.getElementById('btn-wire').classList.add('active');
-        if (mode === 'normal') document.getElementById('btn-normal').classList.add('active');
+        // Cập nhật UI nút bấm
+        document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+        if (type === 'shaded') document.getElementById('btn-shaded').classList.add('active');
+        if (type === 'wire') document.getElementById('btn-wire').classList.add('active');
+        if (type === 'normal') document.getElementById('btn-normal').classList.add('active');
     }
+
+    // Gán sự kiện trực tiếp bằng JS
+    document.getElementById('btn-shaded').addEventListener('click', () => applyChange('shaded'));
+    document.getElementById('btn-wire').addEventListener('click', () => applyChange('wire'));
+    document.getElementById('btn-normal').addEventListener('click', () => applyChange('normal'));
+    document.getElementById('btn-reset').addEventListener('click', () => {
+        if (bjsViewer) bjsViewer.sceneManager.camera.restoreState();
+    });
 </script>
 
 </body>
