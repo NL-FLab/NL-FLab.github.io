@@ -5,89 +5,149 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <title>NL F.Lab | Portfolio Details</title>
+
     <style>
-        body { margin:0; background:#0c0c0c; color:#e5e5e5; font-family:'Inter',sans-serif; overflow-x:hidden; line-height:1.6; -webkit-font-smoothing:antialiased; }
-        body.lock-scroll { overflow:hidden!important; }
-        .container { max-width:1100px; margin:0 auto; padding:0 10% 80px 10%; }
-        .back { padding:40px 10% 20px 10%; max-width:1100px; margin:0 auto; }
-        .back a { font-size:10px; color:#555; text-decoration:none; text-transform:uppercase; letter-spacing:2px; transition:.3s; }
-        .back a:hover { color:#fff; }
-        h1 { font-weight:300; font-size:clamp(26px,4vw,36px); margin:10px 0 40px 0; color:#fff; letter-spacing:-.5px; }
-        .top-section { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; margin-bottom:80px; }
-        .info { color:#888; font-size:14px; font-weight:300; }
-        .info strong { color:#fff; font-weight:400; display:block; margin-bottom:12px; font-size:11px; text-transform:uppercase; letter-spacing:2px; }
-        #description { margin-bottom:30px; }
-        .tech-list { list-style:none; padding:0; margin:0; }
-        .tech-list li { padding:8px 0; border-bottom:1px solid #1a1a1a; font-size:12px; display:flex; justify-content:space-between; }
-        .tech-list li span { color:#444; text-transform:uppercase; font-size:10px; }
-        .tech-list li b { color:#aaa; font-weight:400; }
-        .viewer iframe { width:100%; aspect-ratio:16/9; border:none; border-radius:12px; background:#111; box-shadow:0 30px 60px rgba(0,0,0,.4); }
-        .hero-section { margin-bottom:60px; display:flex; justify-content:center; width:100%; min-height:400px; }
-        .hero-section .img-reveal-container { width:65%; display: none; }
-        .image-section { display:grid; grid-template-columns:1fr 1fr; gap:40px; }
-        .img-wrapper { position:relative; border-radius:15px; line-height:0; cursor:zoom-in; background:#111; overflow:hidden; transition: transform .5s cubic-bezier(0.16, 1, 0.3, 1); }
-        .img-wrapper img { width:100%; height:auto; border-radius:15px; display: block; will-change: transform; }
-        .img-wrapper:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0, 255, 255, 0.15), 0 0 0 1px rgba(0, 255, 255, 0.3); }
-        .img-caption { position:absolute; bottom:20px; left:20px; font-size:9px; font-weight:300; color:#fff; text-transform:uppercase; letter-spacing:2px; background:rgba(0,0,0,0.6); backdrop-filter:blur(10px); padding:6px 14px; border-radius:2px; opacity:0; transform:translateY(10px); transition: .4s ease; }
-        .img-wrapper:hover .img-caption { opacity:1; transform:translateY(0); }
-        .img-reveal-container { opacity:0; transform:translateY(30px); transition: opacity .8s ease, transform .8s cubic-bezier(.22,1,.36,1); }
-        .img-reveal-container.reveal { opacity:1; transform:translateY(0); }
-        #lightbox { position:fixed; inset:0; background:rgba(0,0,0,0); z-index:9999; pointer-events:none; transition:background .4s ease; }
-        #lightbox.active { background:rgba(0,0,0,.97); pointer-events:auto; }
-        #zoom-img { position:fixed; top:0; left:0; z-index:10000; object-fit:contain; border-radius:15px; display:none; pointer-events:none; will-change:transform; transform-origin:top left; }
-        @media(max-width:850px){ .container { padding:0 6% 60px 6%; } .top-section { grid-template-columns:1fr; gap:40px; } .image-section { grid-template-columns:1fr; } .hero-section .img-reveal-container { width:100%; } }
+        body{margin:0;background:#0c0c0c;color:#e5e5e5;font-family:'Inter',sans-serif;overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased;}
+        body.lock-scroll{overflow:hidden!important;}
+
+        .container{max-width:1100px;margin:0 auto;padding:0 10% 80px 10%;}
+        .back{padding:40px 10% 20px 10%;max-width:1100px;margin:0 auto;}
+        .back a{font-size:10px;color:#555;text-decoration:none;text-transform:uppercase;letter-spacing:2px;transition:.3s;}
+        .back a:hover{color:#fff;}
+
+        h1{font-weight:300;font-size:clamp(26px,4vw,36px);margin:10px 0 40px 0;color:#fff;}
+
+        .top-section{display:grid;grid-template-columns:1fr 1fr;gap:80px;margin-bottom:80px;}
+        .info{color:#888;font-size:14px;}
+        .info strong{color:#fff;font-size:11px;text-transform:uppercase;letter-spacing:2px;display:block;margin-bottom:12px;}
+
+        .tech-list{list-style:none;padding:0;margin:0;}
+        .tech-list li{padding:8px 0;border-bottom:1px solid #1a1a1a;font-size:12px;display:flex;justify-content:space-between;}
+
+        .viewer iframe{width:100%;aspect-ratio:16/9;border:none;border-radius:12px;background:#111;box-shadow:0 30px 60px rgba(0,0,0,.4);}
+
+        .hero-section{margin-bottom:60px;display:flex;justify-content:center;width:100%;min-height:400px;}
+        .hero-section .img-reveal-container{width:65%;display:none;}
+
+        .image-section{display:grid;grid-template-columns:1fr 1fr;gap:40px;}
+
+        .img-wrapper{position:relative;border-radius:15px;line-height:0;cursor:zoom-in;background:#111;overflow:hidden;transition:transform .5s cubic-bezier(.16,1,.3,1);}
+        .img-wrapper img{width:100%;height:auto;border-radius:15px;display:block;will-change:transform;}
+        .img-wrapper:hover{transform:translateY(-10px);box-shadow:0 20px 40px rgba(0,255,255,.15),0 0 0 1px rgba(0,255,255,.3);}
+
+        .img-caption{
+            position:absolute;bottom:20px;left:20px;font-size:9px;color:#fff;
+            text-transform:uppercase;letter-spacing:2px;
+            background:rgba(0,0,0,.6);backdrop-filter:blur(10px);
+            padding:6px 14px;border-radius:2px;
+            opacity:0;transform:translateY(10px);transition:.4s;
+        }
+
+        .img-wrapper:hover .img-caption{opacity:1;transform:translateY(0);}
+
+        .img-reveal-container{opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s cubic-bezier(.22,1,.36,1);}
+        .img-reveal-container.reveal{opacity:1;transform:translateY(0);}
+
+        #lightbox{position:fixed;inset:0;background:rgba(0,0,0,0);z-index:9999;pointer-events:none;transition:background .4s;}
+        #lightbox.active{background:rgba(0,0,0,.97);pointer-events:auto;}
+
+        #zoom-img{position:fixed;top:0;left:0;z-index:10000;object-fit:contain;border-radius:15px;display:none;pointer-events:none;will-change:transform;transform-origin:top left;}
+
+        @media(max-width:850px){
+            .container{padding:0 6% 60px 6%;}
+            .top-section{grid-template-columns:1fr;}
+            .image-section{grid-template-columns:1fr;}
+            .hero-section .img-reveal-container{width:100%;}
+        }
     </style>
 </head>
+
 <body>
+
 <div class="back"><a href="index.html">← Back to Portfolio</a></div>
+
 <div class="container">
     <h1 id="title">Loading...</h1>
     <div class="top-section">
         <div class="info">
-            <strong>Project Insight</strong><div id="description"></div>
-            <strong>Technical Specs</strong><ul class="tech-list" id="techDetails"></ul>
+            <strong>Project Insight</strong>
+            <div id="description"></div>
+            <strong>Technical Specs</strong>
+            <ul class="tech-list" id="techDetails"></ul>
         </div>
-        <div class="viewer" id="viewerBlock"><iframe id="viewer" loading="lazy"></iframe></div>
+        <div class="viewer" id="viewerBlock">
+            <iframe id="viewer" loading="lazy"></iframe>
+        </div>
     </div>
-    <div class="hero-section"><div class="img-reveal-container" id="heroReveal"><div class="img-wrapper" id="heroWrapper"><img id="hero"><div class="img-caption" id="heroCaption"></div></div></div></div>
+
+    <div class="hero-section">
+        <div class="img-reveal-container" id="heroReveal">
+            <div class="img-wrapper" id="heroWrapper">
+                <img id="hero">
+                <div class="img-caption" id="heroCaption"></div>
+            </div>
+        </div>
+    </div>
+
     <div class="image-section" id="gallery"></div>
 </div>
+
 <div id="lightbox"><img id="zoom-img"></div>
 
 <script>
     const params = new URLSearchParams(window.location.search);
     const projectSlug = params.get("project");
 
-    function formatCaption(n){ return n.split('/').pop().split('.').slice(0,-1).join('.').replace(/_/g,' ').toUpperCase(); }
+    function formatCaption(n){
+        return n.split('/').pop().split('.').slice(0,-1).join('.').replace(/_/g,' ').toUpperCase();
+    }
 
     let revealObserver;
     function initReveal(){
         if(!revealObserver){
             revealObserver = new IntersectionObserver(entries => {
-                entries.forEach(e => { if(e.isIntersecting) e.target.classList.add("reveal"); });
-            }, {threshold: 0.1});
+                entries.forEach(e => {
+                    if(e.isIntersecting){
+                        e.target.classList.add("reveal");
+                        revealObserver.unobserve(e.target);
+                    }
+                });
+            }, {threshold: .1});
         }
         document.querySelectorAll(".img-reveal-container").forEach(el => {
-            if(!el.dataset.observed){ revealObserver.observe(el); el.dataset.observed = "true"; }
+            if(!el.dataset.observed){
+                revealObserver.observe(el);
+                el.dataset.observed = "true";
+            }
         });
     }
 
-    // Hàm load ảnh bọc trong Promise để xử lý tuần tự
-    const loadImage = (src) => new Promise((resolve, reject) => {
-        const img = new Image();
-        img.src = src;
-        img.onload = () => resolve(img);
-        img.onerror = reject;
-    });
+    function loadImage(src){
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.decoding = "async";
+            img.src = src;
+            img.onload = () => {
+                img.onload = null; img.onerror = null;
+                resolve(img);
+            };
+            img.onerror = () => {
+                img.onload = null; img.onerror = null;
+                reject();
+            };
+        });
+    }
 
     async function loadProduct(){
         if(!projectSlug) return;
         try {
             const res = await fetch(`models/${projectSlug}/info.json`);
+            if(!res.ok) throw new Error("404");
+
             const data = await res.json();
-            
             document.getElementById("title").innerText = data.info.title;
             document.getElementById("description").innerText = data.info.description;
+
             const tech = data.technical;
             document.getElementById("techDetails").innerHTML = `
                 <li><span>Dimensions</span><b>${tech.scale} ${tech.unit}</b></li>
@@ -96,47 +156,76 @@
                 <li><span>Pipeline</span><b>${tech.software[0]} / ${tech.render_engine}</b></li>
             `;
 
-            // Hero
+            // Preload & Load Hero
+            const heroSrc = `models/${projectSlug}/${data.media.hero}`;
+            const preloadLink = document.createElement("link");
+            preloadLink.rel = "preload"; preloadLink.as = "image"; preloadLink.href = heroSrc;
+            document.head.appendChild(preloadLink);
+
+            let needReveal = false;
             try {
-                const hImg = await loadImage(`models/${projectSlug}/${data.media.hero}`);
-                document.getElementById("hero").src = hImg.src;
+                const hImg = await loadImage(heroSrc);
+                const heroEl = document.getElementById("hero");
+                heroEl.src = hImg.src;
                 document.getElementById("heroCaption").innerText = formatCaption(data.media.hero);
                 document.getElementById("heroReveal").style.display = "block";
-                document.getElementById("heroWrapper").onclick = () => openSmoothZoom(document.getElementById("hero"));
-                initReveal();
-            } catch(e) { console.warn("Hero image failed"); }
+                document.getElementById("heroWrapper").onclick = () => openSmoothZoom(heroEl);
+                needReveal = true;
+            } catch(e) { console.warn("Hero fail"); }
 
-            // Gallery
+            // Gallery logic with DocumentFragment
             const configRes = await fetch("models/gallery_config.json");
+            if(!configRes.ok) throw new Error("Gallery Config fail");
             const config = await configRes.json();
+            
             const gallery = document.getElementById("gallery");
+            const fragment = document.createDocumentFragment();
+            let galleryCount = 0;
 
-            // Dùng for...of để đợi từng ảnh một (Chắc chắn đúng thứ tự và hiện ảnh)
-            for (const name of config.order) {
+            for(const name of config.order){
                 try {
                     const imgObj = await loadImage(`models/${projectSlug}/images/${name}`);
                     const revealContainer = document.createElement("div");
                     revealContainer.className = "img-reveal-container";
                     revealContainer.innerHTML = `
                         <div class="img-wrapper">
-                            <img src="${imgObj.src}">
+                            <img src="${imgObj.src}" decoding="async">
                             <div class="img-caption">${formatCaption(name)}</div>
                         </div>
                     `;
-                    revealContainer.querySelector('.img-wrapper').onclick = function() {
+                    revealContainer.querySelector('.img-wrapper').onclick = function(){
                         openSmoothZoom(this.querySelector('img'));
                     };
-                    gallery.appendChild(revealContainer);
-                    initReveal(); // Gọi lại để đăng ký observer cho phần tử mới
-                } catch(e) { console.error(`Failed to load ${name}`); }
+                    fragment.appendChild(revealContainer);
+                    galleryCount++;
+                    needReveal = true;
+                } catch(e) { console.warn("Img fail:", name); }
             }
 
-            if(data.viewer?.enabled) document.getElementById("viewer").src=`viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
-            else document.getElementById("viewerBlock").style.display="none";
+            gallery.appendChild(fragment);
+            if(galleryCount === 0) gallery.style.display = "none";
+            if(needReveal) initReveal();
 
-        } catch(err) { console.error(err); }
+            // Viewer
+            if(data.viewer?.enabled){
+                document.getElementById("viewer").src = `viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
+            } else {
+                document.getElementById("viewerBlock").style.display = "none";
+            }
+
+        } catch(err) {
+            console.error("System Error:", err);
+            // Fallback UI
+            document.getElementById("title").innerText = "Project Not Found";
+            document.getElementById("description").innerText = "The requested project data is missing or moved.";
+            document.getElementById("techDetails").innerHTML = ""; // Dọn dẹp specs
+            document.getElementById("viewerBlock").style.display = "none";
+            document.querySelector(".hero-section").style.display = "none";
+            document.getElementById("gallery").style.display = "none";
+        }
     }
 
+    // Lightbox Zoom (Smooth Apple-style)
     const lightbox = document.getElementById("lightbox");
     const zoomImg = document.getElementById("zoom-img");
     let activeOriginImg = null;
@@ -145,8 +234,8 @@
     function openSmoothZoom(originImg){
         if(animating) return;
         activeOriginImg = originImg;
-        const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
-        document.body.style.paddingRight = scrollBarWidth + "px";
+        const sw = window.innerWidth - document.documentElement.clientWidth;
+        document.body.style.paddingRight = sw + "px";
         document.body.classList.add("lock-scroll");
         const rect = originImg.getBoundingClientRect();
         zoomImg.src = originImg.src;
@@ -156,20 +245,17 @@
         zoomImg.style.transition = "none";
         zoomImg.style.transform = `translate3d(${rect.left}px,${rect.top}px,0) scale(1)`;
         zoomImg.offsetHeight;
-        const winW = window.innerWidth;
-        const winH = window.innerHeight;
-        const imgRatio = rect.width/rect.height;
-        const winRatio = winW/winH;
+        const winW = window.innerWidth, winH = window.innerHeight;
+        const imgRatio = rect.width/rect.height, winRatio = winW/winH;
         let tW, tH;
         if(imgRatio > winRatio){ tW = winW * .92; tH = tW / imgRatio; }
         else { tH = winH * .92; tW = tH * imgRatio; }
         const scale = tW / rect.width;
-        const tX = (winW - tW - scrollBarWidth) / 2;
-        const tY = (winH - tH) / 2;
+        const tX = (winW - tW - sw) / 2, tY = (winH - tH) / 2;
         lightbox.classList.add("active");
         originImg.style.visibility = "hidden";
         requestAnimationFrame(() => {
-            zoomImg.style.transition = `transform .5s cubic-bezier(.28, .84, .42, 1)`;
+            zoomImg.style.transition = "transform .5s cubic-bezier(.28,.84,.42,1)";
             zoomImg.style.transform = `translate3d(${tX}px,${tY}px,0) scale(${scale})`;
         });
     }
@@ -178,11 +264,11 @@
         if(!activeOriginImg || animating) return;
         animating = true;
         const rect = activeOriginImg.getBoundingClientRect();
-        zoomImg.style.transition = `transform .45s cubic-bezier(.28, .84, .42, 1)`;
+        zoomImg.style.transition = "transform .45s cubic-bezier(.28,.84,.42,1)";
         zoomImg.style.transform = `translate3d(${rect.left}px,${rect.top}px,0) scale(1)`;
         lightbox.classList.remove("active");
         setTimeout(() => {
-            activeOriginImg.style.visibility = "visible";
+            if(activeOriginImg) activeOriginImg.style.visibility = "visible";
             zoomImg.style.display = "none";
             document.body.classList.remove("lock-scroll");
             document.body.style.paddingRight = "0px";
@@ -193,7 +279,9 @@
     window.addEventListener("resize", () => { if(activeOriginImg) closeSmoothZoom(); });
     lightbox.onclick = closeSmoothZoom;
     window.addEventListener("keydown", e => { if(e.key === "Escape") closeSmoothZoom(); });
+
     loadProduct();
 </script>
+
 </body>
 </html>
