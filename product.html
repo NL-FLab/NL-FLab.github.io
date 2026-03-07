@@ -9,7 +9,6 @@
         :root {
             --bg: #0c0c0c;
             --text-main: #e5e5e5;
-            --text-dim: #888;
             --apple-bezier: cubic-bezier(0.28, 0.84, 0.42, 1);
             --radius: 15px;
         }
@@ -26,18 +25,18 @@
 
         .top-section { display:grid; grid-template-columns:1fr 1fr; gap:60px; margin-bottom:80px; align-items:start; }
         .info strong { color:#fff; display:block; margin-bottom:12px; font-size:11px; text-transform:uppercase; letter-spacing:2px; border-left: 2px solid #333; padding-left: 12px; }
-        #description { margin-bottom:30px; color: var(--text-dim); font-size: 14px; text-align: justify; line-height: 1.8; }
+        #description { margin-bottom:30px; color: #888; font-size: 14px; text-align: justify; line-height: 1.8; }
         .tech-list { list-style:none; padding:0; margin:0; }
         .tech-list li { padding:10px 0; border-bottom:1px solid #1a1a1a; font-size:12px; display:flex; justify-content:space-between; }
         .tech-list li span { color:#444; text-transform:uppercase; font-size:10px; }
         .tech-list li b { color:#aaa; font-weight:400; }
         .viewer iframe { width:100%; aspect-ratio:16/9; border:none; border-radius:var(--radius); background:#111; }
 
-        /* Hero */
-        .hero-section { margin-bottom:60px; width:100%; display: flex; justify-content: center; min-height: 100px; }
+        /* Hero Section */
+        .hero-section { margin-bottom:60px; width:100%; display: flex; justify-content: center; }
         #heroReveal { width:100%; display:none; opacity:0; transform:translateY(30px); transition: opacity .8s ease, transform .8s var(--apple-bezier); }
         #heroReveal.reveal { display:block; opacity:1; transform:translateY(0); }
-        #hero { width:100%; height:auto; border-radius:var(--radius); object-fit: cover; cursor: zoom-in; display: block; }
+        #hero { width:100%; height:auto; border-radius:var(--radius); object-fit: cover; cursor: zoom-in; }
 
         /* Gallery 3 Columns */
         .image-section { display:grid; grid-template-columns: repeat(3, 1fr); gap:30px; }
@@ -46,7 +45,7 @@
 
         .img-wrapper { position:relative; border-radius:var(--radius); overflow:hidden; cursor:zoom-in; background:#111; transition: transform 0.5s var(--apple-bezier); }
         .img-wrapper:hover { transform: translateY(-8px); }
-        .img-wrapper img { width:100%; display: block; border-radius:var(--radius); transition: opacity 0.5s ease; }
+        .img-wrapper img { width:100%; display: block; border-radius:var(--radius); }
 
         .img-caption {
             position:absolute; bottom:20px; left:20px; font-size:9px; color:#fff;
@@ -55,7 +54,7 @@
         }
         .img-wrapper:hover .img-caption { opacity:1; transform:translateY(0); }
 
-        /* Lightbox */
+        /* Lightbox Core */
         #lightbox { position:fixed; inset:0; background:rgba(0,0,0,0); z-index:9999; pointer-events:none; transition:background .5s ease; }
         #lightbox.active { background:rgba(0,0,0,.97); pointer-events:auto; }
         #zoom-img { 
@@ -122,6 +121,7 @@
         if(!projectSlug) return;
         try {
             const res = await fetch(`models/${projectSlug}/info.json`);
+            if(!res.ok) throw new Error("JSON not found");
             const data = await res.json();
             
             document.getElementById("title").innerText = data.info.title;
@@ -135,63 +135,63 @@
                 <li><span>Materials</span><b>4K PBR WORKFLOW</b></li>
             `;
 
-            // XỬ LÝ HERO (Dùng Promise để đợi ảnh load xong mới hiện)
+            // --- XỬ LÝ HERO ---
             if(data.media?.hero) {
                 const heroEl = document.getElementById("hero");
                 const heroReveal = document.getElementById("heroReveal");
-                const heroPath = `models/${projectSlug}/images/${data.media.hero}`;
+                // Thử load từ folder images/ trước
+                const tryPath = `models/${projectSlug}/images/${data.media.hero}`;
                 
-                heroEl.src = heroPath;
+                heroEl.src = tryPath;
                 heroEl.onload = () => {
                     heroReveal.style.display = "block";
-                    setTimeout(() => heroReveal.classList.add("reveal"), 50);
+                    setTimeout(() => heroReveal.classList.add("reveal"), 100);
                 };
-                heroEl.onerror = () => { console.warn("Hero not found at:", heroPath); };
+                heroEl.onerror = () => {
+                    // Nếu lỗi, thử tìm ở folder gốc (fallback)
+                    heroEl.src = `models/${projectSlug}/${data.media.hero}`;
+                };
                 
                 document.getElementById("heroCaption").innerText = formatCaption(data.media.hero);
                 document.getElementById("heroWrapper").onclick = () => openSmoothZoom(heroEl);
             }
 
-            // XỬ LÝ GALLERY (Chỉ hiển thị ảnh tồn tại, giữ đúng thứ tự)
+            // --- XỬ LÝ GALLERY (CHIA 3 CỘT, KHÔNG Ô TRỐNG) ---
             const configRes = await fetch("models/gallery_config.json");
             const config = await configRes.json();
             const gallery = document.getElementById("gallery");
 
-            // Tạo các container rỗng trước để giữ đúng thứ tự trong lúc load
-            const placeholders = config.order.map(() => {
-                const div = document.createElement("div");
-                gallery.appendChild(div);
-                return div;
+            // Tạo placeholder để giữ thứ tự
+            const slots = config.order.map(() => {
+                const d = document.createElement("div");
+                gallery.appendChild(d);
+                return d;
             });
 
-            config.order.forEach((name, index) => {
-                const imgPath = `models/${projectSlug}/images/${name}`;
-                const tempImg = new Image();
-                tempImg.src = imgPath;
-
-                tempImg.onload = () => {
-                    placeholders[index].className = "img-reveal-container";
-                    placeholders[index].innerHTML = `
+            config.order.forEach((name, i) => {
+                const path = `models/${projectSlug}/images/${name}`;
+                const img = new Image();
+                img.src = path;
+                img.onload = () => {
+                    slots[i].className = "img-reveal-container";
+                    slots[i].innerHTML = `
                         <div class="img-wrapper">
-                            <img src="${imgPath}">
+                            <img src="${path}">
                             <div class="img-caption">${formatCaption(name)}</div>
                         </div>`;
-                    revealObserver.observe(placeholders[index]);
-                    placeholders[index].querySelector('.img-wrapper').onclick = () => openSmoothZoom(placeholders[index].querySelector('img'));
+                    revealObserver.observe(slots[i]);
+                    slots[i].querySelector('.img-wrapper').onclick = () => openSmoothZoom(slots[i].querySelector('img'));
                 };
-
-                tempImg.onerror = () => {
-                    placeholders[index].remove(); // Xóa bỏ hoàn toàn nếu ảnh lỗi, không để ô trống
-                };
+                img.onerror = () => slots[i].remove(); // Ảnh lỗi thì xóa slot, không để ô trống
             });
 
             if(data.viewer?.enabled) document.getElementById("viewer").src = `viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
             else document.getElementById("viewerBlock").style.display="none";
 
-        } catch(err) { console.error("Load failed:", err); }
+        } catch(err) { console.error("Project Load Error:", err); }
     }
 
-    // ZOOM LOGIC (Fix Opacity chỉ cho Zoom-out)
+    // --- ZOOM ENGINE (SMOOTH LIKE APPLE) ---
     function openSmoothZoom(originImg){
         if(animating) return;
         activeOriginImg = originImg;
@@ -202,7 +202,7 @@
         const rect = originImg.getBoundingClientRect();
         zoomImg.src = originImg.src;
         zoomImg.style.display = "block";
-        zoomImg.style.opacity = "1"; // Zoom-in luôn sáng
+        zoomImg.style.opacity = "1"; // Zoom-in: Luôn sáng rõ
         zoomImg.style.width = rect.width + "px";
         zoomImg.style.height = rect.height + "px";
         zoomImg.style.transition = "none";
@@ -229,7 +229,7 @@
         originImg.style.visibility = "hidden";
 
         requestAnimationFrame(() => {
-            zoomImg.style.transition = `transform 0.5s ${appleBezier}`; // Bỏ opacity ở đây
+            zoomImg.style.transition = `transform 0.5s ${appleBezier}`; // Không có opacity ở đây
             zoomImg.style.transform = `translate3d(${targetX}px, ${targetY}px, 0) scale(${scale})`;
         });
     }
@@ -239,9 +239,10 @@
         animating = true;
         const rect = activeOriginImg.getBoundingClientRect();
         
+        // ZOOM-OUT: Vừa bay về vừa mờ dần (Opacity 0)
         zoomImg.style.transition = `transform 0.45s ${appleBezier}, opacity 0.4s ease-in`;
         zoomImg.style.transform = `translate3d(${rect.left}px, ${rect.top}px, 0) scale(1)`;
-        zoomImg.style.opacity = "0"; // Chỉ Zoom-out mới mờ dần
+        zoomImg.style.opacity = "0"; 
         
         lightbox.classList.remove("active");
         setTimeout(() => {
@@ -256,6 +257,8 @@
 
     lightbox.onclick = closeSmoothZoom;
     window.addEventListener("keydown", e => { if(e.key === "Escape") closeSmoothZoom(); });
+    window.addEventListener("resize", () => { if(activeOriginImg) closeSmoothZoom(); });
+
     loadProduct();
 </script>
 </body>
