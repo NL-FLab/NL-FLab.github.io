@@ -1,55 +1,118 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<title>NL-FLab 3D Viewer | Official UI</title>
-
-<script src="https://cdn.babylonjs.com/viewer/babylon.viewer.js"></script>
-
-<style>
-    html, body {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        background: #1e1e1e;
-        overflow: hidden;
-    }
-    babylon {
-        width: 100%;
-        height: 100%;
-    }
-</style>
+    <meta charset="utf-8">
+    <title>NL-FLab | Final Stable Engine</title>
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <style>
+        html, body { width: 100%; height: 100%; margin: 0; background: #111; overflow: hidden; font-family: sans-serif; }
+        canvas { width: 100%; height: 100%; outline: none; display: block; }
+        
+        /* Menu điều khiển tối giản cho Mobile & PC */
+        #controls {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 10px; z-index: 100; width: 90%; max-width: 400px;
+        }
+        button {
+            flex: 1; padding: 15px 5px; background: rgba(30, 30, 30, 0.9); 
+            color: #00bcd4; border: 1px solid #00bcd4; border-radius: 6px; 
+            font-size: 11px; font-weight: bold; cursor: pointer; text-transform: uppercase;
+        }
+        button.active { background: #00bcd4; color: #111; }
+    </style>
 </head>
 <body>
 
-<babylon id="viewer"
-    extends="default"
-    model=""
-    camera-behavior="false"
-    engine-antialiasing="true">
-</babylon>
+<div id="controls">
+    <button id="btn-shaded" class="active">Shaded</button>
+    <button id="btn-wire">Wireframe</button>
+    <button id="btn-normal">Normals</button>
+</div>
+
+<canvas id="renderCanvas"></canvas>
 
 <script>
-function getModelFromURL() {
+    const canvas = document.getElementById("renderCanvas");
+    const engine = new BABYLON.Engine(canvas, true);
+    let scene = null;
+    let camera = null;
+
+    // Lấy link model từ URL
     const params = new URLSearchParams(window.location.search);
-    return params.get("model");
-}
+    const modelUrl = params.get("model");
 
-const modelPath = getModelFromURL();
-const viewerElement = document.getElementById("viewer");
+    const createScene = async function () {
+        scene = new BABYLON.Scene(engine);
+        scene.clearColor = new BABYLON.Color4(0.1, 0.1, 0.1, 1);
 
-if (modelPath) {
-    viewerElement.setAttribute("model", modelPath);
-} else {
-    alert("No model specified in URL.");
-}
+        // Ánh sáng
+        const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+        light.intensity = 0.8;
 
-// Lệnh ép camera đứng yên khi load xong
-viewerElement.onSceneInitObservable.add((scene) => {
-    if (scene.activeCamera) {
-        scene.activeCamera.useFramingBehavior = false;
+        if (modelUrl) {
+            // Load Model
+            try {
+                const result = await BABYLON.SceneLoader.ImportMeshAsync("", "", modelUrl, scene);
+                
+                // Khởi tạo camera thủ công để KIỂM SOÁT HOÀN TOÀN
+                scene.createDefaultCameraOrLight(true, true, true);
+                camera = scene.activeCamera;
+                
+                // --- CHỐNG GIẬT: Khóa mọi chế độ tự động nhảy view ---
+                camera.useFramingBehavior = false; 
+                camera.lowerRadiusLimit = 0.1; // Cho phép zoom gần
+                
+                console.log("Model loaded - NL-FLab Engine Ready");
+            } catch (e) {
+                console.error("Lỗi load model:", e);
+            }
+        }
+
+        return scene;
+    };
+
+    // Hàm đổi chế độ hiển thị - Tác động trực tiếp vào Mesh
+    function setRenderMode(mode) {
+        if (!scene) return;
+
+        scene.meshes.forEach(mesh => {
+            if (mesh.material) {
+                // Xử lý cả MultiMaterial nếu có
+                const materials = mesh.material.subMaterials || [mesh.material];
+                materials.forEach(mat => {
+                    mat.wireframe = (mode === 'wire');
+                    // Mode Normal (debugMode = 1)
+                    if (mat.debugMode !== undefined) {
+                        mat.debugMode = (mode === 'normal' ? 1 : 0);
+                    }
+                });
+            }
+        });
+
+        // Cập nhật giao diện nút
+        document.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+        if (mode === 'shaded') document.getElementById('btn-shaded').classList.add('active');
+        if (mode === 'wire') document.getElementById('btn-wire').classList.add('active');
+        if (mode === 'normal') document.getElementById('btn-normal').classList.add('active');
     }
-});
+
+    // Gán sự kiện cho nút bấm
+    document.getElementById('btn-shaded').onclick = () => setRenderMode('shaded');
+    document.getElementById('btn-wire').onclick = () => setRenderMode('wire');
+    document.getElementById('btn-normal').onclick = () => setRenderMode('normal');
+
+    // Chạy Engine
+    createScene().then(() => {
+        engine.runRenderLoop(() => {
+            if (scene) scene.render();
+        });
+    });
+
+    // Tự động resize khi xoay điện thoại
+    window.addEventListener("resize", () => {
+        engine.resize();
+    });
 </script>
 
 </body>
