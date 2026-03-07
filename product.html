@@ -11,8 +11,8 @@
             --bg: #0c0c0c;
             --text-main: #e5e5e5;
             --text-dim: #888;
-            --accent: #444;
-            --glow: rgba(0, 255, 255, 0.4);
+            --accent: #333;
+            --glow-color: rgba(0, 255, 255, 0.5); /* Màu phát sáng Cyan */
             --ease: cubic-bezier(0.2, 0, 0.2, 1); 
         }
 
@@ -22,7 +22,7 @@
         .container {
             max-width:1100px; margin:0 auto; padding:0 10% 80px 10%;
             opacity: 0; transform: translateY(15px);
-            transition: opacity 1.2s var(--ease), transform 1.2s var(--ease);
+            transition: opacity 1.5s var(--ease), transform 1.5s var(--ease);
         }
         .container.page-loaded { opacity: 1; transform: translateY(0); }
         
@@ -38,11 +38,11 @@
             margin-bottom: 80px; align-items: start;
         }
 
-        .info-block { margin-bottom: 48px; }
+        .info-block { margin-bottom: 40px; }
         .info-block strong { 
             color: #fff; font-size: 10px; text-transform: uppercase; 
-            letter-spacing: 2px; display: block; margin-bottom: 20px;
-            border-left: 2px solid #333; padding-left: 12px;
+            letter-spacing: 2px; display: block; margin-bottom: 16px;
+            border-left: 2px solid #222; padding-left: 12px;
         }
 
         #description { 
@@ -52,11 +52,11 @@
 
         .tech-list{list-style:none; padding:0; margin:0;}
         .tech-list li{
-            padding: 14px 0; border-bottom: 1px solid #161616;
+            padding: 12px 0; border-bottom: 1px solid #161616;
             font-size: 12px; display: flex; justify-content: space-between;
         }
         .tech-list li span{color: var(--accent); text-transform: uppercase; letter-spacing: 1px;}
-        .tech-list li b{font-weight: 400; color: #aaa; letter-spacing: 0.02em;}
+        .tech-list li b{font-weight: 400; color: #aaa;}
 
         .viewer-container {
             width:100%; aspect-ratio:16/9; border-radius:8px;
@@ -66,7 +66,7 @@
         .viewer-container.loaded { opacity: 1; }
         .viewer-container iframe{ width:100%; height:100%; border:none; }
 
-        /* HERO SECTION - 40% Width */
+        /* HERO - 40% Width */
         .hero-section {
             margin: 0 auto 60px auto;
             width: 40%;
@@ -74,87 +74,80 @@
             justify-content: center;
         }
 
-        /* VIỀN ÁNH SÁNG CHIA CẮT */
+        /* SECTION DIVIDER - Neon Line */
         .section-divider {
-            height: 1px;
-            width: 100%;
+            height: 1px; width: 100%;
             background: linear-gradient(90deg, transparent, #222, transparent);
-            margin: 80px 0;
-            position: relative;
+            margin: 80px 0; position: relative;
         }
         .section-divider::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 50%;
-            transform: translateX(-50%);
-            width: 15%;
-            height: 1px;
-            background: #fff;
-            box-shadow: 0 0 10px #fff, 0 0 2px #fff;
-            opacity: 0.3;
+            content: ''; position: absolute;
+            top: 0; left: 50%; transform: translateX(-50%);
+            width: 20%; height: 1px;
+            background: #fff; box-shadow: 0 0 12px #fff;
+            opacity: 0.2;
         }
 
-        /* GALLERY - 30% Width (3 cột) */
+        /* GALLERY - 3 Cột (30% mỗi cái) */
         .image-section{
             display:grid; 
-            grid-template-columns: repeat(3, 1fr); /* 3 cột để ảnh nhỏ lại ~30% */
+            grid-template-columns: repeat(3, 1fr); 
             gap:30px;
         }
 
         .img-wrapper{
-            position:relative; border-radius:10px; cursor:zoom-in;
+            position:relative; border-radius:12px; cursor:zoom-in;
             background:#111; overflow:hidden;
             transition: transform 0.6s var(--ease), box-shadow 0.6s var(--ease);
             aspect-ratio: 1/1;
-            border: 1px solid transparent;
+            border: 1px solid rgba(255,255,255,0.03);
         }
         
         .img-wrapper img{
             width:100%; height:100%; object-fit:cover;
-            opacity:0; transition:opacity 1s var(--ease);
+            opacity:0; transition:opacity 1.2s var(--ease);
         }
         .img-wrapper img.loaded{opacity:1;}
 
-        /* HIỆU ỨNG VIỀN SÁNG KHI HOVER */
+        /* HIỆU ỨNG PHÁT SÁNG (GLOW) */
         .img-wrapper:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 0 1px var(--glow);
-            border-color: rgba(255,255,255,0.1);
+            transform: translateY(-10px);
+            box-shadow: 0 0 25px 2px var(--glow-color); /* Phát sáng tỏa ra */
+            border-color: rgba(0, 255, 255, 0.2);
         }
 
         .img-caption{
             position:absolute; bottom:15px; left:15px; font-size:7px; color:#fff;
             text-transform:uppercase; letter-spacing:2px;
-            background:rgba(0,0,0,0.8); backdrop-filter: blur(5px);
-            padding:4px 8px; border-radius:2px;
+            background:rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+            padding:5px 10px; border-radius:2px;
             opacity:0; transition:.4s var(--ease);
         }
         .img-wrapper:hover .img-caption{opacity:1;}
 
-        .img-reveal-container { opacity:0; transform:translateY(20px); transition: 1s var(--ease); }
+        .img-reveal-container { opacity:0; transform:translateY(25px); transition: 1.2s var(--ease); }
         .img-reveal-container.reveal { opacity:1; transform:translateY(0); }
 
-        /* LIGHTBOX - Smooth Blur */
+        /* LIGHTBOX */
         #lightbox{
             position:fixed; inset:0; background:rgba(0,0,0,0); 
             z-index:9999; pointer-events:none; 
             transition: background 0.8s var(--ease), backdrop-filter 0.8s var(--ease);
-            backdrop-filter: blur(0px);
         }
         #lightbox.active{
-            background:rgba(0,0,0,.92); pointer-events:auto; 
-            backdrop-filter: blur(20px); /* Tăng độ nhòe cho nghệ */
+            background:rgba(0,0,0,.94); pointer-events:auto; 
+            backdrop-filter: blur(20px);
         }
 
         #zoom-img{
             position:fixed; top:0; left:0; z-index:10000;
-            object-fit:cover; border-radius:8px; display:none;
+            object-fit:cover; border-radius:12px; display:none;
             will-change: transform; transform-origin: top left;
         }
 
         @media(max-width:850px){
             .top-section{grid-template-columns:1fr; gap:40px;}
-            .image-section{grid-template-columns: 1fr 1fr;} /* Mobile 2 cột */
+            .image-section{grid-template-columns: 1fr 1fr;}
             .hero-section{width: 80%;}
         }
     </style>
@@ -233,11 +226,15 @@
             document.getElementById("title").innerText = data.info.title;
             document.getElementById("description").innerText = data.info.description;
             
+            // Bổ sung thông tin đầy đủ
             const tech = data.technical;
             document.getElementById("techDetails").innerHTML = `
+                <li><span>Category</span><b>${data.info.category || 'Product Design'}</b></li>
                 <li><span>Dimensions</span><b>${tech.scale} ${tech.unit}</b></li>
                 <li><span>Geometry</span><b>${tech.polycount.pair} TRIS</b></li>
-                <li><span>Pipeline</span><b>${tech.software[0]} / ${tech.render_engine}</b></li>
+                <li><span>Software</span><b>${tech.software[0]}</b></li>
+                <li><span>Engine</span><b>${tech.render_engine}</b></li>
+                <li><span>Year</span><b>${data.info.year || '2026'}</b></li>
             `;
 
             setTimeout(() => { document.getElementById("mainContainer").classList.add("page-loaded"); }, 100);
@@ -251,7 +248,7 @@
                 document.getElementById("viewerBlock").style.display = "none";
             }
 
-            // Hero Image
+            // Hero
             const heroUrl = `models/${projectSlug}/${data.media.hero}`;
             validateImage(heroUrl).then((imgObj) => {
                 const hImg = document.getElementById("hero");
@@ -263,7 +260,7 @@
                 document.getElementById("heroWrapper").onclick = () => openSmoothZoom(hImg);
             }).catch(() => {});
 
-            // Gallery - 3 Column Layout
+            // Gallery
             const configRes = await fetch("models/gallery_config.json");
             const config = await configRes.json();
             const gallery = document.getElementById("gallery");
@@ -287,13 +284,12 @@
                 }).catch(() => {});
             });
 
-            // Quan sát cả cái Divider
             revealObserver.observe(document.querySelector('.section-divider'));
 
         } catch(err) { console.error(err); }
     }
 
-    // ZOOM ENGINE - Tối ưu Blur cực mượt
+    // ZOOM ENGINE
     const lightbox = document.getElementById("lightbox");
     const zoomImg = document.getElementById("zoom-img");
     let activeOriginImg = null;
@@ -325,9 +321,9 @@
 
         let targetW, targetH;
         if (imgAspect > winAspect) {
-            targetW = winW * 0.85; targetH = targetW / imgAspect;
+            targetW = winW * 0.88; targetH = targetW / imgAspect;
         } else {
-            targetH = winH * 0.85; targetW = targetH * imgAspect;
+            targetH = winH * 0.88; targetW = targetH * imgAspect;
         }
 
         const scaleX = targetW / rect.width;
@@ -349,7 +345,7 @@
         if(!activeOriginImg || animating) return;
         animating = true;
         const rect = activeOriginImg.getBoundingClientRect();
-        zoomImg.style.transition = "transform 0.6s var(--ease)";
+        zoomImg.style.transition = "transform 0.5s var(--ease)";
         zoomImg.style.transform = `translate3d(${rect.left}px, ${rect.top}px, 0) scale(1)`;
         lightbox.classList.remove("active");
         setTimeout(() => {
@@ -358,7 +354,7 @@
             document.body.classList.remove("lock-scroll");
             document.body.style.paddingRight = "0px";
             activeOriginImg = null; animating = false;
-        }, 600);
+        }, 500);
     }
 
     lightbox.onclick = closeSmoothZoom;
