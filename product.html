@@ -12,6 +12,7 @@
             --text-main: #e5e5e5;
             --text-dim: #888;
             --accent: #444;
+            --glow: rgba(0, 255, 255, 0.4);
             --ease: cubic-bezier(0.2, 0, 0.2, 1); 
         }
 
@@ -31,7 +32,7 @@
 
         h1{font-weight:300; font-size:clamp(24px, 4vw, 32px); margin:0 0 48px 0; color:#fff; letter-spacing:-0.02em;}
 
-        /* TOP SECTION - Grid chuẩn */
+        /* TOP SECTION */
         .top-section{
             display:grid; grid-template-columns: 1fr 1.2fr; gap: 80px;
             margin-bottom: 80px; align-items: start;
@@ -57,7 +58,6 @@
         .tech-list li span{color: var(--accent); text-transform: uppercase; letter-spacing: 1px;}
         .tech-list li b{font-weight: 400; color: #aaa; letter-spacing: 0.02em;}
 
-        /* 3D Viewer */
         .viewer-container {
             width:100%; aspect-ratio:16/9; border-radius:8px;
             background:#111; overflow:hidden; opacity: 0;
@@ -66,21 +66,47 @@
         .viewer-container.loaded { opacity: 1; }
         .viewer-container iframe{ width:100%; height:100%; border:none; }
 
-        /* Hero Image - 40% Width */
+        /* HERO SECTION - 40% Width */
         .hero-section {
-            margin: 0 auto 100px auto;
-            width: 40%; /* Thu nhỏ theo ý Nghĩa */
+            margin: 0 auto 60px auto;
+            width: 40%;
             display: none; 
             justify-content: center;
         }
 
-        .image-section{display:grid; grid-template-columns:1fr 1fr; gap:40px;}
+        /* VIỀN ÁNH SÁNG CHIA CẮT */
+        .section-divider {
+            height: 1px;
+            width: 100%;
+            background: linear-gradient(90deg, transparent, #222, transparent);
+            margin: 80px 0;
+            position: relative;
+        }
+        .section-divider::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 15%;
+            height: 1px;
+            background: #fff;
+            box-shadow: 0 0 10px #fff, 0 0 2px #fff;
+            opacity: 0.3;
+        }
+
+        /* GALLERY - 30% Width (3 cột) */
+        .image-section{
+            display:grid; 
+            grid-template-columns: repeat(3, 1fr); /* 3 cột để ảnh nhỏ lại ~30% */
+            gap:30px;
+        }
 
         .img-wrapper{
-            position:relative; border-radius:12px; cursor:zoom-in;
+            position:relative; border-radius:10px; cursor:zoom-in;
             background:#111; overflow:hidden;
-            transition:transform 0.6s var(--ease);
+            transition: transform 0.6s var(--ease), box-shadow 0.6s var(--ease);
             aspect-ratio: 1/1;
+            border: 1px solid transparent;
         }
         
         .img-wrapper img{
@@ -88,13 +114,19 @@
             opacity:0; transition:opacity 1s var(--ease);
         }
         .img-wrapper img.loaded{opacity:1;}
-        .img-wrapper:hover{transform:translateY(-5px);}
+
+        /* HIỆU ỨNG VIỀN SÁNG KHI HOVER */
+        .img-wrapper:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 0 1px var(--glow);
+            border-color: rgba(255,255,255,0.1);
+        }
 
         .img-caption{
-            position:absolute; bottom:15px; left:15px; font-size:8px; color:#fff;
+            position:absolute; bottom:15px; left:15px; font-size:7px; color:#fff;
             text-transform:uppercase; letter-spacing:2px;
-            background:rgba(0,0,0,0.7); backdrop-filter: blur(5px);
-            padding:5px 10px; border-radius:2px;
+            background:rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+            padding:4px 8px; border-radius:2px;
             opacity:0; transition:.4s var(--ease);
         }
         .img-wrapper:hover .img-caption{opacity:1;}
@@ -102,16 +134,16 @@
         .img-reveal-container { opacity:0; transform:translateY(20px); transition: 1s var(--ease); }
         .img-reveal-container.reveal { opacity:1; transform:translateY(0); }
 
-        /* LIGHTBOX - Fix Blur Transition */
+        /* LIGHTBOX - Smooth Blur */
         #lightbox{
             position:fixed; inset:0; background:rgba(0,0,0,0); 
             z-index:9999; pointer-events:none; 
-            transition: background 0.6s var(--ease), backdrop-filter 0.6s var(--ease);
+            transition: background 0.8s var(--ease), backdrop-filter 0.8s var(--ease);
             backdrop-filter: blur(0px);
         }
         #lightbox.active{
-            background:rgba(0,0,0,.9); pointer-events:auto; 
-            backdrop-filter: blur(15px);
+            background:rgba(0,0,0,.92); pointer-events:auto; 
+            backdrop-filter: blur(20px); /* Tăng độ nhòe cho nghệ */
         }
 
         #zoom-img{
@@ -122,7 +154,7 @@
 
         @media(max-width:850px){
             .top-section{grid-template-columns:1fr; gap:40px;}
-            .image-section{grid-template-columns:1fr;}
+            .image-section{grid-template-columns: 1fr 1fr;} /* Mobile 2 cột */
             .hero-section{width: 80%;}
         }
     </style>
@@ -130,7 +162,7 @@
 
 <body>
 
-<div class="back"><a href="index.html">← Back</a></div>
+<div class="back"><a href="index.html">← Back to Portfolio</a></div>
 
 <div class="container" id="mainContainer">
     <h1 id="title">Loading...</h1>
@@ -158,6 +190,8 @@
             <div class="img-caption" id="heroCaption"></div>
         </div>
     </div>
+
+    <div class="section-divider img-reveal-container"></div>
 
     <div class="image-section" id="gallery"></div>
 </div>
@@ -217,7 +251,7 @@
                 document.getElementById("viewerBlock").style.display = "none";
             }
 
-            // Hero
+            // Hero Image
             const heroUrl = `models/${projectSlug}/${data.media.hero}`;
             validateImage(heroUrl).then((imgObj) => {
                 const hImg = document.getElementById("hero");
@@ -229,7 +263,7 @@
                 document.getElementById("heroWrapper").onclick = () => openSmoothZoom(hImg);
             }).catch(() => {});
 
-            // Gallery - Clean Check
+            // Gallery - 3 Column Layout
             const configRes = await fetch("models/gallery_config.json");
             const config = await configRes.json();
             const gallery = document.getElementById("gallery");
@@ -253,10 +287,13 @@
                 }).catch(() => {});
             });
 
+            // Quan sát cả cái Divider
+            revealObserver.observe(document.querySelector('.section-divider'));
+
         } catch(err) { console.error(err); }
     }
 
-    // ZOOM ENGINE - Refined
+    // ZOOM ENGINE - Tối ưu Blur cực mượt
     const lightbox = document.getElementById("lightbox");
     const zoomImg = document.getElementById("zoom-img");
     let activeOriginImg = null;
@@ -288,9 +325,9 @@
 
         let targetW, targetH;
         if (imgAspect > winAspect) {
-            targetW = winW * 0.9; targetH = targetW / imgAspect;
+            targetW = winW * 0.85; targetH = targetW / imgAspect;
         } else {
-            targetH = winH * 0.9; targetW = targetH * imgAspect;
+            targetH = winH * 0.85; targetW = targetH * imgAspect;
         }
 
         const scaleX = targetW / rect.width;
@@ -302,17 +339,17 @@
         originImg.style.visibility = "hidden";
 
         requestAnimationFrame(() => {
-            zoomImg.style.transition = "transform 0.6s var(--ease)";
+            zoomImg.style.transition = "transform 0.7s var(--ease)";
             zoomImg.style.transform = `translate3d(${rect.left + moveX}px, ${rect.top + moveY}px, 0) scale(${scaleX}, ${scaleY})`;
         });
-        setTimeout(() => { animating = false; }, 600);
+        setTimeout(() => { animating = false; }, 700);
     }
 
     function closeSmoothZoom(){
         if(!activeOriginImg || animating) return;
         animating = true;
         const rect = activeOriginImg.getBoundingClientRect();
-        zoomImg.style.transition = "transform 0.5s var(--ease)";
+        zoomImg.style.transition = "transform 0.6s var(--ease)";
         zoomImg.style.transform = `translate3d(${rect.left}px, ${rect.top}px, 0) scale(1)`;
         lightbox.classList.remove("active");
         setTimeout(() => {
@@ -321,7 +358,7 @@
             document.body.classList.remove("lock-scroll");
             document.body.style.paddingRight = "0px";
             activeOriginImg = null; animating = false;
-        }, 500);
+        }, 600);
     }
 
     lightbox.onclick = closeSmoothZoom;
