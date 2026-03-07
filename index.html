@@ -9,7 +9,7 @@
 
     <style>
         /* =================================================
-        GLOBAL & BACKGROUND (CỐ ĐỊNH)
+        GLOBAL & BACKGROUND
         ================================================= */
         body {
             margin: 0; background: #0c0c0c; color: #e5e5e5;
@@ -33,10 +33,10 @@
         @keyframes ambientMove2 { 0% { transform: translate(5%, 5%); } 100% { transform: translate(-10%, -5%); } }
 
         /* =================================================
-        HEADER & LAYOUT CHUNG (TỐI ƯU PC)
+        HEADER & LAYOUT (TỐI ƯU PC)
         ================================================= */
         header, .section {
-            padding: 60px 12%; max-width: 1300px; margin: 0 auto; /* Giữ mọi thứ ở giữa */
+            padding: 60px 12%; max-width: 1300px; margin: 0 auto;
         }
         .brand { display: flex; align-items: flex-start; gap: 24px; margin-bottom: 5px; }
         .logo { width: 100px; height: 100px; object-fit: contain; margin-top: 15px; }
@@ -80,7 +80,7 @@
         .cv-download-btn:hover { background: #fff; color: #000; transform: translateY(-2px); border-color: #fff; }
 
         /* =================================================
-        PORTFOLIO - MASONRY (KHÔNG CẮT ẢNH)
+        PORTFOLIO - MASONRY (KHÔNG NHÁY)
         ================================================= */
         .section-title { font-size: 11px; color: #555; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 25px; }
         .filter-container { display: flex; margin-bottom: 35px; }
@@ -91,7 +91,8 @@
 
         .grid { 
             display: block; column-count: 3; column-gap: 30px; width: 100%;
-            transition: opacity 0.4s ease; 
+            min-height: 600px; /* Tránh sụt khung hình khi chuyển tab */
+            transition: opacity 0.3s ease; 
         }
         .grid.is-changing { opacity: 0; }
         
@@ -99,15 +100,20 @@
             display: inline-block; width: 100%; margin-bottom: 30px;
             position: relative; overflow: hidden; border-radius: 12px; 
             background: #111; border: 1px solid rgba(255,255,255,0.03);
-            opacity: 0; transform: translateY(20px) scale(0.98);
+            opacity: 0; transform: translateY(15px);
             will-change: transform, opacity;
-            transition: opacity 1s cubic-bezier(.22,1,.36,1), transform 1s cubic-bezier(.22,1,.36,1);
         }
-        .project.is-visible { opacity: 1; transform: translateY(0) scale(1); }
-        .project img { display: block; width: 100%; height: auto; opacity: 0; transition: opacity 0.8s ease, transform 1.2s cubic-bezier(0.2, 1, 0.2, 1); }
+        /* Class kích hoạt animation ảnh */
+        .project.is-visible { 
+            opacity: 1; transform: translateY(0); 
+            transition: opacity 0.8s ease, transform 0.8s cubic-bezier(.22,1,.36,1);
+        }
+
+        .project img { display: block; width: 100%; height: auto; opacity: 0; transition: opacity 0.6s ease, transform 1s ease; }
         .project img.loaded { opacity: 1; }
-        .project:hover img { transform: scale(1.05); filter: brightness(0.3) blur(2px); }
-        .project-title { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%); width: 80%; text-align: center; font-size: 11px; color: #fff; letter-spacing: 2px; text-transform: uppercase; opacity: 0; transition: 0.5s; z-index: 2; }
+        .project:hover img { transform: scale(1.03); filter: brightness(0.4); }
+        
+        .project-title { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%); width: 80%; text-align: center; font-size: 11px; color: #fff; letter-spacing: 2px; text-transform: uppercase; opacity: 0; transition: 0.4s; z-index: 2; }
         .project:hover .project-title { opacity: 1; transform: translate(-50%, -50%); }
 
         /* RESPONSIVE */
@@ -216,16 +222,15 @@
 
     <script>
         // --- LOGIC FADE SECTIONS ---
-        window.addEventListener('DOMContentLoaded', () => {
-            const observer = new IntersectionObserver(entries => {
-                entries.forEach(e => { 
-                    if(e.isIntersecting) {
-                        setTimeout(() => { e.target.classList.add("show"); }, 200); 
-                    }
-                });
-            }, { threshold: 0.1 });
-            document.querySelectorAll(".fade").forEach(el => observer.observe(el));
-        });
+        const obsOptions = { threshold: 0.1 };
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { 
+                if(e.isIntersecting) {
+                    setTimeout(() => { e.target.classList.add("show"); }, 150); 
+                }
+            });
+        }, obsOptions);
+        document.querySelectorAll(".fade").forEach(el => observer.observe(el));
 
         // --- TAB INDICATOR ---
         function updateTabIndicator(btn) {
@@ -237,21 +242,17 @@
             }
         }
 
-        // --- PROJECT ENTRANCE ---
+        // --- PROJECT ENTRANCE (FIX NHÁY) ---
         function triggerProjectAnimation() {
             const grid = document.getElementById("projectGrid");
             const projects = document.querySelectorAll(".project");
-            grid.classList.add("is-changing");
-            setTimeout(() => {
-                grid.classList.remove("is-changing");
-                requestAnimationFrame(() => {
-                    projects.forEach((p, i) => {
-                        setTimeout(() => {
-                            requestAnimationFrame(() => { p.classList.add("is-visible"); });
-                        }, i * 70);
-                    });
-                });
-            }, 250);
+            
+            // Hiện ảnh theo kiểu staggered (từng cái một)
+            projects.forEach((p, i) => {
+                setTimeout(() => {
+                    p.classList.add("is-visible");
+                }, i * 60);
+            });
         }
 
         // Image load listener
@@ -259,6 +260,7 @@
             if(e.target.tagName === "IMG") e.target.classList.add("loaded");
         }, true);
 
+        // Theo dõi thay đổi của Grid khi Filter
         const gridObserver = new MutationObserver(() => {
             triggerProjectAnimation();
             const activeTab = document.querySelector('.filter-btn.active');
@@ -267,7 +269,13 @@
         gridObserver.observe(document.getElementById('projectGrid'), { childList: true });
 
         document.getElementById('filterBar').addEventListener('click', (e) => {
-            if(e.target.classList.contains('filter-btn')) updateTabIndicator(e.target);
+            if(e.target.classList.contains('filter-btn')) {
+                updateTabIndicator(e.target);
+                // Thêm hiệu ứng fade out nhẹ cho grid khi chuyển tab
+                const grid = document.getElementById("projectGrid");
+                grid.style.opacity = "0.3";
+                setTimeout(() => { grid.style.opacity = "1"; }, 300);
+            }
         });
     </script>
     <script src="js/loadproduct.js"></script>
