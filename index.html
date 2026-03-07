@@ -1,555 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/png" href="images/favicon.png">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-<title>NL F.Lab – High-end 3D Visualization</title>
-
-<style>
-
-/* =================================================
-GLOBAL & AMBIENT BACKGROUND
-================================================= */
-
-body{
-margin:0;
-background:#0c0c0c;
-color:#e5e5e5;
-font-family:'Inter',-apple-system,sans-serif;
-letter-spacing:.02em;
-line-height:1.6;
--webkit-font-smoothing:antialiased;
-overflow-x:hidden;
-position:relative;
-}
-
-body::before{
-content:"";
-position:fixed;
-top:-50%;
-left:-50%;
-width:200vmax;
-height:200vmax;
-background:radial-gradient(circle at center,rgba(100,150,255,.05) 0%,transparent 35%);
-z-index:-1;
-pointer-events:none;
-animation:ambientMove1 35s infinite alternate ease-in-out;
-}
-
-body::after{
-content:"";
-position:fixed;
-bottom:-50%;
-right:-50%;
-width:180vmax;
-height:180vmax;
-background:radial-gradient(circle at center,rgba(255,255,255,.03) 0%,transparent 35%);
-z-index:-1;
-pointer-events:none;
-animation:ambientMove2 45s infinite alternate-reverse ease-in-out;
-}
-
-@keyframes ambientMove1{
-0%{transform:translate(-5%,-5%)}
-100%{transform:translate(5%,10%)}
-}
-
-@keyframes ambientMove2{
-0%{transform:translate(5%,5%)}
-100%{transform:translate(-10%,-5%)}
-}
-
-
-/* =================================================
-HEADER
-================================================= */
-
-header{padding:80px 12% 20px 12%;position:relative;z-index:1}
-
-.brand{display:flex;align-items:flex-start;gap:24px;margin-bottom:5px}
-
-.logo{width:100px;height:100px;object-fit:contain;margin-top:15px}
-
-h1{font-size:40px;font-weight:400;letter-spacing:-.02em;margin:0;color:#fff}
-
-.subtitle{font-size:17px;color:#aaa;font-weight:300;margin:0}
-
-.hero-role{margin-top:4px;font-size:11px;color:#555;letter-spacing:3px;text-transform:uppercase}
-
-.hero-divider{
-width:150px;
-height:1px;
-margin:35px auto 12px auto;
-background:radial-gradient(circle,rgba(255,255,255,.6) 0%,rgba(255,255,255,0) 80%);
-}
-
-.hero-note{
-text-align:center;
-font-size:10px;
-letter-spacing:3px;
-color:#444;
-text-transform:uppercase;
-margin-bottom:30px;
-}
-
-.section{padding:40px 12%;position:relative;z-index:1}
-
-
-/* =================================================
-ABOUT
-================================================= */
-
-.about{max-width:900px}
-
-.about h2{
-font-size:18px;
-font-weight:500;
-color:#fff;
-margin-bottom:25px;
-text-transform:uppercase;
-letter-spacing:2px;
-}
-
-.about-intro{
-font-size:16px;
-color:#eee;
-margin-bottom:40px;
-line-height:1.8;
-font-weight:300;
-}
-
-.about-intro strong{color:#fff;font-weight:500}
-
-.core-values{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:40px;
-margin-bottom:50px;
-}
-
-.value-item .v-title{
-font-size:10px;
-letter-spacing:3px;
-color:#555;
-text-transform:uppercase;
-margin-bottom:12px;
-}
-
-.value-item .v-text{
-font-size:13px;
-color:#888;
-font-weight:300;
-line-height:1.7;
-}
-
-.about-highlights{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:35px;
-margin-top:50px;
-}
-
-.highlight-title{
-font-size:10px;
-letter-spacing:2px;
-text-transform:uppercase;
-color:#555;
-margin-bottom:10px;
-}
-
-.highlight-text{
-color:#bbb;
-font-size:13px;
-font-weight:300;
-line-height:1.7;
-}
-
-.skills{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
-
-.skill{
-border:1px solid #222;
-padding:6px 16px;
-font-size:11px;
-border-radius:30px;
-background:#111;
-color:#777;
-}
-
-.cv-container{margin-top:40px}
-
-.cv-download-btn{
-display:inline-flex;
-align-items:center;
-padding:10px 22px;
-background:rgba(255,255,255,.03);
-border:1px solid rgba(255,255,255,.1);
-border-radius:50px;
-color:#fff;
-text-decoration:none;
-font-size:10px;
-letter-spacing:1.5px;
-text-transform:uppercase;
-transition:.3s ease;
-backdrop-filter:blur(10px);
-}
-
-.cv-download-btn:hover{
-background:#fff;
-color:#000;
-transform:translateY(-2px);
-border-color:#fff;
-}
-
-
-/* =================================================
-PORTFOLIO
-================================================= */
-
-.portfolio-header{margin-top:10px;margin-bottom:25px}
-
-.section-title{
-font-size:11px;
-font-weight:400;
-color:#555;
-margin:0;
-letter-spacing:4px;
-text-transform:uppercase;
-}
-
-.filter-container{display:flex;margin-bottom:35px}
-
-.filter{
-display:inline-flex;
-padding:4px;
-position:relative;
-background:rgba(255,255,255,.02);
-border-radius:40px;
-border:1px solid rgba(255,255,255,.05);
-}
-
-.filter-btn{
-background:transparent;
-border:none;
-color:#555;
-font-size:10px;
-cursor:pointer;
-padding:8px 18px;
-border-radius:40px;
-transition:color .4s ease;
-text-transform:uppercase;
-letter-spacing:1.5px;
-position:relative;
-z-index:2;
-}
-
-.filter-btn.active{color:#fff}
-
-.tab-indicator{
-position:absolute;
-top:4px;
-left:4px;
-height:calc(100% - 8px);
-background:rgba(255,255,255,.07);
-border-radius:40px;
-transition:.5s cubic-bezier(.23,1,.32,1);
-z-index:1;
-opacity:0;
-pointer-events:none;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
-gap:30px;
-transition:opacity .35s ease,transform .35s ease;
-}
-
-.grid.is-changing{
-opacity:0;
-transform:translateY(10px);
-}
-
-.project{
-position:relative;
-overflow:hidden;
-border-radius:12px;
-aspect-ratio:1/1;
-background:#111;
-border:1px solid rgba(255,255,255,.03);
-
-opacity:0;
-transform:translateY(25px) scale(.98);
-transform-origin:center center;
-
-will-change:transform,opacity;
-
-transition:
-opacity .9s cubic-bezier(.22,1,.36,1),
-transform .9s cubic-bezier(.22,1,.36,1);
-}
-
-.project.is-visible{
-opacity:1;
-transform:translateY(0) scale(1);
-}
-
-.project img{
-width:100%;
-height:100%;
-object-fit:cover;
-opacity:0;
-transition:opacity .6s ease,transform 1.2s cubic-bezier(.2,1,.2,1);
-will-change:opacity,transform;
-}
-
-.project img.loaded{opacity:1}
-
-.project:hover img{
-transform:scale(1.05);
-filter:brightness(.3) blur(2px);
-}
-
-.project-title{
-position:absolute;
-top:50%;
-left:50%;
-transform:translate(-50%,-40%);
-width:80%;
-text-align:center;
-font-size:11px;
-color:#fff;
-letter-spacing:2px;
-text-transform:uppercase;
-opacity:0;
-transition:.5s ease;
-z-index:2;
-pointer-events:none;
-}
-
-.project:hover .project-title{
-opacity:1;
-transform:translate(-50%,-50%);
-}
-
-footer{padding:40px 12%;color:#333;font-size:10px}
-
-.fade{opacity:0;transform:translateY(15px);transition:.8s ease-out}
-.fade.show{opacity:1;transform:translateY(0)}
-
-</style>
-</head>
-
-<body>
-
-<header>
-<div class="brand">
-<img src="images/logo.png" class="logo">
-<div class="hero-text">
-<h1>NL F.Lab</h1>
-<div class="subtitle">3D Artist</div>
-<div class="hero-role">Product Visualization</div>
-</div>
-</div>
-</header>
-
-<div class="hero-divider"></div>
-<div class="hero-note">Selected Work</div>
-
-<section class="section about fade">
-<h2>Profile</h2>
-<div class="about-intro">
-Senior 3D Artist and Team Leader with over 7 years of expertise in <strong>High-end Product Visualization</strong>. Leveraging a background in <strong>Information Technology</strong>, I specialize in bridging the gap between artistic precision and technical efficiency, developing optimized production pipelines that meet international industry standards.
-</div>
-</section>
-
-<section class="section fade" style="padding-top:0;">
-<div class="portfolio-header">
-<h2 class="section-title">Visual Archive</h2>
-</div>
-
-<div class="filter-container">
-<div class="filter" id="filterBar">
-<div class="tab-indicator" id="tabIndicator"></div>
-</div>
-</div>
-
-<div class="grid" id="projectGrid"></div>
-
-</section>
-
-<footer>© NL F.Lab – 2026</footer>
-
-<script>
-
-/* SECTION FADE */
-
-const observer=new IntersectionObserver(entries=>{
-entries.forEach(e=>{
-if(e.isIntersecting)e.target.classList.add("show");
-});
-},{threshold:.1});
-
-document.querySelectorAll(".fade").forEach(el=>observer.observe(el));
-
-
-/* TAB INDICATOR */
-
-function updateTabIndicator(btn){
-
-const indicator=document.getElementById("tabIndicator");
-
-if(btn && indicator){
-
-indicator.style.opacity="1";
-indicator.style.width=btn.offsetWidth+"px";
-indicator.style.left=btn.offsetLeft+"px";
-
-}
-
-}
-
-
-/* FLIP ENGINE */
-
-let firstRects=new Map();
-
-function captureFirstPositions(){
-
-firstRects.clear();
-
-document.querySelectorAll(".project").forEach(el=>{
-firstRects.set(el,el.getBoundingClientRect());
-});
-
-}
-
-function playFlipAnimation(){
-
-document.querySelectorAll(".project").forEach(el=>{
-
-const first=firstRects.get(el);
-
-if(!first) return;
-
-const last=el.getBoundingClientRect();
-
-const dx=first.left-last.left;
-const dy=first.top-last.top;
-
-if(dx||dy){
-
-el.animate(
-[
-{transform:`translate(${dx}px,${dy}px)`},
-{transform:"translate(0,0)"}
-],
-{
-duration:600,
-easing:"cubic-bezier(.22,1,.36,1)"
-}
-);
-
-}
-
-});
-
-}
-
-
-/* PROJECT APPEAR */
-
-function triggerProjectAnimation(){
-
-const grid=document.getElementById("projectGrid");
-const projects=document.querySelectorAll(".project");
-
-grid.classList.add("is-changing");
-
-setTimeout(()=>{
-
-grid.classList.remove("is-changing");
-
-requestAnimationFrame(()=>{
-
-projects.forEach((p,i)=>{
-
-setTimeout(()=>{
-
-requestAnimationFrame(()=>{
-p.classList.add("is-visible");
-});
-
-},i*70);
-
-});
-
-});
-
-},200);
-
-}
-
-
-/* IMAGE LOAD */
-
-document.addEventListener("load",function(e){
-
-if(e.target.tagName==="IMG"){
-e.target.classList.add("loaded");
-}
-
-},true);
-
-
-/* GRID OBSERVER */
-
-let gridTimer;
-
-const gridObserver=new MutationObserver(()=>{
-
-clearTimeout(gridTimer);
-
-gridTimer=setTimeout(()=>{
-
-captureFirstPositions();
-
-triggerProjectAnimation();
-
-requestAnimationFrame(()=>{
-playFlipAnimation();
-});
-
-const activeTab=document.querySelector(".filter-btn.active");
-if(activeTab) updateTabIndicator(activeTab);
-
-},50);
-
-});
-
-gridObserver.observe(
-document.getElementById("projectGrid"),
-{childList:true,subtree:true}
-);
-
-
-/* FILTER CLICK */
-
-document.getElementById("filterBar").addEventListener("click",(e)=>{
-
-if(e.target.classList.contains("filter-btn")){
-
-captureFirstPositions();
-updateTabIndicator(e.target);
-
-}
-
-});
-
-</script>
-
-<script src="js/loadproduct.js"></script>
-
-</body>
-</html>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <title>NL F.Lab – High-end 3D Visualization</title>
+
+    <style>
+        /* =================================================
+        GLOBAL & AMBIENT BACKGROUND
+        ================================================= */
+        body {
+            margin: 0; background: #0c0c0c; color: #e5e5e5;
+            font-family: 'Inter', -apple-system, sans-serif;
+            letter-spacing: 0.02em; line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: ""; position: fixed; top: -50%; left: -50%;
+            width: 200vmax; height: 200vmax;
+            background: radial-gradient(circle at center, rgba(100, 150, 255, 0.05) 0%, transparent 35%);
+            z-index: -1; pointer-events: none;
+            animation: ambientMove1 35s infinite alternate ease-in-out;
+        }
+
+        body::after {
+            content: ""; position: fixed; bottom: -50%; right: -50%;
+            width: 180vmax; height: 180vmax;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.03) 0%, transparent 35%);
+            z-index: -1; pointer-events: none;
+            animation: ambientMove2 45s infinite alternate-reverse ease-in-out;
+        }
+
+        @keyframes ambientMove1 { 0% { transform: translate(-5%, -5%); } 100% { transform: translate(5%, 10%); } }
+        @keyframes ambientMove2 { 0% { transform: translate(5%, 5%); } 100% { transform: translate(-10%, -5%); } }
+
+        /* =================================================
+        HEADER & HERO
+        ================================================= */
+        header { padding: 80px 12% 20px 12%; position: relative; z-index: 1; }
+        .brand { display: flex; align-items: flex-start; gap: 24px; margin-bottom: 5px; }
+        .logo { width: 100px; height: 100px; object-fit: contain; margin-top: 15px; }
+        h1 { font-size: 40px; font-weight: 400; letter-spacing: -0.02em; margin: 0; color: #fff; }
+        .subtitle { font-size: 17px; color: #aaa; font-weight: 300; margin: 0; }
+        .hero-role { margin-top: 4px; font-size: 11px; color: #555; letter-spacing: 3px; text-transform: uppercase; }
+
+        .hero-divider { width: 150px; height: 1px; margin: 35px auto 12px auto; background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 80%); }
+        .hero-note { text-align: center; font-size: 10px; letter-spacing: 3px; color: #444; text-transform: uppercase; margin-bottom: 30px; }
+
+        .section { padding: 40px 12%; position: relative; z-index: 1; }
+
+        /* =================================================
+        ABOUT & PROFILE
+        ================================================= */
+        .about { max-width: 900px; }
+        .about h2 { font-size: 18px; font-weight: 500; color: #fff; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
+        .about-intro { font-size: 16px; color: #eee; margin-bottom: 40px; line-height: 1.8; font-weight: 300; }
+        .about-intro strong { color: #fff; font-weight: 500; }
+
+        .core-values { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 50px; }
+        .value-item .v-title { font-size: 10px; letter-spacing: 3px; color: #555; text-transform: uppercase; margin-bottom: 12px; }
+        .value-item .v-text { font-size: 13px; color: #888; font-weight: 300; line-height: 1.7; }
+
+        .about-highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 35px; margin-top: 50px; }
+        .highlight-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #555; margin-bottom: 10px; }
+        .highlight-text { color: #bbb; font-size: 13px; font-weight: 300; line-height: 1.7; }
+
+        .skills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+        .skill { border: 1px solid #222; padding: 6px 16px; font-size: 11px; border-radius: 30px; background: #111; color: #777; }
+
+        .cv-container { margin-top: 40px; }
+        .cv-download-btn {
+            display: inline-flex; align-items: center; padding: 10px 22px;
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px; color: #fff; text-decoration: none; font-size: 10px;
+            letter-spacing: 1.5px; text-transform: uppercase; transition: 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .cv-download-btn:hover { background: #fff; color: #000; transform: translateY(-2px); border-color: #fff; }
+
+        /* =================================================
+        PORTFOLIO - OPTIMIZED ENGINE
+        ================================================= */
+        .portfolio-header { margin-top: 10px; margin-bottom: 25px; }
+        .section-title { font-size: 11px; font-weight: 400; color: #555; margin: 0; letter-spacing: 4px; text-transform: uppercase; }
+
+        .filter-container { display: flex; margin-bottom: 35px; }
+        .filter {
+            display: inline-flex; padding: 4px; position: relative;
+            background: rgba(255, 255, 255, 0.02); border-radius: 40px; border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .filter-btn {
+            background: transparent; border: none; color: #555; font-size: 10px;
+            cursor: pointer; padding: 8px 18px; border-radius: 40px; 
+            transition: color 0.4s ease; text-transform: uppercase; letter-spacing: 1.5px; position: relative; z-index: 2;
+        }
+        .filter-btn.active { color: #fff; }
+        .tab-indicator {
+            position: absolute; top: 4px; left: 4px; height: calc(100% - 8px);
+            background: rgba(255, 255, 255, 0.07); border-radius: 40px; 
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1); z-index: 1;
+            opacity: 0; pointer-events: none;
+        }
+
+        .grid { 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; 
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+        .grid.is-changing { opacity: 0; transform: translateY(10px); }
+        
+        .project { 
+            position: relative; overflow: hidden; border-radius: 12px; aspect-ratio: 1 / 1; 
+            background: #111; border: 1px solid rgba(255,255,255,0.03);
+            opacity: 0; transform: translateY(25px) scale(0.98);
+            will-change: transform, opacity;
+            transition: opacity 0.9s cubic-bezier(.22,1,.36,1), transform 0.9s cubic-bezier(.22,1,.36,1);
+        }
+        
+        .project.is-visible { opacity: 1; transform: translateY(0) scale(1); }
+        
+        .project img { 
+            width: 100%; height: 100%; object-fit: cover; 
+            opacity: 0; transition: opacity 0.6s ease, transform 1.2s cubic-bezier(0.2, 1, 0.2, 1); 
+            will-change: opacity;
+        }
+        .project img.loaded { opacity: 1; }
+        .project:hover img { transform: scale(1.05); filter: brightness(0.3) blur(2px); }
+        
+        .project-title {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%);
+            width: 80%; text-align: center; font-size: 11px; color: #fff;
+            letter-spacing: 2px; text-transform: uppercase; opacity: 0;
+            transition: 0.5s ease; z-index: 2; pointer-events: none;
+        }
+        .project:hover .project
