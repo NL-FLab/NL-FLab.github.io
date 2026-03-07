@@ -33,7 +33,7 @@
         @keyframes ambientMove2 { 0% { transform: translate(5%, 5%); } 100% { transform: translate(-10%, -5%); } }
 
         /* =================================================
-        HEADER & LAYOUT (TỐI ƯU PC)
+        HEADER & LAYOUT
         ================================================= */
         header, .section {
             padding: 60px 12%; max-width: 1300px; margin: 0 auto;
@@ -48,7 +48,7 @@
         .hero-note { text-align: center; font-size: 10px; letter-spacing: 3px; color: #444; text-transform: uppercase; margin-bottom: 30px; }
 
         /* =================================================
-        PROFILE & FADE ANIMATION
+        FADE ANIMATION
         ================================================= */
         .fade { opacity: 0; transform: translateY(30px); will-change: opacity, transform; }
         .fade.show { 
@@ -56,6 +56,9 @@
             transition: opacity 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
+        /* =================================================
+        ABOUT SECTION
+        ================================================= */
         .about h2 { font-size: 18px; font-weight: 500; color: #fff; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
         .about-intro { font-size: 18px; color: #eee; margin-bottom: 40px; line-height: 1.8; font-weight: 300; max-width: 850px; }
         .about-intro strong { color: #fff; font-weight: 500; }
@@ -80,55 +83,77 @@
         .cv-download-btn:hover { background: #fff; color: #000; transform: translateY(-2px); border-color: #fff; }
 
         /* =================================================
-        PORTFOLIO & CONTACT (ĐÃ GIẢM KHOẢNG CÁCH)
+        PORTFOLIO MASONRY GRID (TỐI ƯU 3 CỘT)
         ================================================= */
         .section-title { font-size: 11px; color: #555; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 25px; }
+        
         .filter-container { display: flex; margin-bottom: 35px; }
         .filter { display: inline-flex; padding: 4px; position: relative; background: rgba(255, 255, 255, 0.02); border-radius: 40px; border: 1px solid rgba(255, 255, 255, 0.05); }
         .filter-btn { background: transparent; border: none; color: #555; font-size: 10px; cursor: pointer; padding: 8px 18px; border-radius: 40px; transition: color 0.4s ease; text-transform: uppercase; letter-spacing: 1.5px; position: relative; z-index: 2; }
         .filter-btn.active { color: #fff; }
         .tab-indicator { position: absolute; top: 4px; left: 4px; height: calc(100% - 8px); background: rgba(255, 255, 255, 0.07); border-radius: 40px; transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1); z-index: 1; opacity: 0; pointer-events: none; }
 
-        .grid { 
-            display: block; column-count: 3; column-gap: 30px; width: 100%;
+        #projectGrid { 
+            display: block; 
+            column-count: 3; 
+            column-gap: 30px; 
+            width: 100%;
             min-height: 400px;
             transition: opacity 0.3s ease; 
         }
-        .grid.is-changing { opacity: 0; }
         
+        /* Cấu trúc cho Masonry khớp với loadproduct.js */
+        .project-link { 
+            display: inline-block; 
+            width: 100%; 
+            text-decoration: none; 
+            break-inside: avoid; /* Quan trọng: Ngắt ảnh đúng cột */
+            margin-bottom: 30px;
+        }
+
         .project { 
-            display: inline-block; width: 100%; margin-bottom: 30px;
             position: relative; overflow: hidden; border-radius: 12px; 
             background: #111; border: 1px solid rgba(255,255,255,0.03);
             opacity: 0; transform: translateY(15px);
             will-change: transform, opacity;
         }
+
         .project.is-visible { 
             opacity: 1; transform: translateY(0); 
             transition: opacity 0.8s ease, transform 0.8s cubic-bezier(.22,1,.36,1);
         }
-        .project img { display: block; width: 100%; height: auto; opacity: 0; transition: opacity 0.6s ease; }
+
+        .project img { display: block; width: 100%; height: auto; opacity: 0; transition: opacity 0.6s ease, transform 0.5s ease; }
         .project img.loaded { opacity: 1; }
-        .project:hover img { transform: scale(1.03); filter: brightness(0.4); }
+        .project:hover img { transform: scale(1.05); filter: brightness(0.3); }
         
-        .project-title { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%); width: 80%; text-align: center; font-size: 11px; color: #fff; letter-spacing: 2px; text-transform: uppercase; opacity: 0; transition: 0.4s; z-index: 2; }
+        .project-title { 
+            position: absolute; top: 50%; left: 50%; 
+            transform: translate(-50%, -40%); width: 85%; 
+            text-align: center; font-size: 10px; color: #fff; 
+            letter-spacing: 2px; text-transform: uppercase; 
+            opacity: 0; transition: all 0.4s ease; z-index: 2; 
+        }
         .project:hover .project-title { opacity: 1; transform: translate(-50%, -50%); }
 
-        /* Fix khoảng cách Contact */
+        /* =================================================
+        CONTACT & FOOTER
+        ================================================= */
         .contact { padding-top: 20px; padding-bottom: 60px; }
         .contact h2 { font-size: 18px; font-weight: 500; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; }
         .contact-links { display: flex; flex-wrap: wrap; gap: 45px; }
         .contact-links a { color: #fff; text-decoration: none; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
         .contact-links a:hover { border-bottom: 1px solid #fff; color: #aaa; }
 
+        footer { padding: 40px 12%; color: #333; font-size: 10px; text-align: center; }
+
         /* RESPONSIVE */
-        @media (max-width: 1100px) { .grid { column-count: 2; } }
+        @media (max-width: 1100px) { #projectGrid { column-count: 2; } }
         @media (max-width: 700px) { 
-            .grid { column-count: 1; } 
+            #projectGrid { column-count: 1; } 
             header, .section { padding: 40px 6%; }
             h1 { font-size: 32px; }
         }
-        footer { padding: 40px 12%; color: #333; font-size: 10px; text-align: center; }
     </style>
 </head>
 
@@ -233,8 +258,12 @@
             projects.forEach((p, i) => { setTimeout(() => { p.classList.add("is-visible"); }, i * 60); });
         }
 
-        document.addEventListener("load", (e) => { if(e.target.tagName === "IMG") e.target.classList.add("loaded"); }, true);
+        // --- IMAGE LOADED HANDLING ---
+        document.addEventListener("load", (e) => { 
+            if(e.target.tagName === "IMG") e.target.classList.add("loaded"); 
+        }, true);
 
+        // --- OBSERVE GRID CHANGES ---
         const gridObserver = new MutationObserver(() => {
             triggerProjectAnimation();
             const activeTab = document.querySelector('.filter-btn.active');
@@ -242,6 +271,7 @@
         });
         gridObserver.observe(document.getElementById('projectGrid'), { childList: true });
 
+        // --- FILTER CLICK ---
         document.getElementById('filterBar').addEventListener('click', (e) => {
             if(e.target.classList.contains('filter-btn')) {
                 updateTabIndicator(e.target);
