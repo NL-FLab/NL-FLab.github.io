@@ -17,13 +17,13 @@
         body{margin:0;background:var(--bg);color:var(--text-main);font-family:'Inter',sans-serif;overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased;}
         body.lock-scroll{overflow:hidden!important;}
 
-        /* Hiệu ứng Fade cho toàn bộ Container lúc vào trang */
+        /* Container Fade-in lúc vào trang */
         .container {
             max-width:1100px;
             margin:0 auto;
             padding:0 10% 80px 10%;
             opacity: 0;
-            transform: translateY(10px);
+            transform: translateY(15px);
             transition: opacity 1.2s ease, transform 1.2s cubic-bezier(0.2, 0, 0.2, 1);
         }
         .container.page-loaded {
@@ -37,7 +37,7 @@
 
         h1{font-weight:300;font-size:clamp(26px,4vw,36px);margin:0 0 48px 0;color:#fff;letter-spacing:-0.5px;}
 
-        /* TOP SECTION - Grid & Spacing chuẩn 8px */
+        /* TOP SECTION - Grid 1:1.2 cân đối */
         .top-section{
             display:grid;
             grid-template-columns: 1fr 1.2fr;
@@ -57,7 +57,7 @@
             margin-bottom: 16px;
         }
 
-        #description { color: var(--text-dim); font-size: 14px; line-height: 1.8; margin: 0; }
+        #description { color: var(--text-dim); font-size: 14px; line-height: 1.8; margin: 0; text-align: justify; }
 
         .tech-list{list-style:none;padding:0;margin:0;}
         .tech-list li{
@@ -118,7 +118,7 @@
         }
         .img-wrapper:hover .img-caption{opacity:1;transform:translateY(0);}
 
-        /* Reveal Effect cho từng item khi cuộn */
+        /* Hiệu ứng trượt hiện hình khi cuộn trang */
         .img-reveal-container {
             opacity:0;
             transform:translateY(30px);
@@ -129,7 +129,7 @@
             transform:translateY(0);
         }
 
-        /* Lightbox GPU Optimized */
+        /* Lightbox GPU Style */
         #lightbox{position:fixed;inset:0;background:rgba(0,0,0,0);z-index:9999;pointer-events:none;transition:background .5s cubic-bezier(0.2, 0, 0, 1.0);}
         #lightbox.active{background:rgba(0,0,0,.96);pointer-events:auto;backdrop-filter: blur(12px);}
 
@@ -199,24 +199,26 @@
         return n.split('/').pop().split('.').slice(0,-1).join('.').replace(/_/g,' ').toUpperCase();
     }
 
+    // REVEAL & LAZY LOAD OBSERVER (Đón đầu 500px)
     const revealObserver = new IntersectionObserver(entries => {
         entries.forEach(e => {
             if(e.isIntersecting){
-                e.target.classList.add("reveal");
-                revealObserver.unobserve(e.target);
+                const container = e.target;
+                const img = container.querySelector('img');
+                
+                if(img && img.dataset.src) {
+                    img.src = img.dataset.src;
+                    img.onload = () => img.classList.add("loaded");
+                }
+                
+                container.classList.add("reveal");
+                revealObserver.unobserve(container);
             }
         });
-    }, {threshold: 0.1});
-
-    function loadImage(src){
-        return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.decoding = "async";
-            img.src = src;
-            img.onload = () => resolve(img);
-            img.onerror = () => reject();
-        });
-    }
+    }, { 
+        rootMargin: "0px 0px 500px 0px", 
+        threshold: 0.01 
+    });
 
     async function loadProduct(){
         if(!projectSlug) return;
@@ -224,6 +226,7 @@
             const res = await fetch(`models/${projectSlug}/info.json`);
             const data = await res.json();
             
+            // Cập nhật nội dung chữ
             document.getElementById("title").innerText = data.info.title;
             document.getElementById("description").innerText = data.info.description;
             
@@ -235,52 +238,54 @@
                 <li><span>Pipeline</span><b>${tech.software[0]} / ${tech.render_engine}</b></li>
             `;
 
-            // Kích hoạt Fade-in trang khi JSON đã load xong
+            // Hiện trang sau khi text đã sẵn sàng
             document.getElementById("mainContainer").classList.add("page-loaded");
 
-            // Hero
-            loadImage(`models/${projectSlug}/${data.media.hero}`).then(hImg => {
-                const heroEl = document.getElementById("hero");
-                heroEl.src = hImg.src;
-                heroEl.classList.add("loaded");
-                document.getElementById("heroCaption").innerText = formatCaption(data.media.hero);
-                document.getElementById("heroReveal").style.display = "block";
-                document.getElementById("heroWrapper").onclick = () => openSmoothZoom(heroEl);
-                revealObserver.observe(document.getElementById("heroReveal"));
-            });
+            // Hero Image
+            const heroEl = document.getElementById("hero");
+            heroEl.src = `models/${projectSlug}/${data.media.hero}`;
+            heroEl.onload = () => heroEl.classList.add("loaded");
+            document.getElementById("heroCaption").innerText = formatCaption(data.media.hero);
+            document.getElementById("heroReveal").style.display = "block";
+            document.getElementById("heroWrapper").onclick = () => openSmoothZoom(heroEl);
+            revealObserver.observe(document.getElementById("heroReveal"));
 
-            // Gallery
+            // Gallery Images (Lazy load đón đầu)
             const configRes = await fetch("models/gallery_config.json");
             const config = await configRes.json();
             const gallery = document.getElementById("gallery");
 
             config.order.forEach(name => {
+                const imgUrl = `models/${projectSlug}/images/${name}`;
                 const revealContainer = document.createElement("div");
                 revealContainer.className = "img-reveal-container";
                 revealContainer.innerHTML = `
                     <div class="img-wrapper">
-                        <img decoding="async" loading="lazy">
+                        <img decoding="async" data-src="${imgUrl}">
                         <div class="img-caption">${formatCaption(name)}</div>
                     </div>
                 `;
                 gallery.appendChild(revealContainer);
-                revealObserver.observe(revealContainer);
+                
+                revealContainer.querySelector('.img-wrapper').onclick = function() {
+                    const actualImg = this.querySelector('img');
+                    if(actualImg.classList.contains('loaded')) openSmoothZoom(actualImg);
+                };
 
-                loadImage(`models/${projectSlug}/images/${name}`).then(imgObj => {
-                    const imgEl = revealContainer.querySelector('img');
-                    imgEl.src = imgObj.src;
-                    imgEl.classList.add("loaded");
-                    revealContainer.querySelector('.img-wrapper').onclick = () => openSmoothZoom(imgEl);
-                }).catch(() => revealContainer.remove());
+                revealObserver.observe(revealContainer);
             });
 
-            if(data.viewer?.enabled) document.getElementById("viewer").src = `viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
-            else document.getElementById("viewerBlock").style.display = "none";
+            // Viewer
+            if(data.viewer?.enabled) {
+                document.getElementById("viewer").src = `viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
+            } else {
+                document.getElementById("viewerBlock").style.display = "none";
+            }
 
-        } catch(err) { console.error(err); }
+        } catch(err) { console.error("Lỗi:", err); }
     }
 
-    // LIGHTBOX ENGINE (PURE TRANSFORM)
+    // ZOOM ENGINE
     const lightbox = document.getElementById("lightbox");
     const zoomImg = document.getElementById("zoom-img");
     let activeOriginImg = null;
