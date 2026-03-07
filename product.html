@@ -31,8 +31,10 @@
 
         .image-section{display:grid;grid-template-columns:1fr 1fr;gap:40px;}
 
-        .img-wrapper{position:relative;border-radius:15px;line-height:0;cursor:zoom-in;background:#111;overflow:hidden;transition:transform .5s cubic-bezier(.16,1,.3,1);}
-        .img-wrapper img{width:100%;height:auto;border-radius:15px;display:block;will-change:transform;}
+        /* Placeholder cho ảnh đang load */
+        .img-wrapper{position:relative;border-radius:15px;line-height:0;cursor:zoom-in;background:#111;overflow:hidden;transition:transform .5s cubic-bezier(.16,1,.3,1);min-height:200px;}
+        .img-wrapper img{width:100%;height:auto;border-radius:15px;display:block;will-change:transform;opacity:0;transition:opacity 0.5s ease;}
+        .img-wrapper img.loaded{opacity:1;}
         .img-wrapper:hover{transform:translateY(-10px);box-shadow:0 20px 40px rgba(0,255,255,.15),0 0 0 1px rgba(0,255,255,.3);}
 
         .img-caption{
@@ -103,7 +105,7 @@
     }
 
     let revealObserver;
-    function initReveal(){
+    function initReveal(target){
         if(!revealObserver){
             revealObserver = new IntersectionObserver(entries => {
                 entries.forEach(e => {
@@ -114,12 +116,7 @@
                 });
             }, {threshold: .1});
         }
-        document.querySelectorAll(".img-reveal-container").forEach(el => {
-            if(!el.dataset.observed){
-                revealObserver.observe(el);
-                el.dataset.observed = "true";
-            }
-        });
+        if(target) revealObserver.observe(target);
     }
 
     function loadImage(src){
@@ -127,14 +124,8 @@
             const img = new Image();
             img.decoding = "async";
             img.src = src;
-            img.onload = () => {
-                img.onload = null; img.onerror = null;
-                resolve(img);
-            };
-            img.onerror = () => {
-                img.onload = null; img.onerror = null;
-                reject();
-            };
+            img.onload = () => { img.onload = null; img.onerror = null; resolve(img); };
+            img.onerror = () => { img.onload = null; img.onerror = null; reject(); };
         });
     }
 
@@ -145,7 +136,6 @@
             if(!res.ok) throw new Error("404");
             const data = await res.json();
             
-            // 1. Render Text ngay lập tức
             document.getElementById("title").innerText = data.info.title;
             document.getElementById("description").innerText = data.info.description;
             const tech = data.technical;
@@ -156,57 +146,53 @@
                 <li><span>Pipeline</span><b>${tech.software[0]} / ${tech.render_engine}</b></li>
             `;
 
-            // 2. Load Hero độc lập (Parallel with other tasks)
+            // Load Hero nhanh
             const heroSrc = `models/${projectSlug}/${data.media.hero}`;
             loadImage(heroSrc).then(hImg => {
                 const heroEl = document.getElementById("hero");
                 heroEl.src = hImg.src;
+                heroEl.classList.add("loaded");
                 document.getElementById("heroCaption").innerText = formatCaption(data.media.hero);
-                document.getElementById("heroReveal").style.display = "block";
+                const hr = document.getElementById("heroReveal");
+                hr.style.display = "block";
                 document.getElementById("heroWrapper").onclick = () => openSmoothZoom(heroEl);
-                initReveal();
-            }).catch(() => console.warn("Hero fail"));
+                initReveal(hr);
+            });
 
-            // 3. Load Gallery song song (Promise.all)
+            // Stream Loading Gallery: Hiện khung trước, đổ ảnh sau
             const configRes = await fetch("models/gallery_config.json");
             const config = await configRes.json();
             const gallery = document.getElementById("gallery");
 
-            // Kích hoạt load tất cả ảnh cùng lúc
-            const loadPromises = config.order.map(name => 
-                loadImage(`models/${projectSlug}/images/${name}`)
-                    .then(imgObj => ({ name, imgObj }))
-                    .catch(() => null)
-            );
+            config.order.forEach(name => {
+                // Tạo khung Reveal Container ngay lập tức
+                const revealContainer = document.createElement("div");
+                revealContainer.className = "img-reveal-container";
+                revealContainer.innerHTML = `
+                    <div class="img-wrapper">
+                        <img decoding="async" loading="lazy">
+                        <div class="img-caption">${formatCaption(name)}</div>
+                    </div>
+                `;
+                gallery.appendChild(revealContainer);
+                
+                // Kích hoạt Observer cho khung này luôn (hiện placeholder đen)
+                initReveal(revealContainer);
 
-            const results = await Promise.all(loadPromises);
-            const fragment = document.createDocumentFragment();
-            let galleryCount = 0;
-
-            results.forEach(result => {
-                if(result){
-                    const { name, imgObj } = result;
-                    const revealContainer = document.createElement("div");
-                    revealContainer.className = "img-reveal-container";
-                    revealContainer.innerHTML = `
-                        <div class="img-wrapper">
-                            <img src="${imgObj.src}" decoding="async" loading="lazy">
-                            <div class="img-caption">${formatCaption(name)}</div>
-                        </div>
-                    `;
+                // Bắt đầu tải ảnh ngầm cho khung này
+                const imgPath = `models/${projectSlug}/images/${name}`;
+                loadImage(imgPath).then(imgObj => {
+                    const imgEl = revealContainer.querySelector('img');
+                    imgEl.src = imgObj.src;
+                    imgEl.classList.add("loaded");
                     revealContainer.querySelector('.img-wrapper').onclick = function(){
-                        openSmoothZoom(this.querySelector('img'));
+                        openSmoothZoom(imgEl);
                     };
-                    fragment.appendChild(revealContainer);
-                    galleryCount++;
-                }
+                }).catch(() => {
+                    revealContainer.style.display = "none";
+                });
             });
 
-            gallery.appendChild(fragment);
-            if(galleryCount === 0) gallery.style.display = "none";
-            initReveal();
-
-            // 4. Viewer load sau cùng
             if(data.viewer?.enabled){
                 document.getElementById("viewer").src = `viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
             } else {
@@ -214,13 +200,8 @@
             }
 
         } catch(err) {
-            console.error("System Error:", err);
+            console.error(err);
             document.getElementById("title").innerText = "Project Not Found";
-            document.getElementById("description").innerText = "The requested project data is missing.";
-            document.getElementById("techDetails").innerHTML = "";
-            document.getElementById("viewerBlock").style.display = "none";
-            document.querySelector(".hero-section").style.display = "none";
-            document.getElementById("gallery").style.display = "none";
         }
     }
 
