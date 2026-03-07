@@ -12,24 +12,25 @@
             --text-main: #e5e5e5;
             --text-dim: #888;
             --accent: #555;
+            /* Đường cong chuyển động mượt hơn */
+            --ease: cubic-bezier(0.4, 0, 0.2, 1); 
         }
 
         body{margin:0;background:var(--bg);color:var(--text-main);font-family:'Inter',sans-serif;overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased;}
         body.lock-scroll{overflow:hidden!important;}
 
-        /* Container hiện ra khi dữ liệu text sẵn sàng */
         .container {
             max-width:1100px;
             margin:0 auto;
             padding:0 10% 80px 10%;
             opacity: 0;
-            transform: translateY(15px);
-            transition: opacity 1s ease, transform 1s cubic-bezier(0.2, 0, 0.2, 1);
+            transform: translateY(20px);
+            transition: opacity 1.5s var(--ease), transform 1.5s var(--ease);
         }
         .container.page-loaded { opacity: 1; transform: translateY(0); }
         
         .back{padding:40px 10% 10px 10%;max-width:1100px;margin:0 auto;}
-        .back a{font-size:10px;color:var(--accent);text-decoration:none;text-transform:uppercase;letter-spacing:2px;transition:.3s;}
+        .back a{font-size:10px;color:var(--accent);text-decoration:none;text-transform:uppercase;letter-spacing:2px;transition:.4s;}
         .back a:hover{color:#fff;}
 
         h1{font-weight:300;font-size:clamp(26px,4vw,36px);margin:0 0 48px 0;color:#fff;letter-spacing:-0.5px;}
@@ -54,24 +55,17 @@
         .tech-list li span{color: var(--accent); text-transform: uppercase; letter-spacing: 1px; font-size: 10px;}
         .tech-list li b{font-weight: 400; color: #ccc;}
 
-        /* Tối ưu Viewer Fade */
+        /* 3D Viewer Fade */
         .viewer-container {
-            width:100%; 
-            aspect-ratio:16/9; 
-            border-radius:12px;
-            background:#111;
-            overflow:hidden;
+            width:100%; aspect-ratio:16/9; border-radius:12px;
+            background:#111; overflow:hidden;
             box-shadow:0 30px 60px rgba(0,0,0,.4);
             opacity: 0;
-            transition: opacity 1.2s ease;
+            transform: scale(0.98);
+            transition: opacity 1.5s var(--ease), transform 1.5s var(--ease);
         }
-        .viewer-container.loaded { opacity: 1; }
-
-        .viewer-container iframe{
-            width:100%; 
-            height:100%;
-            border:none;
-        }
+        .viewer-container.loaded { opacity: 1; transform: scale(1); }
+        .viewer-container iframe{ width:100%; height:100%; border:none; }
 
         .hero-section{margin-bottom:64px; display:none; justify-content:center; width:100%;}
         .image-section{display:grid; grid-template-columns:1fr 1fr; gap:40px;}
@@ -79,7 +73,7 @@
         .img-wrapper{
             position:relative; border-radius:15px; cursor:zoom-in;
             background:#111; overflow:hidden;
-            transition:transform 0.5s cubic-bezier(.16,1,.3,1);
+            transition:transform 0.6s var(--ease);
             aspect-ratio: 1/1;
         }
         
@@ -87,7 +81,7 @@
             width:100%; height:100%; object-fit:cover;
             border-radius:15px; display:block;
             opacity:0; will-change: opacity;
-            transition:opacity 0.8s ease;
+            transition:opacity 1.2s var(--ease);
         }
         .img-wrapper img.loaded{opacity:1;}
         .img-wrapper:hover{transform:translateY(-8px); box-shadow:0 20px 40px rgba(0,255,255,.1);}
@@ -97,17 +91,18 @@
             text-transform:uppercase; letter-spacing:2px;
             background:rgba(0,0,0,.6); backdrop-filter:blur(10px);
             padding:6px 14px; border-radius:2px;
-            opacity:0; transform:translateY(10px); transition:.4s; pointer-events:none;
+            opacity:0; transform:translateY(10px); transition:.5s var(--ease); pointer-events:none;
         }
         .img-wrapper:hover .img-caption{opacity:1; transform:translateY(0);}
 
+        /* Fade cho từng phần tử khi scroll */
         .img-reveal-container {
-            opacity:0; transform:translateY(20px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
+            opacity:0; transform:translateY(30px);
+            transition: opacity 1.2s var(--ease), transform 1.2s var(--ease);
         }
         .img-reveal-container.reveal { opacity:1; transform:translateY(0); }
 
-        #lightbox{position:fixed; inset:0; background:rgba(0,0,0,0); z-index:9999; pointer-events:none; transition:background .5s ease;}
+        #lightbox{position:fixed; inset:0; background:rgba(0,0,0,0); z-index:9999; pointer-events:none; transition:background .6s var(--ease);}
         #lightbox.active{background:rgba(0,0,0,.96); pointer-events:auto; backdrop-filter: blur(12px);}
 
         #zoom-img{
@@ -177,12 +172,13 @@
         });
     }, { threshold: 0.1 });
 
-    function validateAndLoadImage(url) {
+    // Cải tiến hàm kiểm tra ảnh: Chỉ dựng DOM khi ảnh thực sự tồn tại
+    function validateImage(url) {
         return new Promise((resolve, reject) => {
             const img = new Image();
             img.src = url;
-            img.onload = () => resolve(url);
-            img.onerror = () => reject(url);
+            img.onload = () => resolve(img);
+            img.onerror = () => reject();
         });
     }
 
@@ -203,64 +199,66 @@
                 <li><span>Pipeline</span><b>${tech.software[0]} / ${tech.render_engine}</b></li>
             `;
 
-            // 1. Fade-in toàn bộ Container
-            document.getElementById("mainContainer").classList.add("page-loaded");
+            // Fade-in container chính
+            setTimeout(() => {
+                document.getElementById("mainContainer").classList.add("page-loaded");
+            }, 100);
 
-            // 2. Xử lý 3D Viewer Fade
+            // Xử lý 3D Viewer
             if(data.viewer?.enabled) {
                 const vBlock = document.getElementById("viewerBlock");
                 const iframe = document.getElementById("viewer");
-                
                 iframe.src = `viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
-                
-                // Khi iframe đã "nạp" xong trang babylon
-                iframe.onload = () => {
-                    vBlock.classList.add("loaded");
-                };
+                iframe.onload = () => vBlock.classList.add("loaded");
             } else {
                 document.getElementById("viewerBlock").style.display = "none";
             }
 
-            // 3. Hero Image
+            // Hero Image - Check trước rồi mới hiện
             const heroUrl = `models/${projectSlug}/${data.media.hero}`;
-            validateAndLoadImage(heroUrl).then(() => {
+            validateImage(heroUrl).then((imgObj) => {
                 const heroImg = document.getElementById("hero");
-                heroImg.src = heroUrl;
-                heroImg.onload = () => heroImg.classList.add("loaded");
+                heroImg.src = imgObj.src;
+                heroImg.classList.add("loaded");
                 document.getElementById("heroCaption").innerText = formatCaption(data.media.hero);
                 document.getElementById("heroReveal").style.display = "flex";
                 revealObserver.observe(document.getElementById("heroReveal"));
                 document.getElementById("heroWrapper").onclick = () => openSmoothZoom(heroImg);
             }).catch(() => {});
 
-            // 4. Gallery (Chỉ hiển thị những file tồn tại)
+            // Gallery - TUYỆT ĐỐI KHÔNG HIỆN Ô ĐEN
             const configRes = await fetch("models/gallery_config.json");
             const config = await configRes.json();
             const gallery = document.getElementById("gallery");
 
             config.order.forEach(name => {
                 const imgUrl = `models/${projectSlug}/images/${name}`;
-                validateAndLoadImage(imgUrl).then(() => {
+                // Kiểm tra sự tồn tại của file trước
+                validateImage(imgUrl).then((imgObj) => {
+                    // File tồn tại -> Dựng thẻ HTML
                     const container = document.createElement("div");
                     container.className = "img-reveal-container";
                     container.innerHTML = `
                         <div class="img-wrapper">
-                            <img src="${imgUrl}" onload="this.classList.add('loaded')">
+                            <img src="${imgObj.src}" class="loaded">
                             <div class="img-caption">${formatCaption(name)}</div>
                         </div>
                     `;
                     gallery.appendChild(container);
                     revealObserver.observe(container);
+                    
                     container.querySelector('.img-wrapper').onclick = function() {
                         openSmoothZoom(this.querySelector('img'));
                     };
-                }).catch(() => {});
+                }).catch(() => {
+                    // File không tồn tại -> Hoàn toàn không tạo thẻ, không có ô đen
+                });
             });
 
         } catch(err) { console.error("Lỗi:", err); }
     }
 
-    // ZOOM ENGINE
+    // ZOOM ENGINE (Giữ nguyên logic GPU mượt)
     const lightbox = document.getElementById("lightbox");
     const zoomImg = document.getElementById("zoom-img");
     let activeOriginImg = null;
@@ -306,7 +304,7 @@
         originImg.style.visibility = "hidden";
 
         requestAnimationFrame(() => {
-            zoomImg.style.transition = "transform 0.5s cubic-bezier(0.2, 0, 0, 1.0)";
+            zoomImg.style.transition = "transform 0.5s var(--ease)";
             zoomImg.style.transform = `translate3d(${rect.left + moveX}px, ${rect.top + moveY}px, 0) scale(${scaleX}, ${scaleY})`;
             setTimeout(() => { zoomImg.style.objectFit = "contain"; }, 50);
         });
@@ -318,7 +316,7 @@
         animating = true;
         const rect = activeOriginImg.getBoundingClientRect();
         zoomImg.style.objectFit = "cover";
-        zoomImg.style.transition = "transform 0.45s cubic-bezier(0.2, 0, 0, 1.0)";
+        zoomImg.style.transition = "transform 0.45s var(--ease)";
         zoomImg.style.transform = `translate3d(${rect.left}px, ${rect.top}px, 0) scale(1)`;
         lightbox.classList.remove("active");
         setTimeout(() => {
