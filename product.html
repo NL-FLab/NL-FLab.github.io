@@ -8,17 +8,17 @@
 
     <style>
         body { margin:0; background:#0c0c0c; color:#e5e5e5; font-family:'Inter',sans-serif; overflow-x:hidden; line-height:1.6; -webkit-font-smoothing:antialiased; }
-        body.lock-scroll { overflow:hidden!important; height:100vh; }
         
-        /* LAYOUT CHUNG CĂN GIỮA */
-        .container { max-width:1100px; margin:0 auto; padding:0 10% 80px 10%; }
-        .back { padding:40px 10% 20px 10%; max-width:1100px; margin:0 auto; }
+        /* FIX LỖI GIẬT TRANG: Không dùng height 100vh khi lock scroll */
+        body.lock-scroll { overflow:hidden!important; }
+        
+        .container { max-width:1100px; margin:0 auto; padding:0 10% 80px 10%; transition: padding-right 0s; }
+        .back { padding:40px 10% 20px 10%; max-width:1100px; margin:0 auto; transition: padding-right 0s; }
         .back a { font-size:10px; color:#555; text-decoration:none; text-transform:uppercase; letter-spacing:2px; transition:.3s; }
         .back a:hover { color:#fff; }
         
         h1 { font-weight:300; font-size:clamp(26px,4vw,36px); margin:10px 0 40px 0; color:#fff; letter-spacing:-.5px; }
 
-        /* TOP SECTION: INFO & VIEWER */
         .top-section { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; margin-bottom:80px; }
         .info { color:#888; font-size:14px; font-weight:300; }
         .info strong { color:#fff; font-weight:400; display:block; margin-bottom:12px; font-size:11px; text-transform:uppercase; letter-spacing:2px; }
@@ -29,36 +29,22 @@
         .tech-list li b { color:#aaa; font-weight:400; }
         .viewer iframe { width:100%; aspect-ratio:16/9; border:none; border-radius:12px; background:#111; box-shadow:0 30px 60px rgba(0,0,0,.4); }
 
-        /* HERO SECTION: CĂN GIỮA & TO */
+        /* 1. HERO SECTION: Thu nhỏ lại theo yêu cầu (65% width) */
         .hero-section { margin-bottom:60px; display:flex; justify-content:center; width:100%; }
-        .hero-section .img-reveal-container { width:100%; } /* Có thể chỉnh 90% nếu muốn hở lề */
+        .hero-section .img-reveal-container { width:65%; } 
 
-        /* GALLERY SECTION: CHIA ĐỀU 2 CỘT */
+        /* 2. GALLERY SECTION: Chia đều 2 cột */
         .image-section { display:grid; grid-template-columns:1fr 1fr; gap:40px; }
 
-        /* IMAGE WRAPPER - TỐI ƯU CHO ZOOM */
         .img-wrapper { 
             position:relative; border-radius:15px; line-height:0; cursor:zoom-in; 
             background:#111; overflow:hidden;
-            /* Dùng translateY và shadow thay vì Scale để bảo vệ tọa độ Zoom */
-            transition: transform .5s cubic-bezier(0.16, 1, 0.3, 1), 
-                        box-shadow .5s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform .5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow .5s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        
-        .img-wrapper img { 
-            width:100%; height:auto; border-radius:15px; 
-            transition: filter .4s ease;
-            display: block;
-        }
-
-        .img-wrapper:hover { 
-            transform: translateY(-10px); /* Nhấc ảnh lên tạo chiều sâu */
-            box-shadow: 0 20px 40px rgba(0, 255, 255, 0.15), 0 0 0 1px rgba(0, 255, 255, 0.3); 
-        }
-
+        .img-wrapper img { width:100%; height:auto; border-radius:15px; transition: filter .4s ease; display: block; }
+        .img-wrapper:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0, 255, 255, 0.15), 0 0 0 1px rgba(0, 255, 255, 0.3); }
         .img-wrapper:hover img { filter: brightness(1.1); }
 
-        /* CAPTION */
         .img-caption {
             position:absolute; bottom:20px; left:20px; font-size:9px; font-weight:300; color:#fff;
             text-transform:uppercase; letter-spacing:2px; background:rgba(0,0,0,0.6);
@@ -69,7 +55,6 @@
         }
         .img-wrapper:hover .img-caption { opacity:1; transform:translateY(0); }
 
-        /* REVEAL */
         .img-reveal-container { opacity:0; transform:translateY(30px); transition: opacity .8s ease, transform .8s cubic-bezier(.22,1,.36,1); }
         .img-reveal-container.reveal { opacity:1; transform:translateY(0); }
 
@@ -78,16 +63,13 @@
         /* LIGHTBOX */
         #lightbox { position:fixed; inset:0; background:rgba(0,0,0,0); z-index:9999; pointer-events:none; transition:background .4s ease; }
         #lightbox.active { background:rgba(0,0,0,.97); pointer-events:auto; }
-        
-        #zoom-img { 
-            position:fixed; top:0; left:0; z-index:10000; object-fit:contain; border-radius:15px; 
-            display:none; pointer-events:none; will-change:transform; transform-origin:top left;
-        }
+        #zoom-img { position:fixed; top:0; left:0; z-index:10000; object-fit:contain; border-radius:15px; display:none; pointer-events:none; will-change:transform; transform-origin:top left; }
 
         @media(max-width:850px){
             .container { padding:0 6% 60px 6%; }
             .top-section { grid-template-columns:1fr; gap:40px; }
             .image-section { grid-template-columns:1fr; }
+            .hero-section .img-reveal-container { width:100%; }
         }
     </style>
 </head>
@@ -138,10 +120,8 @@
         try {
             const res = await fetch(`models/${projectSlug}/info.json`);
             const data = await res.json();
-            
             document.getElementById("title").innerText = data.info.title;
             document.getElementById("description").innerText = data.info.description;
-            
             const tech = data.technical;
             document.getElementById("techDetails").innerHTML = `
                 <li><span>Dimensions</span><b>${tech.scale} ${tech.unit}</b></li>
@@ -149,7 +129,6 @@
                 <li><span>Materials</span><b>PBR WORKFLOW</b></li>
                 <li><span>Pipeline</span><b>${tech.software[0]} / ${tech.render_engine}</b></li>
             `;
-
             const hero = document.getElementById("hero");
             hero.src = `models/${projectSlug}/${data.media.hero}`;
             document.getElementById("heroCaption").innerText = formatCaption(data.media.hero);
@@ -169,23 +148,18 @@
                 const cap = document.createElement("div");
                 cap.className = "img-caption";
                 cap.innerText = formatCaption(name);
-                
                 wrapper.append(img, cap);
                 wrapper.onclick = () => openSmoothZoom(img);
                 revealContainer.append(wrapper);
                 gallery.append(revealContainer);
             });
-
             initReveal();
-            if(data.viewer?.enabled){
-                document.getElementById("viewer").src=`viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
-            } else {
-                document.getElementById("viewerBlock").style.display="none";
-            }
+            if(data.viewer?.enabled) document.getElementById("viewer").src=`viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
+            else document.getElementById("viewerBlock").style.display="none";
         } catch(err) { console.error(err); }
     }
 
-    // SMOOTH ZOOM LOGIC
+    // ZOOM LOGIC CÓ XỬ LÝ SCROLLBAR WIDTH
     const lightbox = document.getElementById("lightbox");
     const zoomImg = document.getElementById("zoom-img");
     let activeOriginImg = null;
@@ -196,6 +170,11 @@
         if(animating) return;
         activeOriginImg = originImg;
         
+        // Tính độ rộng thanh scroll để bù trừ padding
+        const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+        document.body.style.paddingRight = scrollBarWidth + "px";
+        document.body.classList.add("lock-scroll");
+
         const rect = originImg.getBoundingClientRect();
         zoomImg.src = originImg.src;
         zoomImg.style.display = "block";
@@ -203,7 +182,7 @@
         zoomImg.style.height = rect.height + "px";
         zoomImg.style.transition = "none";
         zoomImg.style.transform = `translate3d(${rect.left}px,${rect.top}px,0) scale(1)`;
-        zoomImg.offsetHeight; // force reflow
+        zoomImg.offsetHeight;
 
         const winW = window.innerWidth;
         const winH = window.innerHeight;
@@ -215,10 +194,10 @@
         else { targetH = winH * .92; targetW = targetH * imgRatio; }
 
         const scale = targetW / rect.width;
-        const targetX = (winW - targetW) / 2;
+        // targetX bù trừ thêm 1/2 thanh scroll để ảnh nằm giữa màn hình thực tế
+        const targetX = (winW - targetW - scrollBarWidth) / 2;
         const targetY = (winH - targetH) / 2;
 
-        document.body.classList.add("lock-scroll");
         lightbox.classList.add("active");
         originImg.style.visibility = "hidden";
 
@@ -231,16 +210,15 @@
     function closeSmoothZoom(){
         if(!activeOriginImg || animating) return;
         animating = true;
-
         const rect = activeOriginImg.getBoundingClientRect();
         zoomImg.style.transition = `transform .45s ${appleBezier}`;
         zoomImg.style.transform = `translate3d(${rect.left}px,${rect.top}px,0) scale(1)`;
         lightbox.classList.remove("active");
-
         setTimeout(() => {
             activeOriginImg.style.visibility = "visible";
             zoomImg.style.display = "none";
             document.body.classList.remove("lock-scroll");
+            document.body.style.paddingRight = "0px";
             activeOriginImg = null;
             animating = false;
         }, 470);
@@ -250,15 +228,11 @@
     window.addEventListener("keydown", e => { if(e.key === "Escape") closeSmoothZoom(); });
 
     function initReveal(){
-        const elements = document.querySelectorAll(".img-reveal-container");
         const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if(entry.isIntersecting) entry.target.classList.add("reveal");
-            });
+            entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add("reveal"); });
         }, {threshold:.1});
-        elements.forEach(el => observer.observe(el));
+        document.querySelectorAll(".img-reveal-container").forEach(el => observer.observe(el));
     }
-
     loadProduct();
 </script>
 </body>
