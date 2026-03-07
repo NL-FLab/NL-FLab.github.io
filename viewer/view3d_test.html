@@ -8,47 +8,55 @@
 
 <style>
 
-html, body {
-    width:100%;
-    height:100%;
-    margin:0;
-    background:#1e1e1e;
+html, body{
+width:100%;
+height:100%;
+margin:0;
+background:#1e1e1e;
 }
 
 babylon{
-    width:100%;
-    height:100%;
+width:100%;
+height:100%;
 }
 
-/* UI overlay */
+/* UI */
 
 .viewer-ui{
-    position:absolute;
-    bottom:20px;
-    left:20px;
-    display:flex;
-    gap:6px;
-    z-index:10;
+
+position:absolute;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+display:flex;
+gap:8px;
+z-index:10;
+
 }
 
 .viewer-ui button{
 
-    background:rgba(20,20,20,0.8);
-    color:#fff;
-    border:1px solid #444;
-    padding:6px 12px;
-    font-size:13px;
-    cursor:pointer;
-    border-radius:4px;
+background:rgba(20,20,20,0.8);
+color:white;
+border:1px solid #444;
+padding:8px 14px;
+font-size:13px;
+cursor:pointer;
+border-radius:4px;
+
 }
 
 .viewer-ui button:hover{
-    background:#444;
+
+background:#444;
+
 }
 
 .viewer-ui button.active{
-    background:#888;
-    color:#000;
+
+background:#aaa;
+color:black;
+
 }
 
 </style>
@@ -57,9 +65,10 @@ babylon{
 <body>
 
 <div class="viewer-ui">
-<button onclick="setMode('render')" class="active" id="btnRender">Render</button>
-<button onclick="setMode('wire')" id="btnWire">Wireframe</button>
-<button onclick="setMode('normal')" id="btnNormal">Normal</button>
+
+<button id="btnRender">Render</button>
+<button id="btnWire">Wireframe</button>
+
 </div>
 
 <babylon id="viewer"
@@ -73,93 +82,86 @@ hardware-scaling-level="1">
 <script>
 
 function getModelFromURL(){
-    const params=new URLSearchParams(window.location.search);
-    return params.get("model");
-}
 
-const viewer=document.getElementById("viewer");
+const params=new URLSearchParams(window.location.search);
+return params.get("model");
+
+}
 
 const modelPath=getModelFromURL();
 
+const viewerElement=document.getElementById("viewer");
+
 if(modelPath){
-    viewer.setAttribute("model",modelPath);
+
+viewerElement.setAttribute("model",modelPath);
+
 }else{
-    alert("No model specified in URL.");
+
+alert("No model specified in URL.");
+
 }
 
-let scene;
 let meshes=[];
+let originalMaterials=[];
 
-viewer.onSceneInitObservable.add(function(sceneObj){
+/* Lấy viewer instance */
 
-    scene=sceneObj;
+const viewer=new BabylonViewer.DefaultViewer(viewerElement,{});
 
-});
+/* Khi model load */
 
 viewer.onModelLoadedObservable.add(function(model){
 
-    meshes=model.meshes;
+meshes=model.meshes;
+
+meshes.forEach(m=>{
+
+originalMaterials.push(m.material);
 
 });
 
-function clearButtons(){
+});
 
-    document.querySelectorAll(".viewer-ui button")
-    .forEach(b=>b.classList.remove("active"));
+/* UI buttons */
 
-}
+const btnRender=document.getElementById("btnRender");
+const btnWire=document.getElementById("btnWire");
 
-function setMode(mode){
+function clearActive(){
 
-    clearButtons();
-
-    if(mode==="render"){
-
-        document.getElementById("btnRender").classList.add("active");
-
-        meshes.forEach(m=>{
-            if(m.material){
-                m.material.wireframe=false;
-            }
-        });
-
-    }
-
-    if(mode==="wire"){
-
-        document.getElementById("btnWire").classList.add("active");
-
-        meshes.forEach(m=>{
-            if(m.material){
-                m.material.wireframe=true;
-            }
-        });
-
-    }
-
-    if(mode==="normal"){
-
-        document.getElementById("btnNormal").classList.add("active");
-
-        meshes.forEach(m=>{
-
-            if(m.material){
-
-                const mat=new BABYLON.StandardMaterial("normalView",scene);
-
-                if(m.material.bumpTexture){
-                    mat.diffuseTexture=m.material.bumpTexture;
-                }
-
-                m.material=mat;
-
-            }
-
-        });
-
-    }
+document.querySelectorAll(".viewer-ui button")
+.forEach(b=>b.classList.remove("active"));
 
 }
+
+btnRender.onclick=function(){
+
+clearActive();
+btnRender.classList.add("active");
+
+meshes.forEach((m,i)=>{
+
+m.material=originalMaterials[i];
+
+});
+
+};
+
+btnWire.onclick=function(){
+
+clearActive();
+btnWire.classList.add("active");
+
+meshes.forEach(m=>{
+
+if(m.material){
+m.material.wireframe=true;
+}
+
+});
+
+};
 
 </script>
 
