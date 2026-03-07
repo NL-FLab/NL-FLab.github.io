@@ -17,19 +17,16 @@
         body{margin:0;background:var(--bg);color:var(--text-main);font-family:'Inter',sans-serif;overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased;}
         body.lock-scroll{overflow:hidden!important;}
 
-        /* Container Fade-in lúc vào trang */
+        /* Container hiện ra khi dữ liệu text sẵn sàng */
         .container {
             max-width:1100px;
             margin:0 auto;
             padding:0 10% 80px 10%;
             opacity: 0;
             transform: translateY(15px);
-            transition: opacity 1.2s ease, transform 1.2s cubic-bezier(0.2, 0, 0.2, 1);
+            transition: opacity 1s ease, transform 1s cubic-bezier(0.2, 0, 0.2, 1);
         }
-        .container.page-loaded {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .container.page-loaded { opacity: 1; transform: translateY(0); }
         
         .back{padding:40px 10% 10px 10%;max-width:1100px;margin:0 auto;}
         .back a{font-size:10px;color:var(--accent);text-decoration:none;text-transform:uppercase;letter-spacing:2px;transition:.3s;}
@@ -37,7 +34,6 @@
 
         h1{font-weight:300;font-size:clamp(26px,4vw,36px);margin:0 0 48px 0;color:#fff;letter-spacing:-0.5px;}
 
-        /* TOP SECTION - Grid 1:1.2 cân đối */
         .top-section{
             display:grid;
             grid-template-columns: 1fr 1.2fr;
@@ -47,107 +43,83 @@
         }
 
         .info-block { margin-bottom: 40px; }
-        .info-block:last-child { margin-bottom: 0; }
-        .info-block strong {
-            color: #fff;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            display: block;
-            margin-bottom: 16px;
-        }
-
+        .info-block strong { color: #fff; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 16px; }
         #description { color: var(--text-dim); font-size: 14px; line-height: 1.8; margin: 0; text-align: justify; }
 
         .tech-list{list-style:none;padding:0;margin:0;}
         .tech-list li{
-            padding: 12px 0;
-            border-bottom: 1px solid #1a1a1a;
-            font-size: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 12px 0; border-bottom: 1px solid #1a1a1a;
+            font-size: 12px; display: flex; justify-content: space-between; align-items: center;
         }
         .tech-list li span{color: var(--accent); text-transform: uppercase; letter-spacing: 1px; font-size: 10px;}
         .tech-list li b{font-weight: 400; color: #ccc;}
 
-        .viewer iframe{
-            width:100%;
-            aspect-ratio:16/9;
-            border:none;
+        /* Tối ưu Viewer Fade */
+        .viewer-container {
+            width:100%; 
+            aspect-ratio:16/9; 
             border-radius:12px;
             background:#111;
+            overflow:hidden;
             box-shadow:0 30px 60px rgba(0,0,0,.4);
+            opacity: 0;
+            transition: opacity 1.2s ease;
+        }
+        .viewer-container.loaded { opacity: 1; }
+
+        .viewer-container iframe{
+            width:100%; 
+            height:100%;
+            border:none;
         }
 
-        /* Hero & Gallery 1:1 */
-        .hero-section{margin-bottom:64px;display:flex;justify-content:center;width:100%;}
-        .hero-section .img-reveal-container{width:100%; max-width:700px; display:none;}
-
-        .image-section{display:grid;grid-template-columns:1fr 1fr;gap:40px;}
+        .hero-section{margin-bottom:64px; display:none; justify-content:center; width:100%;}
+        .image-section{display:grid; grid-template-columns:1fr 1fr; gap:40px;}
 
         .img-wrapper{
-            position:relative;
-            border-radius:15px;
-            cursor:zoom-in;
-            background:#111;
-            overflow:hidden;
+            position:relative; border-radius:15px; cursor:zoom-in;
+            background:#111; overflow:hidden;
             transition:transform 0.5s cubic-bezier(.16,1,.3,1);
             aspect-ratio: 1/1;
         }
         
         .img-wrapper img{
-            width:100%; height:100%;
-            object-fit:cover;
-            border-radius:15px;
-            display:block;
-            opacity:0;
-            will-change: opacity;
-            transition:opacity .8s ease;
+            width:100%; height:100%; object-fit:cover;
+            border-radius:15px; display:block;
+            opacity:0; will-change: opacity;
+            transition:opacity 0.8s ease;
         }
         .img-wrapper img.loaded{opacity:1;}
-        .img-wrapper:hover{transform:translateY(-8px);box-shadow:0 20px 40px rgba(0,255,255,.1);}
+        .img-wrapper:hover{transform:translateY(-8px); box-shadow:0 20px 40px rgba(0,255,255,.1);}
 
         .img-caption{
-            position:absolute;bottom:20px;left:20px;font-size:9px;color:#fff;
-            text-transform:uppercase;letter-spacing:2px;
-            background:rgba(0,0,0,.6);backdrop-filter:blur(10px);
-            padding:6px 14px;border-radius:2px;
-            opacity:0;transform:translateY(10px);transition:.4s;
-            pointer-events:none;
+            position:absolute; bottom:20px; left:20px; font-size:9px; color:#fff;
+            text-transform:uppercase; letter-spacing:2px;
+            background:rgba(0,0,0,.6); backdrop-filter:blur(10px);
+            padding:6px 14px; border-radius:2px;
+            opacity:0; transform:translateY(10px); transition:.4s; pointer-events:none;
         }
-        .img-wrapper:hover .img-caption{opacity:1;transform:translateY(0);}
+        .img-wrapper:hover .img-caption{opacity:1; transform:translateY(0);}
 
-        /* Hiệu ứng trượt hiện hình khi cuộn trang */
         .img-reveal-container {
-            opacity:0;
-            transform:translateY(30px);
-            transition: opacity 1s cubic-bezier(0.2, 0, 0.2, 1), transform 1s cubic-bezier(0.2, 0, 0.2, 1);
+            opacity:0; transform:translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
         }
-        .img-reveal-container.reveal {
-            opacity:1;
-            transform:translateY(0);
-        }
+        .img-reveal-container.reveal { opacity:1; transform:translateY(0); }
 
-        /* Lightbox GPU Style */
-        #lightbox{position:fixed;inset:0;background:rgba(0,0,0,0);z-index:9999;pointer-events:none;transition:background .5s cubic-bezier(0.2, 0, 0, 1.0);}
-        #lightbox.active{background:rgba(0,0,0,.96);pointer-events:auto;backdrop-filter: blur(12px);}
+        #lightbox{position:fixed; inset:0; background:rgba(0,0,0,0); z-index:9999; pointer-events:none; transition:background .5s ease;}
+        #lightbox.active{background:rgba(0,0,0,.96); pointer-events:auto; backdrop-filter: blur(12px);}
 
         #zoom-img{
-            position:fixed;top:0;left:0;z-index:10000;
-            object-fit:cover;
-            border-radius:15px;
-            display:none;
-            pointer-events:none;
-            will-change: transform;
-            transform-origin: top left;
+            position:fixed; top:0; left:0; z-index:10000;
+            object-fit:cover; border-radius:15px;
+            display:none; pointer-events:none;
+            will-change: transform; transform-origin: top left;
         }
 
         @media(max-width:850px){
-            .container{padding:0 6% 60px 6%;}
             .top-section{grid-template-columns:1fr; gap:48px;}
             .image-section{grid-template-columns:1fr;}
-            .hero-section .img-reveal-container{max-width:100%;}
         }
     </style>
 </head>
@@ -165,24 +137,21 @@
                 <strong>Project Insight</strong>
                 <div id="description"></div>
             </div>
-            
             <div class="info-block">
                 <strong>Technical Specs</strong>
                 <ul class="tech-list" id="techDetails"></ul>
             </div>
         </div>
-
-        <div class="viewer" id="viewerBlock">
-            <iframe id="viewer" loading="lazy"></iframe>
+        
+        <div class="viewer-container" id="viewerBlock">
+            <iframe id="viewer"></iframe>
         </div>
     </div>
 
-    <div class="hero-section">
-        <div class="img-reveal-container" id="heroReveal">
-            <div class="img-wrapper" id="heroWrapper">
-                <img id="hero">
-                <div class="img-caption" id="heroCaption"></div>
-            </div>
+    <div class="hero-section" id="heroReveal">
+        <div class="img-wrapper" id="heroWrapper">
+            <img id="hero">
+            <div class="img-caption" id="heroCaption"></div>
         </div>
     </div>
 
@@ -199,26 +168,23 @@
         return n.split('/').pop().split('.').slice(0,-1).join('.').replace(/_/g,' ').toUpperCase();
     }
 
-    // REVEAL & LAZY LOAD OBSERVER (Đón đầu 500px)
     const revealObserver = new IntersectionObserver(entries => {
         entries.forEach(e => {
             if(e.isIntersecting){
-                const container = e.target;
-                const img = container.querySelector('img');
-                
-                if(img && img.dataset.src) {
-                    img.src = img.dataset.src;
-                    img.onload = () => img.classList.add("loaded");
-                }
-                
-                container.classList.add("reveal");
-                revealObserver.unobserve(container);
+                e.target.classList.add("reveal");
+                revealObserver.unobserve(e.target);
             }
         });
-    }, { 
-        rootMargin: "0px 0px 500px 0px", 
-        threshold: 0.01 
-    });
+    }, { threshold: 0.1 });
+
+    function validateAndLoadImage(url) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.src = url;
+            img.onload = () => resolve(url);
+            img.onerror = () => reject(url);
+        });
+    }
 
     async function loadProduct(){
         if(!projectSlug) return;
@@ -226,7 +192,6 @@
             const res = await fetch(`models/${projectSlug}/info.json`);
             const data = await res.json();
             
-            // Cập nhật nội dung chữ
             document.getElementById("title").innerText = data.info.title;
             document.getElementById("description").innerText = data.info.description;
             
@@ -238,49 +203,59 @@
                 <li><span>Pipeline</span><b>${tech.software[0]} / ${tech.render_engine}</b></li>
             `;
 
-            // Hiện trang sau khi text đã sẵn sàng
+            // 1. Fade-in toàn bộ Container
             document.getElementById("mainContainer").classList.add("page-loaded");
 
-            // Hero Image
-            const heroEl = document.getElementById("hero");
-            heroEl.src = `models/${projectSlug}/${data.media.hero}`;
-            heroEl.onload = () => heroEl.classList.add("loaded");
-            document.getElementById("heroCaption").innerText = formatCaption(data.media.hero);
-            document.getElementById("heroReveal").style.display = "block";
-            document.getElementById("heroWrapper").onclick = () => openSmoothZoom(heroEl);
-            revealObserver.observe(document.getElementById("heroReveal"));
+            // 2. Xử lý 3D Viewer Fade
+            if(data.viewer?.enabled) {
+                const vBlock = document.getElementById("viewerBlock");
+                const iframe = document.getElementById("viewer");
+                
+                iframe.src = `viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
+                
+                // Khi iframe đã "nạp" xong trang babylon
+                iframe.onload = () => {
+                    vBlock.classList.add("loaded");
+                };
+            } else {
+                document.getElementById("viewerBlock").style.display = "none";
+            }
 
-            // Gallery Images (Lazy load đón đầu)
+            // 3. Hero Image
+            const heroUrl = `models/${projectSlug}/${data.media.hero}`;
+            validateAndLoadImage(heroUrl).then(() => {
+                const heroImg = document.getElementById("hero");
+                heroImg.src = heroUrl;
+                heroImg.onload = () => heroImg.classList.add("loaded");
+                document.getElementById("heroCaption").innerText = formatCaption(data.media.hero);
+                document.getElementById("heroReveal").style.display = "flex";
+                revealObserver.observe(document.getElementById("heroReveal"));
+                document.getElementById("heroWrapper").onclick = () => openSmoothZoom(heroImg);
+            }).catch(() => {});
+
+            // 4. Gallery (Chỉ hiển thị những file tồn tại)
             const configRes = await fetch("models/gallery_config.json");
             const config = await configRes.json();
             const gallery = document.getElementById("gallery");
 
             config.order.forEach(name => {
                 const imgUrl = `models/${projectSlug}/images/${name}`;
-                const revealContainer = document.createElement("div");
-                revealContainer.className = "img-reveal-container";
-                revealContainer.innerHTML = `
-                    <div class="img-wrapper">
-                        <img decoding="async" data-src="${imgUrl}">
-                        <div class="img-caption">${formatCaption(name)}</div>
-                    </div>
-                `;
-                gallery.appendChild(revealContainer);
-                
-                revealContainer.querySelector('.img-wrapper').onclick = function() {
-                    const actualImg = this.querySelector('img');
-                    if(actualImg.classList.contains('loaded')) openSmoothZoom(actualImg);
-                };
-
-                revealObserver.observe(revealContainer);
+                validateAndLoadImage(imgUrl).then(() => {
+                    const container = document.createElement("div");
+                    container.className = "img-reveal-container";
+                    container.innerHTML = `
+                        <div class="img-wrapper">
+                            <img src="${imgUrl}" onload="this.classList.add('loaded')">
+                            <div class="img-caption">${formatCaption(name)}</div>
+                        </div>
+                    `;
+                    gallery.appendChild(container);
+                    revealObserver.observe(container);
+                    container.querySelector('.img-wrapper').onclick = function() {
+                        openSmoothZoom(this.querySelector('img'));
+                    };
+                }).catch(() => {});
             });
-
-            // Viewer
-            if(data.viewer?.enabled) {
-                document.getElementById("viewer").src = `viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
-            } else {
-                document.getElementById("viewerBlock").style.display = "none";
-            }
 
         } catch(err) { console.error("Lỗi:", err); }
     }
@@ -317,11 +292,9 @@
 
         let targetW, targetH;
         if (imgAspect > winAspect) {
-            targetW = winW * 0.92;
-            targetH = targetW / imgAspect;
+            targetW = winW * 0.92; targetH = targetW / imgAspect;
         } else {
-            targetH = winH * 0.92;
-            targetW = targetH * imgAspect;
+            targetH = winH * 0.92; targetW = targetH * imgAspect;
         }
 
         const scaleX = targetW / rect.width;
