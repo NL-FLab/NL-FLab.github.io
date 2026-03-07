@@ -27,11 +27,11 @@
         .viewer iframe{width:100%;aspect-ratio:16/9;border:none;border-radius:12px;background:#111;box-shadow:0 30px 60px rgba(0,0,0,.4);}
 
         .hero-section{margin-bottom:60px;display:flex;justify-content:center;width:100%;}
-        .hero-section .img-reveal-container{width:65%;display:none;}
+        .hero-section .img-reveal-container{width:100%; max-width: 800px; display:none;}
 
         .image-section{display:grid;grid-template-columns:1fr 1fr;gap:40px;}
 
-        /* FIX: Tỉ lệ 1:1 cố định */
+        /* Giữ khung 1:1 cố định để chống nháy */
         .img-wrapper{
             position:relative;
             border-radius:15px;
@@ -39,23 +39,23 @@
             background:#111;
             overflow:hidden;
             transition:transform .5s cubic-bezier(.16,1,.3,1);
-            aspect-ratio: 1 / 1; /* Tỉ lệ vuông */
+            aspect-ratio: 1 / 1; 
             width: 100%;
         }
         
         .img-wrapper img{
             width:100%;
             height:100%;
-            object-fit: cover; /* Cắt ảnh vừa khung vuông mà không méo */
+            object-fit: cover; 
             border-radius:15px;
             display:block;
-            will-change: opacity;
+            will-change: opacity, transform;
             opacity:0;
             transition:opacity 0.6s ease;
         }
         
         .img-wrapper img.loaded{opacity:1;}
-        .img-wrapper:hover{transform:translateY(-10px);box-shadow:0 20px 40px rgba(0,255,255,.15),0 0 0 1px rgba(0,255,255,.3);}
+        .img-wrapper:hover{transform:translateY(-8px);box-shadow:0 20px 40px rgba(0,255,255,.1), 0 0 0 1px rgba(255,255,255,0.05);}
 
         .img-caption{
             position:absolute;bottom:20px;left:20px;font-size:9px;color:#fff;
@@ -71,16 +71,26 @@
         .img-reveal-container{opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s cubic-bezier(.22,1,.36,1);}
         .img-reveal-container.reveal{opacity:1;transform:translateY(0);}
 
-        #lightbox{position:fixed;inset:0;background:rgba(0,0,0,0);z-index:9999;pointer-events:none;transition:background .4s;}
-        #lightbox.active{background:rgba(0,0,0,.97);pointer-events:auto;}
+        #lightbox{position:fixed;inset:0;background:rgba(0,0,0,0);z-index:9999;pointer-events:none;transition:background .5s cubic-bezier(0.4, 0, 0.2, 1);}
+        #lightbox.active{background:rgba(0,0,0,.95);pointer-events:auto;}
 
-        #zoom-img{position:fixed;top:0;left:0;z-index:10000;object-fit:contain;border-radius:15px;display:none;pointer-events:none;will-change:transform;transform-origin:top left;}
+        /* Zoom img: fix giật bằng cách dùng object-fit contain khi phóng lớn */
+        #zoom-img{
+            position:fixed;
+            top:0;left:0;
+            z-index:10000;
+            object-fit:cover; /* Bắt đầu bằng cover để khớp với khung 1:1 */
+            border-radius:15px;
+            display:none;
+            pointer-events:none;
+            will-change: transform, width, height;
+            transform-origin: top left;
+        }
 
         @media(max-width:850px){
             .container{padding:0 6% 60px 6%;}
             .top-section{grid-template-columns:1fr;}
             .image-section{grid-template-columns:1fr;}
-            .hero-section .img-reveal-container{width:100%;}
         }
     </style>
 </head>
@@ -105,8 +115,7 @@
 
     <div class="hero-section">
         <div class="img-reveal-container" id="heroReveal">
-            <div class="img-wrapper" id="heroWrapper">
-                <img id="hero">
+            <div class="img-wrapper" id="heroWrapper" style="aspect-ratio: 16/9;"> <img id="hero" style="object-fit: cover;">
                 <div class="img-caption" id="heroCaption"></div>
             </div>
         </div>
@@ -132,15 +141,15 @@
                 revealObserver.unobserve(e.target); 
             }
         });
-    }, {threshold: 0.05, rootMargin: "0px 0px -50px 0px"});
+    }, {threshold: 0.05});
 
     function loadImage(src){
         return new Promise((resolve, reject) => {
             const img = new Image();
             img.decoding = "async";
             img.src = src;
-            img.onload = () => { img.onload = null; resolve(img); };
-            img.onerror = () => { img.onerror = null; reject(); };
+            img.onload = () => resolve(img);
+            img.onerror = () => reject();
         });
     }
 
@@ -201,18 +210,15 @@
                 }).catch(() => revealContainer.remove());
             });
 
-            if(data.viewer?.enabled){
-                document.getElementById("viewer").src = `viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
-            } else {
-                document.getElementById("viewerBlock").style.display = "none";
-            }
+            if(data.viewer?.enabled) document.getElementById("viewer").src = `viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
+            else document.getElementById("viewerBlock").style.display = "none";
 
         } catch(err) {
-            console.error(err);
             document.getElementById("title").innerText = "Project Not Found";
         }
     }
 
+    // LIGHTBOX LOGIC - FIXED GIẬT LAG
     const lightbox = document.getElementById("lightbox");
     const zoomImg = document.getElementById("zoom-img");
     let activeOriginImg = null;
@@ -220,51 +226,81 @@
 
     function openSmoothZoom(originImg){
         if(animating) return;
+        animating = true;
         activeOriginImg = originImg;
+
         const sw = window.innerWidth - document.documentElement.clientWidth;
         document.body.style.paddingRight = sw + "px";
         document.body.classList.add("lock-scroll");
+
         const rect = originImg.getBoundingClientRect();
+        
+        // Setup trạng thái bắt đầu (Khớp hoàn toàn với thumbnail)
         zoomImg.src = originImg.src;
         zoomImg.style.display = "block";
+        zoomImg.style.objectFit = getComputedStyle(originImg).objectFit;
         zoomImg.style.width = rect.width + "px";
         zoomImg.style.height = rect.height + "px";
         zoomImg.style.transition = "none";
-        zoomImg.style.transform = `translate3d(${rect.left}px,${rect.top}px,0) scale(1)`;
+        zoomImg.style.transform = `translate3d(${rect.left}px, ${rect.top}px, 0)`;
+        
+        // Force reflow
         zoomImg.offsetHeight;
-        const winW = window.innerWidth, winH = window.innerHeight;
-        
-        // Tính toán zoom dựa trên ảnh vuông
-        const imgRatio = 1; // 1:1
-        const winRatio = winW/winH;
-        let tW, tH;
-        if(imgRatio > winRatio){ tW = winW * .92; tH = tW / imgRatio; }
-        else { tH = winH * .92; tW = tH * imgRatio; }
-        
-        const scale = tW / rect.width;
-        const tX = (winW - tW - sw) / 2, tY = (winH - tH) / 2;
+
+        // Tính toán kích thước mục tiêu (Contain)
+        const winW = window.innerWidth - sw;
+        const winH = window.innerHeight;
+        const imgAspect = originImg.naturalWidth / originImg.naturalHeight;
+        const winAspect = winW / winH;
+
+        let finalW, finalH;
+        if (imgAspect > winAspect) {
+            finalW = winW * 0.9;
+            finalH = finalW / imgAspect;
+        } else {
+            finalH = winH * 0.9;
+            finalW = finalH * imgAspect;
+        }
+
+        const targetX = (winW - finalW) / 2;
+        const targetY = (winH - finalH) / 2;
+
         lightbox.classList.add("active");
         originImg.style.visibility = "hidden";
+
         requestAnimationFrame(() => {
-            zoomImg.style.transition = "transform .5s cubic-bezier(.28,.84,.42,1)";
-            zoomImg.style.transform = `translate3d(${tX}px,${tY}px,0) scale(${scale})`;
+            zoomImg.style.transition = "all 0.5s cubic-bezier(0.2, 0, 0, 1.0)";
+            zoomImg.style.width = finalW + "px";
+            zoomImg.style.height = finalH + "px";
+            zoomImg.style.transform = `translate3d(${targetX}px, ${targetY}px, 0)`;
+            zoomImg.style.objectFit = "contain"; // Chuyển sang contain khi phóng to
         });
+
+        setTimeout(() => { animating = false; }, 500);
     }
 
     function closeSmoothZoom(){
         if(!activeOriginImg || animating) return;
         animating = true;
+
         const rect = activeOriginImg.getBoundingClientRect();
-        zoomImg.style.transition = "transform .45s cubic-bezier(.28,.84,.42,1)";
-        zoomImg.style.transform = `translate3d(${rect.left}px,${rect.top}px,0) scale(1)`;
+        
+        zoomImg.style.transition = "all 0.4s cubic-bezier(0.2, 0, 0, 1.0)";
+        zoomImg.style.width = rect.width + "px";
+        zoomImg.style.height = rect.height + "px";
+        zoomImg.style.transform = `translate3d(${rect.left}px, ${rect.top}px, 0)`;
+        zoomImg.style.objectFit = getComputedStyle(activeOriginImg).objectFit;
+
         lightbox.classList.remove("active");
+
         setTimeout(() => {
-            if(activeOriginImg) activeOriginImg.style.visibility = "visible";
+            activeOriginImg.style.visibility = "visible";
             zoomImg.style.display = "none";
             document.body.classList.remove("lock-scroll");
             document.body.style.paddingRight = "0px";
-            activeOriginImg = null; animating = false;
-        }, 470);
+            activeOriginImg = null;
+            animating = false;
+        }, 400);
     }
 
     window.addEventListener("resize", () => { if(activeOriginImg) closeSmoothZoom(); });
