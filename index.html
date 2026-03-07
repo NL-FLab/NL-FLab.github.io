@@ -8,156 +8,78 @@
     <title>NL F.Lab – High-end 3D Visualization</title>
 
     <style>
-        /* =================================================
-        GLOBAL & AMBIENT BACKGROUND (NO-TILE FIX)
-        ================================================= */
+        /* --- GLOBAL & AMBIENT (GIỮ NGUYÊN) --- */
         body {
             margin: 0; background: #0c0c0c; color: #e5e5e5;
-            font-family: 'Inter', -apple-system, sans-serif;
-            letter-spacing: 0.02em; line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
-            position: relative;
+            font-family: 'Inter', sans-serif; overflow-x: hidden; position: relative;
         }
-
-        /* Đốm sáng 1: Soft & Large */
-        body::before {
-            content: "";
-            position: fixed; top: -50%; left: -50%;
-            width: 200vmax; height: 200vmax; /* Cực to để không bao giờ thấy mép */
-            background: radial-gradient(circle at center, rgba(100, 150, 255, 0.05) 0%, transparent 35%);
+        body::before, body::after {
+            content: ""; position: fixed; z-index: -1; pointer-events: none;
             background-repeat: no-repeat;
-            z-index: -1; pointer-events: none;
+        }
+        body::before {
+            top: -50%; left: -50%; width: 200vmax; height: 200vmax;
+            background: radial-gradient(circle at center, rgba(100, 150, 255, 0.05) 0%, transparent 35%);
             animation: ambientMove1 35s infinite alternate ease-in-out;
         }
-
-        /* Đốm sáng 2: Soft & Subtle */
         body::after {
-            content: "";
-            position: fixed; bottom: -50%; right: -50%;
-            width: 180vmax; height: 180vmax;
+            bottom: -50%; right: -50%; width: 180vmax; height: 180vmax;
             background: radial-gradient(circle at center, rgba(255, 255, 255, 0.03) 0%, transparent 35%);
-            background-repeat: no-repeat;
-            z-index: -1; pointer-events: none;
             animation: ambientMove2 45s infinite alternate-reverse ease-in-out;
         }
+        @keyframes ambientMove1 { 0% { transform: translate(-5%, -5%); } 100% { transform: translate(5%, 10%); } }
+        @keyframes ambientMove2 { 0% { transform: translate(5%, 5%); } 100% { transform: translate(-10%, -5%); } }
 
-        @keyframes ambientMove1 {
-            0% { transform: translate(-5%, -5%); }
-            100% { transform: translate(5%, 10%); }
-        }
-
-        @keyframes ambientMove2 {
-            0% { transform: translate(5%, 5%); }
-            100% { transform: translate(-10%, -5%); }
-        }
-
-        /* =================================================
-        HEADER & HERO
-        ================================================= */
-        header { padding: 80px 12% 20px 12%; position: relative; z-index: 1; }
-        .brand { display: flex; align-items: flex-start; gap: 24px; margin-bottom: 5px; }
+        /* --- LAYOUT --- */
+        header, .section { padding: 40px 12%; position: relative; z-index: 1; }
+        header { padding-top: 80px; }
+        .brand { display: flex; align-items: flex-start; gap: 24px; }
         .logo { width: 100px; height: 100px; object-fit: contain; margin-top: 15px; }
-        h1 { font-size: 40px; font-weight: 400; letter-spacing: -0.02em; margin: 0; color: #fff; }
-        .subtitle { font-size: 17px; color: #aaa; font-weight: 300; margin: 0; }
-        .hero-role { margin-top: 4px; font-size: 11px; color: #555; letter-spacing: 3px; text-transform: uppercase; }
-
-        .hero-divider {
-            width: 150px; height: 1px; margin: 35px auto 12px auto;
-            background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 80%);
-        }
+        h1 { font-size: 40px; font-weight: 400; color: #fff; margin: 0; letter-spacing: -0.02em; }
+        .subtitle { font-size: 17px; color: #aaa; font-weight: 300; }
+        .hero-role { font-size: 11px; color: #555; letter-spacing: 3px; text-transform: uppercase; }
+        .hero-divider { width: 150px; height: 1px; margin: 35px auto 12px auto; background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 80%); }
         .hero-note { text-align: center; font-size: 10px; letter-spacing: 3px; color: #444; text-transform: uppercase; margin-bottom: 30px; }
 
-        .section { padding: 40px 12%; position: relative; z-index: 1; }
+        /* --- PROFILE --- */
+        .about-intro { font-size: 16px; color: #eee; line-height: 1.8; font-weight: 300; max-width: 900px; }
+        .core-values { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin: 40px 0; }
+        .v-title { font-size: 10px; letter-spacing: 3px; color: #555; text-transform: uppercase; margin-bottom: 12px; }
+        .v-text { font-size: 13px; color: #888; font-weight: 300; }
 
-        /* =================================================
-        ABOUT & PROFILE
-        ================================================= */
-        .about { max-width: 900px; }
-        .about h2 { font-size: 18px; font-weight: 500; color: #fff; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
-        .about-intro { font-size: 16px; color: #eee; margin-bottom: 40px; line-height: 1.8; font-weight: 300; }
-        .about-intro strong { color: #fff; font-weight: 500; }
-
-        .core-values { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 50px; }
-        .value-item .v-title { font-size: 10px; letter-spacing: 3px; color: #555; text-transform: uppercase; margin-bottom: 12px; }
-        .value-item .v-text { font-size: 13px; color: #888; font-weight: 300; line-height: 1.7; }
-
-        .about-highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 35px; margin-top: 50px; }
-        .highlight-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #555; margin-bottom: 10px; }
-        .highlight-text { color: #bbb; font-size: 13px; font-weight: 300; line-height: 1.7; }
-
-        .skills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
-        .skill { border: 1px solid #222; padding: 6px 16px; font-size: 11px; border-radius: 30px; background: #111; color: #777; }
-
-        .cv-container { margin-top: 40px; }
-        .cv-download-btn {
-            display: inline-flex; align-items: center; padding: 10px 22px;
-            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50px; color: #fff; text-decoration: none; font-size: 10px;
-            letter-spacing: 1.5px; text-transform: uppercase; transition: 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-        .cv-download-btn:hover { background: #fff; color: #000; transform: translateY(-2px); border-color: #fff; }
-
-        /* =================================================
-        PORTFOLIO (CLEAN SPACING)
-        ================================================= */
-        .portfolio-header { margin-top: 10px; margin-bottom: 25px; }
-        .section-title { font-size: 11px; font-weight: 400; color: #555; margin: 0; letter-spacing: 4px; text-transform: uppercase; }
-
-        .filter-container { display: flex; margin-bottom: 35px; }
-        .filter {
-            display: inline-flex; padding: 4px; position: relative;
-            background: rgba(255, 255, 255, 0.02); border-radius: 40px; border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .filter-btn {
-            background: transparent; border: none; color: #555; font-size: 10px;
-            cursor: pointer; padding: 8px 18px; border-radius: 40px; 
-            transition: color 0.4s ease; text-transform: uppercase; letter-spacing: 1.5px; position: relative; z-index: 2;
-        }
-        .filter-btn.active { color: #fff; }
-        .tab-indicator {
-            position: absolute; top: 4px; left: 4px; height: calc(100% - 8px);
-            background: rgba(255, 255, 255, 0.07); border-radius: 40px; 
-            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1); z-index: 1;
-            opacity: 0; pointer-events: none;
-        }
-
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
+        /* --- PORTFOLIO GRID (OPTIMIZED) --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; min-height: 400px; }
+        
         .project { 
             position: relative; overflow: hidden; border-radius: 12px; aspect-ratio: 1 / 1; 
-            background: #111; opacity: 0; transform: translateY(15px);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(255,255,255,0.03);
+            background: #111; border: 1px solid rgba(255,255,255,0.03);
+            opacity: 0; transform: translateY(20px) scale(0.98);
+            will-change: transform, opacity;
+            transition: 
+                opacity 0.8s cubic-bezier(0.25, 0.1, 0.25, 1),
+                transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
         }
-        .project.is-visible { opacity: 1; transform: translateY(0); }
-        .project img { width: 100%; height: 100%; object-fit: cover; transition: 1.2s cubic-bezier(0.2, 1, 0.2, 1); }
-        .project:hover img { transform: scale(1.05); filter: brightness(0.3) blur(2px); }
+
+        .project.is-visible { opacity: 1; transform: translateY(0) scale(1); }
         
-        .project-title {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%);
-            width: 80%; text-align: center; font-size: 11px; color: #fff;
-            letter-spacing: 2px; text-transform: uppercase; opacity: 0;
-            transition: 0.5s ease; z-index: 2; pointer-events: none;
-        }
-        .project:hover .project-title { opacity: 1; transform: translate(-50%, -50%); }
+        /* Chống giật khi Hover */
+        .project img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
+        .project:hover img { transform: scale(1.05); }
 
-        /* =================================================
-        CONTACT & FOOTER
-        ================================================= */
-        .contact { margin-top: 40px; padding-bottom: 80px; }
-        .contact h2 { font-size: 18px; font-weight: 500; color: #fff; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
-        .contact-links { display: flex; flex-wrap: wrap; gap: 45px; }
-        .contact-links a { 
-            color: #fff; text-decoration: none; font-size: 12px; transition: 0.3s; 
-            letter-spacing: 1.5px; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .contact-links a:hover { border-bottom: 1px solid #fff; color: #aaa; }
+        /* --- FILTER BAR --- */
+        .filter-container { margin-bottom: 35px; }
+        .filter { display: inline-flex; padding: 4px; background: rgba(255, 255, 255, 0.02); border-radius: 40px; border: 1px solid rgba(255, 255, 255, 0.05); position: relative; }
+        .filter-btn { background: transparent; border: none; color: #555; font-size: 10px; cursor: pointer; padding: 8px 18px; border-radius: 40px; text-transform: uppercase; letter-spacing: 1.5px; z-index: 2; transition: 0.3s; }
+        .filter-btn.active { color: #fff; }
+        .tab-indicator { position: absolute; top: 4px; left: 4px; height: calc(100% - 8px); background: rgba(255, 255, 255, 0.1); border-radius: 40px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1; opacity: 0; }
 
-        footer { padding: 40px 12%; color: #333; font-size: 10px; }
-
+        /* --- OTHERS --- */
         .fade { opacity: 0; transform: translateY(15px); transition: 0.8s ease-out; }
         .fade.show { opacity: 1; transform: translateY(0); }
+        .contact-links { display: flex; gap: 40px; }
+        .contact-links a { color: #fff; text-decoration: none; font-size: 12px; letter-spacing: 1.5px; border-bottom: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
+        .contact-links a:hover { border-color: #fff; }
+        footer { padding: 40px 12%; color: #333; font-size: 10px; }
     </style>
 </head>
 
@@ -165,126 +87,96 @@
     <header>
         <div class="brand">
             <img src="images/logo.png" class="logo" alt="NL F.Lab">
-            <div class="hero-text">
+            <div>
                 <h1>NL F.Lab</h1>
-                <div class="subtitle">3D Artist</div>
-                <div class="hero-role">Product Visualization</div>
+                <div class="subtitle">3ds Max & Blender Specialist</div>
+                <div class="hero-role">High-End Visualization</div>
             </div>
         </div>
     </header>
 
     <div class="hero-divider"></div>
-    <div class="hero-note">Selected Work</div>
+    <div class="hero-note">Systematic Excellence</div>
 
     <section class="section about fade">
-        <h2>Profile</h2>
         <div class="about-intro">
-            Senior 3D Artist and Team Leader with over 7 years of expertise in <strong>High-end Product Visualization</strong>. 
-            Leveraging a background in <strong>Information Technology</strong>, I specialize in bridging the gap between artistic precision and technical efficiency, 
-            developing optimized production pipelines that meet international industry standards.
+            Senior 3D Artist & Team Leader. Chuyên tối ưu hóa quy trình render và xây dựng hệ thống hình ảnh sản phẩm chất lượng cao.
         </div>
-
         <div class="core-values">
-            <div class="value-item">
-                <div class="v-title">01. Precision</div>
-                <div class="v-text">Executing models with absolute geometric accuracy and real-world scale, ensuring seamless integration for high-fidelity rendering.</div>
-            </div>
-            <div class="value-item">
-                <div class="v-title">02. Optimization</div>
-                <div class="v-text">Implementing smart topology and automated workflows to enhance performance without compromising visual complexity.</div>
-            </div>
-            <div class="value-item">
-                <div class="v-title">03. Leadership</div>
-                <div class="v-text">Proven track record in mentoring teams and managing large-scale 3D projects from conceptual modeling to final delivery.</div>
-            </div>
-        </div>
-
-        <div class="about-highlights">
-            <div>
-                <div class="highlight-title">Expertise</div>
-                <div class="highlight-text">
-                    • Hard Surface Modeling & Retopology<br>
-                    • PBR Texturing & Material Development<br>
-                    • Lighting & Studio Environment Setup
-                </div>
-            </div>
-            <div>
-                <div class="highlight-title">Technical Stack</div>
-                <div class="highlight-text">
-                    • 3dsMax, Blender, Zbrush, V-Ray, Corona <br>
-                    • Substance Painter, Adobe Photoshop<br>
-                    • Workflow Scripting & Automation
-                </div>
-            </div>
-        </div>
-
-        <div class="skills">
-            <div class="skill">Workflow Systems</div>
-            <div class="skill">Product Viz</div>
-            <div class="skill">Team Management</div>
-            <div class="skill">Technical IT</div>
-        </div>
-
-        <div class="cv-container">
-            <a href="cv/nghiale_cv.pdf" download="NghiaLe_CV_3DArtist" class="cv-download-btn">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                Download CV
-            </a>
+            <div class="value-item"><div class="v-title">Precision</div><div class="v-text">Chính xác trong từng pixel và cấu trúc lưới (topology).</div></div>
+            <div class="value-item"><div class="v-title">Logic</div><div class="v-text">Xây dựng workflow khoa học, tiết kiệm thời gian render.</div></div>
         </div>
     </section>
 
-    <section class="section fade" style="padding-top: 0;"> 
-        <div class="portfolio-header">
-            <h2 class="section-title">Visual Archive</h2>
-        </div>
+    <section class="section fade" style="padding-top:0">
         <div class="filter-container">
             <div class="filter" id="filterBar">
                 <div class="tab-indicator" id="tabIndicator"></div>
-            </div>
+                </div>
         </div>
         <div class="grid" id="projectGrid"></div>
     </section>
 
-    <section class="section contact fade">
-        <h2>Contact</h2>
+    <section class="section fade">
         <div class="contact-links">
             <a href="mailto:nghiale.f.lab@gmail.com">Email</a>
-            <a href="#" target="_blank">ArtStation</a>
-            <a href="#" target="_blank">LinkedIn</a>
+            <a href="#">ArtStation</a>
         </div>
     </section>
 
-    <footer>© NL F.Lab – 2026</footer>
+    <footer>© NL F.Lab 2026</footer>
 
     <script>
+        // --- LOGIC HIỂN THỊ MƯỢT MÀ ---
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add("show"); });
         }, { threshold: 0.1 });
         document.querySelectorAll(".fade").forEach(el => observer.observe(el));
 
-        function updateTabIndicator(activeBtn) {
-            const indicator = document.getElementById('tabIndicator');
-            if (activeBtn && indicator) {
-                indicator.style.opacity = "1";
-                indicator.style.width = activeBtn.offsetWidth + 'px';
-                indicator.style.left = activeBtn.offsetLeft + 'px';
-            }
+        // Hàm kích hoạt animation cho grid ảnh cực mượt
+        function triggerProjectAnimation() {
+            const projects = document.querySelectorAll('.project');
+            
+            // Xóa trạng thái cũ
+            projects.forEach(p => p.classList.remove('is-visible'));
+
+            // Đợi trình duyệt ổn định bố cục (Layout Reflow)
+            requestAnimationFrame(() => {
+                projects.forEach((proj, index) => {
+                    setTimeout(() => {
+                        requestAnimationFrame(() => {
+                            proj.classList.add('is-visible');
+                        });
+                    }, index * 60); // Stagger nhẹ nhàng 60ms
+                });
+            });
         }
 
+        // Theo dõi thay đổi trong Grid (Khi Filter hoặc Load ảnh)
         const gridObserver = new MutationObserver(() => {
-            const projects = document.querySelectorAll('.project');
-            projects.forEach((proj, index) => {
-                proj.classList.remove('is-visible'); 
-                setTimeout(() => { proj.classList.add('is-visible'); }, index * 80);
-            });
+            triggerProjectAnimation();
             const activeTab = document.querySelector('.filter-btn.active');
             if(activeTab) updateTabIndicator(activeTab);
         });
 
         gridObserver.observe(document.getElementById('projectGrid'), { childList: true });
 
+        function updateTabIndicator(btn) {
+            const indicator = document.getElementById('tabIndicator');
+            indicator.style.opacity = "1";
+            indicator.style.width = btn.offsetWidth + 'px';
+            indicator.style.left = btn.offsetLeft + 'px';
+        }
+
         document.getElementById('filterBar').addEventListener('click', (e) => {
-            if(e.target.classList.contains('filter-btn')) { updateTabIndicator(e.target); }
+            if(e.target.classList.contains('filter-btn')) {
+                // Thêm một khoảng nghỉ siêu ngắn để mắt người kịp thích nghi khi chuyển Tab
+                document.getElementById('projectGrid').style.opacity = "0.5";
+                setTimeout(() => {
+                    document.getElementById('projectGrid').style.opacity = "1";
+                    updateTabIndicator(e.target);
+                }, 100);
+            }
         });
     </script>
     <script src="js/loadproduct.js"></script>
