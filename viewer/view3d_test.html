@@ -1,168 +1,124 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<title>NL-FLab 3D Viewer</title>
+    <meta charset="utf-8">
+    <title>NL-FLab 3D Viewer | Diagnostic Tools</title>
+    <script src="https://cdn.babylonjs.com/viewer/babylon.viewer.js"></script>
+    <style>
+        html, body { width: 100%; height: 100%; margin: 0; background: #121212; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
+        #viewer-container { width: 100%; height: 100%; position: relative; }
+        babylon { width: 100%; height: 100%; }
 
-<script src="https://cdn.babylonjs.com/viewer/babylon.viewer.js"></script>
+        #texture-panel {
+            position: absolute; top: 20px; right: 20px; width: 240px;
+            background: rgba(25, 25, 25, 0.9); backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px;
+            padding: 18px; color: #eee; z-index: 10; box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
 
-<style>
+        h3 { margin: 0 0 15px 0; font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px; color: #00bcd4; border-bottom: 1px solid #333; padding-bottom: 8px; }
+        .option-group { margin-bottom: 22px; }
+        .label { font-size: 11px; margin-bottom: 10px; color: #aaa; font-weight: 600; }
+        
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        
+        .btn-ui {
+            background: #333; border: 1px solid #444; color: #bbb; padding: 10px;
+            cursor: pointer; font-size: 11px; border-radius: 4px; transition: 0.2s;
+            text-align: center;
+        }
 
-html, body{
-width:100%;
-height:100%;
-margin:0;
-background:#1e1e1e;
-}
-
-babylon{
-width:100%;
-height:100%;
-}
-
-/* UI */
-
-.viewer-ui{
-
-position:absolute;
-bottom:20px;
-left:50%;
-transform:translateX(-50%);
-display:flex;
-gap:8px;
-z-index:10;
-
-}
-
-.viewer-ui button{
-
-background:rgba(20,20,20,0.8);
-color:white;
-border:1px solid #444;
-padding:8px 14px;
-font-size:13px;
-cursor:pointer;
-border-radius:4px;
-
-}
-
-.viewer-ui button:hover{
-
-background:#444;
-
-}
-
-.viewer-ui button.active{
-
-background:#aaa;
-color:black;
-
-}
-
-</style>
+        .btn-ui:hover { background: #444; color: #fff; border-color: #00bcd4; }
+        .btn-ui.active { background: #00bcd4; color: #000; font-weight: bold; border-color: #00bcd4; }
+        
+        /* Tooltip hoặc ghi chú nhỏ */
+        .info-tag { font-size: 9px; color: #555; margin-top: 10px; display: block; text-align: center; }
+    </style>
 </head>
-
 <body>
 
-<div class="viewer-ui">
+<div id="viewer-container">
+    <babylon id="my-viewer" extends="default" camera-behavior="auto" engine-antialiasing="true"></babylon>
 
-<button id="btnRender">Render</button>
-<button id="btnWire">Wireframe</button>
+    <div id="texture-panel">
+        <h3>NL-FLab | Visualizer</h3>
+        
+        <div class="option-group">
+            <div class="label">CHẾ ĐỘ HIỂN THỊ (VIEW MODE)</div>
+            <div class="grid-2">
+                <button class="btn-ui active" id="btn-shaded" onclick="setViewMode('shaded')">Shaded</button>
+                <button class="btn-ui" id="btn-wireframe" onclick="setViewMode('wireframe')">Wireframe</button>
+            </div>
+        </div>
 
+        <div class="option-group">
+            <div class="label">CHẨN ĐOÁN (DIAGNOSTICS)</div>
+            <div class="grid-2">
+                <button class="btn-ui" id="btn-normal" onclick="toggleNormalView()">Normal Map</button>
+                <button class="btn-ui" onclick="resetView()">Reset Cam</button>
+            </div>
+        </div>
+
+        <span class="info-tag">NL F.Lab Standard 3D System</span>
+    </div>
 </div>
 
-<babylon id="viewer"
-model=""
-camera-behavior="auto"
-environment="https://assets.babylonjs.com/environments/environmentSpecular.env"
-engine-antialiasing="true"
-hardware-scaling-level="1">
-</babylon>
-
 <script>
+    const viewerElement = document.getElementById("my-viewer");
 
-function getModelFromURL(){
+    // Load model từ URL
+    const params = new URLSearchParams(window.location.search);
+    const modelPath = params.get("model");
+    if (modelPath) viewerElement.setAttribute("model", modelPath);
 
-const params=new URLSearchParams(window.location.search);
-return params.get("model");
+    /**
+     * Chuyển đổi giữa Solid và Wireframe cho TOÀN BỘ model
+     */
+    function setViewMode(mode) {
+        const scene = viewerElement.viewer.sceneManager.scene;
+        
+        scene.materials.forEach(mat => {
+            if (mode === 'wireframe') {
+                mat.wireframe = true;
+            } else {
+                mat.wireframe = false;
+            }
+        });
 
-}
+        // Update UI state
+        document.getElementById('btn-shaded').classList.toggle('active', mode === 'shaded');
+        document.getElementById('btn-wireframe').classList.toggle('active', mode === 'wireframe');
+    }
 
-const modelPath=getModelFromURL();
+    /**
+     * Debug Normal Map (Dùng kỹ thuật debug inspector của Babylon)
+     */
+    let isNormalMode = false;
+    function toggleNormalView() {
+        const scene = viewerElement.viewer.sceneManager.scene;
+        isNormalMode = !isNormalMode;
 
-const viewerElement=document.getElementById("viewer");
+        scene.materials.forEach(mat => {
+            if (isNormalMode) {
+                // Lưu lại màu gốc nếu cần (ở đây ta chỉ ghi đè tạm thời để check Normal)
+                // Babylon có Helper debug mode rất nhanh:
+                mat.debugMode = 1; // 1 thường là Normal trong PBR
+            } else {
+                mat.debugMode = 0; // Trở về mặc định
+            }
+        });
 
-if(modelPath){
+        document.getElementById('btn-normal').classList.toggle('active', isNormalMode);
+    }
 
-viewerElement.setAttribute("model",modelPath);
+    function resetView() {
+        viewerElement.viewer.sceneManager.camera.setTarget(BABYLON.Vector3.Zero());
+    }
 
-}else{
-
-alert("No model specified in URL.");
-
-}
-
-let meshes=[];
-let originalMaterials=[];
-
-/* Lấy viewer instance */
-
-const viewer=new BabylonViewer.DefaultViewer(viewerElement,{});
-
-/* Khi model load */
-
-viewer.onModelLoadedObservable.add(function(model){
-
-meshes=model.meshes;
-
-meshes.forEach(m=>{
-
-originalMaterials.push(m.material);
-
-});
-
-});
-
-/* UI buttons */
-
-const btnRender=document.getElementById("btnRender");
-const btnWire=document.getElementById("btnWire");
-
-function clearActive(){
-
-document.querySelectorAll(".viewer-ui button")
-.forEach(b=>b.classList.remove("active"));
-
-}
-
-btnRender.onclick=function(){
-
-clearActive();
-btnRender.classList.add("active");
-
-meshes.forEach((m,i)=>{
-
-m.material=originalMaterials[i];
-
-});
-
-};
-
-btnWire.onclick=function(){
-
-clearActive();
-btnWire.classList.add("active");
-
-meshes.forEach(m=>{
-
-if(m.material){
-m.material.wireframe=true;
-}
-
-});
-
-};
-
+    // Tự động tối ưu hóa khi load xong
+    viewerElement.onSceneInitObservable.add((scene) => {
+        scene.clearColor = new BABYLON.Color4(0.07, 0.07, 0.07, 1); // Dark grey background
+    });
 </script>
 
 </body>
