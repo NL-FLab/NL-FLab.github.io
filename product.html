@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -17,6 +18,8 @@ color:#e5e5e5;
 font-family:'Inter',sans-serif;
 line-height:1.6;
 }
+
+/* layout */
 
 .container{
 max-width:1200px;
@@ -42,7 +45,7 @@ font-size:clamp(26px,4vw,36px);
 margin:10px 0 40px;
 }
 
-/* TOP */
+/* top section */
 
 .top-section{
 display:grid;
@@ -87,7 +90,7 @@ border-radius:24px;
 background:#111;
 }
 
-/* HERO */
+/* hero */
 
 .hero-section{
 display:flex;
@@ -99,20 +102,20 @@ margin-bottom:60px;
 width:55%;
 }
 
-/* IMAGE */
+/* image */
 
 .img-wrapper{
 position:relative;
-border-radius:18px;
 overflow:hidden;
-cursor:zoom-in;
+border-radius:16px;
+cursor:pointer;
 background:#111;
 }
 
 .img-wrapper img{
 width:100%;
 display:block;
-transition:transform .6s ease;
+transition:transform .4s ease;
 }
 
 .img-wrapper:hover img{
@@ -123,23 +126,23 @@ transform:scale(1.04);
 
 .img-caption{
 position:absolute;
-bottom:20px;
-left:20px;
+bottom:16px;
+left:16px;
 font-size:10px;
 letter-spacing:2px;
 color:#fff;
-background:rgba(0,0,0,.5);
-padding:6px 14px;
+background:rgba(0,0,0,.6);
+padding:6px 12px;
 border-radius:20px;
 opacity:0;
-transition:.4s;
+transition:.3s;
 }
 
 .img-wrapper:hover .img-caption{
 opacity:1;
 }
 
-/* GALLERY */
+/* gallery */
 
 .image-section{
 display:grid;
@@ -147,22 +150,7 @@ grid-template-columns:repeat(3,1fr);
 gap:36px;
 }
 
-/* ZOOM OVERLAY */
-
-#zoom-overlay{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.95);
-opacity:0;
-pointer-events:none;
-transition:.3s;
-z-index:9999;
-}
-
-#zoom-overlay.active{
-opacity:1;
-pointer-events:auto;
-}
+/* responsive */
 
 @media(max-width:1100px){
 
@@ -188,6 +176,50 @@ width:100%;
 
 }
 
+/* lightbox */
+
+#lightbox{
+
+position:fixed;
+inset:0;
+
+background:rgba(0,0,0,.94);
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+opacity:0;
+pointer-events:none;
+
+transition:opacity .25s ease;
+
+z-index:9999;
+
+}
+
+#lightbox.active{
+opacity:1;
+pointer-events:auto;
+}
+
+#lightbox img{
+
+max-width:92vw;
+max-height:92vh;
+
+transform:scale(.96);
+
+transition:transform .28s ease;
+
+border-radius:12px;
+
+}
+
+#lightbox.active img{
+transform:scale(1);
+}
+
 </style>
 </head>
 
@@ -206,9 +238,11 @@ width:100%;
 <div class="info">
 
 <strong>Project Insight</strong>
+
 <div id="description"></div>
 
 <strong>Technical Specs</strong>
+
 <ul class="tech-list" id="techDetails"></ul>
 
 </div>
@@ -235,14 +269,15 @@ width:100%;
 
 </div>
 
-<div id="zoom-overlay"></div>
+<div id="lightbox">
+<img id="lightbox-img">
+</div>
 
 <script>
 
 const params=new URLSearchParams(window.location.search)
-const projectSlug=params.get("project")
 
-/* caption */
+const projectSlug=params.get("project")
 
 function formatCaption(fileName){
 
@@ -263,9 +298,11 @@ if(!projectSlug)return
 try{
 
 const res=await fetch(`models/${projectSlug}/info.json`)
+
 const data=await res.json()
 
 title.innerText=data.info.title
+
 description.innerText=data.info.description
 
 const tech=data.technical
@@ -273,8 +310,11 @@ const tech=data.technical
 techDetails.innerHTML=`
 
 <li><span>Dimensions</span><b>${tech.scale} ${tech.unit}</b></li>
+
 <li><span>Geometry</span><b>${tech.polycount.pair} TRIS</b></li>
+
 <li><span>Materials</span><b>PBR WORKFLOW</b></li>
+
 <li><span>Pipeline</span><b>${tech.software[0]} / ${tech.render_engine}</b></li>
 
 `
@@ -288,17 +328,21 @@ heroCaption.innerText=formatCaption(data.media.hero)
 heroWrapper.onclick=()=>openZoom(hero)
 
 hero.onerror=()=>{
+
 document.querySelector(".hero-section").style.display="none"
+
 }
 
 /* gallery */
 
 const configRes=await fetch("models/gallery_config.json")
+
 const config=await configRes.json()
 
 config.order.forEach(name=>{
 
 const wrapper=document.createElement("div")
+
 wrapper.className="img-wrapper"
 
 const img=document.createElement("img")
@@ -308,7 +352,9 @@ img.src=`models/${projectSlug}/images/${name}`
 img.onerror=()=>wrapper.remove()
 
 const cap=document.createElement("div")
+
 cap.className="img-caption"
+
 cap.innerText=formatCaption(name)
 
 wrapper.append(img,cap)
@@ -337,81 +383,27 @@ console.error(e)
 
 }
 
-/* ======================
-PERFECT ZOOM
-====================== */
+/* zoom simple */
 
-let zoomClone=null
-let originImg=null
-let originRect=null
+const lightbox=document.getElementById("lightbox")
 
-const overlay=document.getElementById("zoom-overlay")
+const lightboxImg=document.getElementById("lightbox-img")
 
 function openZoom(img){
 
-originImg=img
-originRect=img.getBoundingClientRect()
+lightboxImg.src=img.src
 
-zoomClone=img.cloneNode()
-
-zoomClone.style.position="fixed"
-zoomClone.style.top=originRect.top+"px"
-zoomClone.style.left=originRect.left+"px"
-zoomClone.style.width=originRect.width+"px"
-zoomClone.style.height=originRect.height+"px"
-zoomClone.style.objectFit="contain"
-zoomClone.style.zIndex="10000"
-zoomClone.style.transition="all .55s cubic-bezier(.22,1,.36,1)"
-
-document.body.appendChild(zoomClone)
-
-overlay.classList.add("active")
-
-img.style.visibility="hidden"
-
-const winW=window.innerWidth
-const winH=window.innerHeight
-
-const scale=Math.min(
-(winW*0.9)/originRect.width,
-(winH*0.9)/originRect.height
-)
-
-const targetW=originRect.width*scale
-const targetH=originRect.height*scale
-
-zoomClone.style.top=(winH-targetH)/2+"px"
-zoomClone.style.left=(winW-targetW)/2+"px"
-zoomClone.style.width=targetW+"px"
-zoomClone.style.height=targetH+"px"
+lightbox.classList.add("active")
 
 }
 
 function closeZoom(){
 
-if(!zoomClone)return
-
-zoomClone.style.top=originRect.top+"px"
-zoomClone.style.left=originRect.left+"px"
-zoomClone.style.width=originRect.width+"px"
-zoomClone.style.height=originRect.height+"px"
-
-overlay.classList.remove("active")
-
-setTimeout(()=>{
-
-originImg.style.visibility="visible"
-
-zoomClone.remove()
-
-zoomClone=null
-originImg=null
-
-},550)
+lightbox.classList.remove("active")
 
 }
 
-overlay.onclick=closeZoom
+lightbox.onclick=closeZoom
 
 window.addEventListener("keydown",e=>{
 if(e.key==="Escape")closeZoom()
