@@ -13,7 +13,7 @@
 
   "media": {
     "thumbnail": "images/hero.webp",
-    "hero": "images/hero.webp",
+    "hero": "images/hero.webp"
 
   },
 
@@ -22,7 +22,7 @@
     "unit": "Cm",
 
     "polycount": {
-      "Total": "259K Triangles",
+      "Total": "259K Triangles"
 
     },
 
