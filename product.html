@@ -98,24 +98,23 @@ padding:5px 10px; border-radius:2px; opacity:0; transition:.4s var(--ease); z-in
 #lightbox{position:fixed; inset:0; z-index:9999; pointer-events:none; visibility:hidden;}
 #lightbox.active{pointer-events:auto; visibility:visible;}
 
-.lightbox-bg{position:absolute; inset:0; background:rgba(0,0,0,0.96); opacity:0; transition:opacity .6s var(--ease); cursor: zoom-out;}
+.lightbox-bg{position:absolute; inset:0; background:rgba(0,0,0,0.95); opacity:0; transition:opacity .6s var(--ease); cursor: zoom-out;}
 #lightbox.active .lightbox-bg{opacity:1;}
 
 .lightbox-blur{
-position:absolute; inset:0; backdrop-filter:blur(25px); -webkit-backdrop-filter:blur(25px);
+position:absolute; inset:0; backdrop-filter:blur(20px);
 opacity:0; transition:opacity .8s var(--ease); z-index:-1;
 }
 #lightbox.active .lightbox-blur{opacity:1;}
 
 #zoom-img{
-position:fixed; top:0; left:0; z-index:10000; 
+position:fixed; top:0; left:0; z-index:10000;
 object-fit:cover; border-radius:12px;
-display:none; 
-transform-origin: 0 0;
+display:none;
+will-change:transform,opacity;
+transform-origin:0 0;
+transform:translateZ(0);
 pointer-events:none;
-/* GPU Hint cho Nghĩa */
-will-change: transform, opacity;
-transform: translateZ(0);
 }
 
 @media(max-width:850px){
@@ -131,210 +130,149 @@ transform: translateZ(0);
 <div class="back"><a href="index.html">← Back to Portfolio</a></div>
 
 <div class="container" id="mainContainer">
-    <h1 id="title">Loading...</h1>
-    <div class="top-section">
-        <div class="info">
-            <div class="info-block">
-                <strong>Project Insight</strong>
-                <div id="description"></div>
-            </div>
-            <div class="info-block">
-                <strong>Technical Specs</strong>
-                <ul class="tech-list" id="techDetails"></ul>
-            </div>
-        </div>
-        <div class="viewer-container" id="viewerBlock">
-            <iframe id="viewer"></iframe>
-        </div>
-    </div>
-    <div class="hero-section" id="heroReveal">
-        <div class="img-wrapper" id="heroWrapper">
-            <img id="hero">
-            <div class="img-caption" id="heroCaption"></div>
-        </div>
-    </div>
-    <div class="section-divider img-reveal-container"></div>
-    <div class="image-section" id="gallery"></div>
+<h1 id="title">Loading...</h1>
+<div class="top-section">
+<div class="info">
+<div class="info-block">
+<strong>Project Insight</strong>
+<div id="description"></div>
+</div>
+<div class="info-block">
+<strong>Technical Specs</strong>
+<ul class="tech-list" id="techDetails"></ul>
+</div>
+</div>
+
+<div class="viewer-container" id="viewerBlock">
+<iframe id="viewer"></iframe>
+</div>
+</div>
+
+<div class="hero-section" id="heroReveal">
+<div class="img-wrapper" id="heroWrapper">
+<img id="hero">
+<div class="img-caption" id="heroCaption"></div>
+</div>
+</div>
+
+<div class="section-divider img-reveal-container"></div>
+<div class="image-section" id="gallery"></div>
 </div>
 
 <div id="lightbox">
-    <div class="lightbox-blur"></div>
-    <div class="lightbox-bg"></div>
-    <img id="zoom-img">
+<div class="lightbox-blur"></div>
+<div class="lightbox-bg"></div>
+<img id="zoom-img">
 </div>
 
 <script>
-const params = new URLSearchParams(window.location.search);
-const projectSlug = params.get("project");
+const lightbox=document.getElementById("lightbox")
+const zoomImg=document.getElementById("zoom-img")
 
-function formatCaption(n){
-    return n.split('/').pop().split('.').slice(0,-1).join('.').replace(/_/g,' ').toUpperCase();
-}
-
-const revealObserver = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-        if(e.isIntersecting){
-            e.target.classList.add("reveal");
-            revealObserver.unobserve(e.target);
-        }
-    });
-}, {threshold:.1});
-
-function validateImage(url){
-    return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.src = url;
-        img.onload = () => resolve(img);
-        img.onerror = () => reject();
-    });
-}
-
-async function loadProduct(){
-    if(!projectSlug) return;
-    try {
-        const res = await fetch(`models/${projectSlug}/info.json`);
-        const data = await res.json();
-        document.getElementById("title").innerText = data.info.title;
-        document.getElementById("description").innerText = data.info.description;
-        const tech = data.technical;
-        document.getElementById("techDetails").innerHTML = `
-            <li><span>Dimensions</span><b>${tech.scale} (${tech.unit})</b></li>
-            <li><span>Geometry</span><b>${tech.polycount.Total}</b></li>
-            <li><span>Textures</span><b>${tech.textures || '4K PBR'}</b></li>
-            <li><span>Software</span><b>${tech.software.join(' / ')}</b></li>
-            <li><span>Render Engine</span><b>${tech.render_engine}</b></li>
-        `;
-        setTimeout(() => { document.getElementById("mainContainer").classList.add("page-loaded"); }, 100);
-
-        if(data.viewer?.enabled){
-            const vBlock = document.getElementById("viewerBlock");
-            const iframe = document.getElementById("viewer");
-            iframe.src = `viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
-            iframe.onload = () => vBlock.classList.add("loaded");
-        } else {
-            document.getElementById("viewerBlock").style.display = "none";
-        }
-
-        const heroUrl = `models/${projectSlug}/${data.media.hero}`;
-        validateImage(heroUrl).then(imgObj => {
-            const hImg = document.getElementById("hero");
-            hImg.src = imgObj.src;
-            hImg.classList.add("loaded");
-            document.getElementById("heroCaption").innerText = formatCaption(data.media.hero);
-            document.getElementById("heroReveal").style.display = "flex";
-            revealObserver.observe(document.getElementById("heroReveal"));
-            document.getElementById("heroWrapper").onclick = () => openSmoothZoom(hImg);
-        });
-
-        const configRes = await fetch("models/gallery_config.json");
-        const config = await configRes.json();
-        const gallery = document.getElementById("gallery");
-
-        config.order.forEach(name => {
-            const container = document.createElement("div");
-            container.className = "img-reveal-container";
-            container.innerHTML = `<div class="img-wrapper"><img data-src="models/${projectSlug}/images/${name}" class="pending-img"><div class="img-caption">${formatCaption(name)}</div></div>`;
-            gallery.appendChild(container);
-            revealObserver.observe(container);
-            const imgElement = container.querySelector('.pending-img');
-            validateImage(imgElement.getAttribute('data-src')).then(imgObj => {
-                imgElement.src = imgObj.src;
-                imgElement.classList.add("loaded");
-                container.querySelector('.img-wrapper').onclick = () => openSmoothZoom(imgElement);
-            });
-        });
-        revealObserver.observe(document.querySelector('.section-divider'));
-    } catch(err) { console.error(err); }
-}
-
-const lightbox = document.getElementById("lightbox");
-const zoomImg = document.getElementById("zoom-img");
-let activeOriginImg = null;
-let animating = false;
-// Global Scale Variables theo tư vấn của Nghĩa
-let currentScaleX = 1;
-let currentScaleY = 1;
+let activeOriginImg=null
+let animating=false
+let currentScaleX=1
+let currentScaleY=1
 
 function openSmoothZoom(originImg){
-    if(animating) return;
-    animating = true;
-    activeOriginImg = originImg;
 
-    const sw = window.innerWidth - document.documentElement.clientWidth;
-    document.body.style.paddingRight = sw + "px";
-    document.body.classList.add("lock-scroll");
+if(animating)return
+animating=true
+activeOriginImg=originImg
 
-    const rect = originImg.getBoundingClientRect();
-    
-    zoomImg.style.transition = "none";
-    zoomImg.src = originImg.src;
-    zoomImg.style.width = rect.width + "px";
-    zoomImg.style.height = rect.height + "px";
-    zoomImg.style.transform = `translate3d(${rect.left}px, ${rect.top}px, 0) scale(1)`;
-    
-    requestAnimationFrame(() => {
-        zoomImg.style.display = "block";
-        lightbox.classList.add("active");
-        zoomImg.offsetHeight;
+const sw=window.innerWidth-document.documentElement.clientWidth
+document.body.style.paddingRight=sw+"px"
+document.body.classList.add("lock-scroll")
 
-        const winW = window.innerWidth - sw;
-        const winH = window.innerHeight;
-        const imgAspect = originImg.naturalWidth / originImg.naturalHeight;
-        const winAspect = winW / winH;
+const rect=originImg.getBoundingClientRect()
 
-        let targetW, targetH;
-        if(imgAspect > winAspect){
-            targetW = winW * 0.88; targetH = targetW / imgAspect;
-        } else {
-            targetH = winH * 0.88; targetW = targetH * imgAspect;
-        }
+zoomImg.style.transition="none"
+zoomImg.src=originImg.src
+zoomImg.style.width=rect.width+"px"
+zoomImg.style.height=rect.height+"px"
+zoomImg.style.transform=`translate3d(${rect.left}px,${rect.top}px,0) scale(1)`
 
-        // Lưu scale cho zoom-out
-        currentScaleX = targetW / rect.width;
-        currentScaleY = targetH / rect.height;
-        
-        const moveX = ((winW - targetW) / 2) - rect.left;
-        const moveY = ((winH - targetH) / 2) - rect.top;
+requestAnimationFrame(()=>{
 
-        originImg.style.visibility = "hidden";
+zoomImg.style.display="block"
+lightbox.classList.add("active")
 
-        requestAnimationFrame(() => {
-            zoomImg.style.transition = "transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)";
-            zoomImg.style.transform = `translate3d(${rect.left + moveX}px, ${rect.top + moveY}px, 0) scale(${currentScaleX}, ${currentScaleY})`;
-        });
-    });
+const winW=window.innerWidth-sw
+const winH=window.innerHeight
 
-    setTimeout(() => { animating = false; }, 800);
+const imgAspect=originImg.naturalWidth/originImg.naturalHeight
+const winAspect=winW/winH
+
+let targetW,targetH
+
+if(imgAspect>winAspect){
+targetW=winW*0.88
+targetH=targetW/imgAspect
+}else{
+targetH=winH*0.88
+targetW=targetH*imgAspect
+}
+
+const scaleX=targetW/rect.width
+const scaleY=targetH/rect.height
+
+currentScaleX=scaleX
+currentScaleY=scaleY
+
+const moveX=((winW-targetW)/2)-rect.left
+const moveY=((winH-targetH)/2)-rect.top
+
+originImg.style.visibility="hidden"
+
+requestAnimationFrame(()=>{
+
+zoomImg.style.transition="transform 0.8s cubic-bezier(0.4,0,0.2,1)"
+
+zoomImg.style.transform=
+`translate3d(${rect.left+moveX}px,${rect.top+moveY}px,0) scale(${scaleX},${scaleY})`
+
+})
+
+})
+
+setTimeout(()=>{animating=false},800)
 }
 
 function closeSmoothZoom(){
-    if(!activeOriginImg || animating) return;
-    animating = true;
 
-    const rect = activeOriginImg.getBoundingClientRect();
-    
-    // Sử dụng Inverse Scale theo tư vấn của Nghĩa để Browser nội suy mượt hơn
-    zoomImg.style.transition = "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease";
-    
-    // Ép về tọa độ gốc với tỉ lệ nghịch đảo 1/scale
-    // Lưu ý: rect.left/top là tọa độ tuyệt đối, Browser sẽ animate từ Matrix hiện tại về đây.
-    zoomImg.style.transform = `translate3d(${rect.left}px, ${rect.top}px, 0) scale(1)`;
-    
-    lightbox.classList.remove("active");
+if(!activeOriginImg||animating)return
+animating=true
 
-    setTimeout(() => {
-        activeOriginImg.style.visibility = "visible";
-        zoomImg.style.display = "none";
-        document.body.classList.remove("lock-scroll");
-        document.body.style.paddingRight = "0px";
-        activeOriginImg = null;
-        animating = false;
-    }, 600);
+const rect=activeOriginImg.getBoundingClientRect()
+
+zoomImg.style.transition="transform 0.6s cubic-bezier(0.4,0,0.2,1),opacity .5s ease"
+
+zoomImg.style.transform=
+`translate3d(${rect.left}px,${rect.top}px,0) scale(${1/currentScaleX},${1/currentScaleY})`
+
+lightbox.classList.remove("active")
+
+setTimeout(()=>{
+
+activeOriginImg.style.visibility="visible"
+zoomImg.style.display="none"
+
+document.body.classList.remove("lock-scroll")
+document.body.style.paddingRight="0px"
+
+activeOriginImg=null
+animating=false
+
+},600)
+
 }
 
-document.querySelector('.lightbox-bg').onclick = closeSmoothZoom;
-window.addEventListener("keydown", e => { if(e.key === "Escape") closeSmoothZoom(); });
-loadProduct();
+document.querySelector(".lightbox-bg").onclick=closeSmoothZoom
+
+window.addEventListener("keydown",e=>{
+if(e.key==="Escape")closeSmoothZoom()
+})
 </script>
+
 </body>
 </html>
