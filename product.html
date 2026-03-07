@@ -19,6 +19,11 @@ font-family:'Inter',sans-serif;
 line-height:1.6;
 }
 
+img{
+display:block;
+max-width:100%;
+}
+
 /* container */
 
 .container{
@@ -134,8 +139,6 @@ background:#111;
 }
 
 .img-wrapper img{
-width:100%;
-display:block;
 transition:transform .45s ease;
 will-change:transform;
 }
@@ -216,6 +219,7 @@ pointer-events:none;
 transition:opacity .25s ease;
 z-index:9999;
 cursor:zoom-out;
+user-select:none;
 }
 
 #lightbox.active{
@@ -270,7 +274,7 @@ transform:scale(1);
 
 </div>
 
-<div class="hero-section">
+<div class="hero-section" id="heroSection">
 
 <div class="img-wrapper" id="heroWrapper">
 
@@ -292,38 +296,31 @@ transform:scale(1);
 
 <script>
 
-/* DOM references */
+const title=document.getElementById("title")
+const description=document.getElementById("description")
+const techDetails=document.getElementById("techDetails")
+const hero=document.getElementById("hero")
+const heroCaption=document.getElementById("heroCaption")
+const heroWrapper=document.getElementById("heroWrapper")
+const heroSection=document.getElementById("heroSection")
+const gallery=document.getElementById("gallery")
+const viewer=document.getElementById("viewer")
+const viewerBlock=document.getElementById("viewerBlock")
 
-const title = document.getElementById("title")
-const description = document.getElementById("description")
-const techDetails = document.getElementById("techDetails")
-const hero = document.getElementById("hero")
-const heroCaption = document.getElementById("heroCaption")
-const heroWrapper = document.getElementById("heroWrapper")
-const gallery = document.getElementById("gallery")
-const viewer = document.getElementById("viewer")
-const viewerBlock = document.getElementById("viewerBlock")
-
-const lightbox = document.getElementById("lightbox")
-const lightboxImg = document.getElementById("lightbox-img")
-
-/* params */
+const lightbox=document.getElementById("lightbox")
+const lightboxImg=document.getElementById("lightbox-img")
 
 const params=new URLSearchParams(window.location.search)
 const projectSlug=params.get("project")
 
-/* caption formatter */
-
 function formatCaption(fileName){
 
-let base=fileName.split('/').pop()
-let name=base.replace(/\.[^/.]+$/, "")
+const base=fileName.split('/').pop()
+const name=base.replace(/\.[^/.]+$/, "")
 
 return name.replace(/_/g,' ').toUpperCase()
 
 }
-
-/* load product */
 
 async function loadProduct(){
 
@@ -334,16 +331,15 @@ try{
 const res=await fetch(`models/${projectSlug}/info.json`)
 const data=await res.json()
 
-title.innerText=data.info.title
-description.innerText=data.info.description
+const info=data.info||{}
+const tech=data.technical||{}
 
-const tech=data.technical || {}
+title.innerText=info.title||"Untitled Project"
+description.innerText=info.description||""
 
 let techHTML=""
 
-/* polycount */
-
-if(tech.polycount && tech.polycount.total){
+if(tech.polycount?.total){
 
 techHTML+=`
 <div class="tech-item">
@@ -354,14 +350,12 @@ techHTML+=`
 
 }
 
-/* scale */
-
 if(tech.scale){
 
 let scaleText=tech.scale
 
 if(tech.unit){
-scaleText+=" ("+tech.unit+")"
+scaleText+=` (${tech.unit})`
 }
 
 techHTML+=`
@@ -373,11 +367,9 @@ techHTML+=`
 
 }
 
-/* software */
-
 if(tech.software){
 
-let softwareText=Array.isArray(tech.software)
+const softwareText=Array.isArray(tech.software)
 ? tech.software.join(" / ")
 : tech.software
 
@@ -390,8 +382,6 @@ techHTML+=`
 
 }
 
-/* render */
-
 if(tech.render_engine){
 
 techHTML+=`
@@ -402,8 +392,6 @@ techHTML+=`
 `
 
 }
-
-/* textures */
 
 if(tech.textures){
 
@@ -418,25 +406,21 @@ techHTML+=`
 
 techDetails.innerHTML=techHTML
 
-/* hero */
-
 hero.src=`models/${projectSlug}/${data.media.hero}`
-hero.alt=data.info.title
+hero.alt=info.title||"Hero Image"
 
 heroCaption.innerText=formatCaption(data.media.hero)
 
 heroWrapper.onclick=()=>openZoom(hero)
 
-hero.onerror=()=>{
-document.querySelector(".hero-section").style.display="none"
-}
-
-/* gallery */
+hero.onerror=()=>heroSection.style.display="none"
 
 gallery.innerHTML=""
 
 const configRes=await fetch("models/gallery_config.json")
 const config=await configRes.json()
+
+if(config?.order){
 
 config.order.forEach(name=>{
 
@@ -462,7 +446,7 @@ gallery.append(wrapper)
 
 })
 
-/* viewer */
+}
 
 if(data.viewer?.enabled){
 
@@ -476,13 +460,11 @@ viewerBlock.style.display="none"
 
 }catch(e){
 
-console.error(e)
+console.error("Failed loading product:",e)
 
 }
 
 }
-
-/* zoom */
 
 function openZoom(img){
 
@@ -494,6 +476,7 @@ lightbox.classList.add("active")
 function closeZoom(){
 
 lightbox.classList.remove("active")
+lightboxImg.src=""
 
 }
 
