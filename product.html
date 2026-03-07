@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
 <title>NL F.Lab | Portfolio Details</title>
 
 <style>
@@ -13,45 +15,31 @@ margin:0;
 background:#0c0c0c;
 color:#e5e5e5;
 font-family:'Inter',sans-serif;
-overflow-x:hidden;
 line-height:1.6;
--webkit-font-smoothing:antialiased;
-}
-
-body.lock-scroll{
-overflow:hidden!important;
-height:100vh;
 }
 
 .container{
 max-width:1200px;
-margin:0 auto;
-padding:0 10% 80px 10%;
+margin:auto;
+padding:0 10% 80px;
 }
 
 .back{
-padding:40px 10% 20px 10%;
+padding:40px 10% 20px;
 }
 
 .back a{
 font-size:10px;
 color:#555;
 text-decoration:none;
-text-transform:uppercase;
 letter-spacing:2px;
-transition:.3s;
-}
-
-.back a:hover{
-color:#fff;
+text-transform:uppercase;
 }
 
 h1{
 font-weight:300;
 font-size:clamp(26px,4vw,36px);
-margin:10px 0 40px 0;
-color:#fff;
-letter-spacing:-.5px;
+margin:10px 0 40px;
 }
 
 /* TOP */
@@ -67,21 +55,14 @@ margin-bottom:80px;
 .info{
 color:#888;
 font-size:14px;
-font-weight:300;
 }
 
 .info strong{
-color:#fff;
-font-weight:400;
 display:block;
-margin-bottom:12px;
 font-size:11px;
-text-transform:uppercase;
 letter-spacing:2px;
-}
-
-#description{
-margin-bottom:30px;
+margin-bottom:12px;
+color:#fff;
 }
 
 .tech-list{
@@ -91,22 +72,11 @@ margin:0;
 }
 
 .tech-list li{
-padding:8px 0;
-border-bottom:1px solid #1a1a1a;
-font-size:12px;
 display:flex;
 justify-content:space-between;
-}
-
-.tech-list li span{
-color:#444;
-text-transform:uppercase;
-font-size:10px;
-}
-
-.tech-list li b{
-color:#aaa;
-font-weight:400;
+font-size:12px;
+padding:8px 0;
+border-bottom:1px solid #1a1a1a;
 }
 
 .viewer iframe{
@@ -115,15 +85,14 @@ aspect-ratio:1/1;
 border:none;
 border-radius:24px;
 background:#111;
-box-shadow:0 30px 60px rgba(0,0,0,.4);
 }
 
 /* HERO */
 
 .hero-section{
-margin-bottom:70px;
 display:flex;
 justify-content:center;
+margin-bottom:60px;
 }
 
 .hero-section .img-wrapper{
@@ -134,49 +103,43 @@ width:55%;
 
 .img-wrapper{
 position:relative;
+border-radius:18px;
 overflow:hidden;
-border-radius:20px;
 cursor:zoom-in;
 background:#111;
-line-height:0;
 }
 
 .img-wrapper img{
 width:100%;
-height:auto;
-transition:transform 1s cubic-bezier(.16,1,.3,1),filter .7s ease;
+display:block;
+transition:transform .6s ease;
 }
 
 .img-wrapper:hover img{
-transform:scale(1.05);
-filter:brightness(1.08) contrast(1.05);
+transform:scale(1.04);
 }
 
 /* caption */
 
 .img-caption{
 position:absolute;
-bottom:24px;
-left:24px;
+bottom:20px;
+left:20px;
 font-size:10px;
-letter-spacing:3px;
-text-transform:uppercase;
-color:rgba(255,255,255,.95);
-background:rgba(255,255,255,.03);
-backdrop-filter:blur(15px);
-padding:10px 22px;
-border:1px solid rgba(255,255,255,.1);
+letter-spacing:2px;
+color:#fff;
+background:rgba(0,0,0,.5);
+padding:6px 14px;
+border-radius:20px;
 opacity:0;
-transform:translateY(15px);
-transition:all .6s cubic-bezier(.16,1,.3,1);
+transition:.4s;
 }
 
 .img-wrapper:hover .img-caption{
 opacity:1;
-transform:translateY(0);
 }
 
-/* GRID */
+/* GALLERY */
 
 .image-section{
 display:grid;
@@ -184,56 +147,22 @@ grid-template-columns:repeat(3,1fr);
 gap:36px;
 }
 
-.image-section .img-wrapper{
-opacity:0;
-transform:translateY(50px);
-transition:opacity .9s cubic-bezier(.22,1,.36,1),transform .9s cubic-bezier(.22,1,.36,1);
-}
+/* ZOOM OVERLAY */
 
-.image-section .img-wrapper.reveal{
-opacity:1;
-transform:translateY(0);
-}
-
-/* divider */
-
-.section-divider{
-width:150px;
-height:1px;
-margin:90px auto;
-background:radial-gradient(circle,rgba(255,255,255,.4),rgba(255,255,255,0));
-}
-
-/* LIGHTBOX */
-
-#lightbox{
+#zoom-overlay{
 position:fixed;
 inset:0;
-background:rgba(0,0,0,0);
-z-index:9999;
+background:rgba(0,0,0,.95);
+opacity:0;
 pointer-events:none;
-transition:background .35s ease;
+transition:.3s;
+z-index:9999;
 }
 
-#lightbox.active{
-background:rgba(0,0,0,.96);
+#zoom-overlay.active{
+opacity:1;
 pointer-events:auto;
 }
-
-#zoom-img{
-position:fixed;
-top:0;
-left:0;
-z-index:10000;
-object-fit:contain;
-border-radius:20px;
-display:none;
-pointer-events:none;
-will-change:transform;
-transform-origin:top left;
-}
-
-/* responsive */
 
 @media(max-width:1100px){
 
@@ -245,21 +174,16 @@ grid-template-columns:repeat(2,1fr);
 
 @media(max-width:850px){
 
-.container{
-padding:0 6% 60px 6%;
-}
-
 .top-section{
 grid-template-columns:1fr;
-gap:40px;
-}
-
-.hero-section .img-wrapper{
-width:100%;
 }
 
 .image-section{
 grid-template-columns:1fr;
+}
+
+.hero-section .img-wrapper{
+width:100%;
 }
 
 }
@@ -296,211 +220,204 @@ grid-template-columns:1fr;
 </div>
 
 <div class="hero-section">
+
 <div class="img-wrapper" id="heroWrapper">
+
 <img id="hero">
+
 <div class="img-caption" id="heroCaption"></div>
-</div>
+
 </div>
 
-<div class="section-divider"></div>
+</div>
 
 <div class="image-section" id="gallery"></div>
 
 </div>
 
-<div id="lightbox">
-<img id="zoom-img">
-</div>
+<div id="zoom-overlay"></div>
 
 <script>
 
-const params=new URLSearchParams(window.location.search);
-const projectSlug=params.get("project");
+const params=new URLSearchParams(window.location.search)
+const projectSlug=params.get("project")
+
+/* caption */
 
 function formatCaption(fileName){
-let base=fileName.split('/').pop();
-let name=base.split('.').slice(0,-1).join('.');
-return name.replace(/_/g,' ').toUpperCase();
+
+let base=fileName.split('/').pop()
+
+let name=base.split('.').slice(0,-1).join('.')
+
+return name.replace(/_/g,' ').toUpperCase()
+
 }
+
+/* load product */
 
 async function loadProduct(){
 
-if(!projectSlug)return;
+if(!projectSlug)return
 
 try{
 
-const res=await fetch(`models/${projectSlug}/info.json`);
-const data=await res.json();
+const res=await fetch(`models/${projectSlug}/info.json`)
+const data=await res.json()
 
-document.getElementById("title").innerText=data.info.title;
-document.getElementById("description").innerText=data.info.description;
+title.innerText=data.info.title
+description.innerText=data.info.description
 
-const tech=data.technical;
+const tech=data.technical
 
-document.getElementById("techDetails").innerHTML=`
+techDetails.innerHTML=`
+
 <li><span>Dimensions</span><b>${tech.scale} ${tech.unit}</b></li>
 <li><span>Geometry</span><b>${tech.polycount.pair} TRIS</b></li>
 <li><span>Materials</span><b>PBR WORKFLOW</b></li>
 <li><span>Pipeline</span><b>${tech.software[0]} / ${tech.render_engine}</b></li>
-`;
 
-const hero=document.getElementById("hero");
+`
 
-hero.src=`models/${projectSlug}/${data.media.hero}`;
-document.getElementById("heroCaption").innerText=formatCaption(data.media.hero);
+/* hero */
 
-document.getElementById("heroWrapper").onclick=()=>openSmoothZoom(hero);
+hero.src=`models/${projectSlug}/${data.media.hero}`
+
+heroCaption.innerText=formatCaption(data.media.hero)
+
+heroWrapper.onclick=()=>openZoom(hero)
 
 hero.onerror=()=>{
-document.querySelector(".hero-section").style.display="none";
-};
+document.querySelector(".hero-section").style.display="none"
+}
 
-const configRes=await fetch("models/gallery_config.json");
-const config=await configRes.json();
+/* gallery */
 
-const gallery=document.getElementById("gallery");
+const configRes=await fetch("models/gallery_config.json")
+const config=await configRes.json()
 
 config.order.forEach(name=>{
 
-const wrapper=document.createElement("div");
-wrapper.className="img-wrapper";
+const wrapper=document.createElement("div")
+wrapper.className="img-wrapper"
 
-const img=document.createElement("img");
-img.src=`models/${projectSlug}/images/${name}`;
+const img=document.createElement("img")
 
-img.onerror=()=>wrapper.remove();
+img.src=`models/${projectSlug}/images/${name}`
 
-const cap=document.createElement("div");
-cap.className="img-caption";
-cap.innerText=formatCaption(name);
+img.onerror=()=>wrapper.remove()
 
-wrapper.append(img,cap);
+const cap=document.createElement("div")
+cap.className="img-caption"
+cap.innerText=formatCaption(name)
 
-wrapper.onclick=()=>openSmoothZoom(img);
+wrapper.append(img,cap)
 
-gallery.append(wrapper);
+wrapper.onclick=()=>openZoom(img)
 
-});
+gallery.append(wrapper)
 
-initReveal();
+})
 
 if(data.viewer?.enabled){
 
-document.getElementById("viewer").src=
-`viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
+viewer.src=`viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`
 
 }else{
 
-document.getElementById("viewerBlock").style.display="none";
+viewerBlock.style.display="none"
 
 }
 
-}catch(err){
+}catch(e){
 
-console.error(err);
-
-}
+console.error(e)
 
 }
 
-/* ZOOM */
+}
 
-const lightbox=document.getElementById("lightbox");
-const zoomImg=document.getElementById("zoom-img");
+/* ======================
+PERFECT ZOOM
+====================== */
 
-let activeOriginImg=null;
-let originRect=null;
+let zoomClone=null
+let originImg=null
+let originRect=null
 
-function openSmoothZoom(originImg){
+const overlay=document.getElementById("zoom-overlay")
 
-originRect=originImg.getBoundingClientRect();
+function openZoom(img){
 
-zoomImg.src=originImg.src;
+originImg=img
+originRect=img.getBoundingClientRect()
 
-zoomImg.style.display="block";
+zoomClone=img.cloneNode()
 
-zoomImg.style.width=originRect.width+"px";
-zoomImg.style.height=originRect.height+"px";
+zoomClone.style.position="fixed"
+zoomClone.style.top=originRect.top+"px"
+zoomClone.style.left=originRect.left+"px"
+zoomClone.style.width=originRect.width+"px"
+zoomClone.style.height=originRect.height+"px"
+zoomClone.style.objectFit="contain"
+zoomClone.style.zIndex="10000"
+zoomClone.style.transition="all .55s cubic-bezier(.22,1,.36,1)"
 
-zoomImg.style.transform=
-`translate3d(${originRect.left}px,${originRect.top}px,0)`;
+document.body.appendChild(zoomClone)
 
-zoomImg.offsetHeight;
+overlay.classList.add("active")
 
-const winW=window.innerWidth;
-const winH=window.innerHeight;
+img.style.visibility="hidden"
 
-let scale=Math.min(
-(winW*.92)/originRect.width,
-(winH*.92)/originRect.height
-);
+const winW=window.innerWidth
+const winH=window.innerHeight
 
-const targetX=(winW-originRect.width*scale)/2;
-const targetY=(winH-originRect.height*scale)/2;
+const scale=Math.min(
+(winW*0.9)/originRect.width,
+(winH*0.9)/originRect.height
+)
 
-lightbox.classList.add("active");
+const targetW=originRect.width*scale
+const targetH=originRect.height*scale
 
-originImg.style.visibility="hidden";
-
-zoomImg.style.transition="transform .55s cubic-bezier(.22,1,.36,1)";
-
-zoomImg.style.transform=
-`translate3d(${targetX}px,${targetY}px,0) scale(${scale})`;
-
-activeOriginImg=originImg;
+zoomClone.style.top=(winH-targetH)/2+"px"
+zoomClone.style.left=(winW-targetW)/2+"px"
+zoomClone.style.width=targetW+"px"
+zoomClone.style.height=targetH+"px"
 
 }
 
-function closeSmoothZoom(){
+function closeZoom(){
 
-if(!activeOriginImg)return;
+if(!zoomClone)return
 
-zoomImg.style.transform=
-`translate3d(${originRect.left}px,${originRect.top}px,0) scale(1)`;
+zoomClone.style.top=originRect.top+"px"
+zoomClone.style.left=originRect.left+"px"
+zoomClone.style.width=originRect.width+"px"
+zoomClone.style.height=originRect.height+"px"
 
-lightbox.classList.remove("active");
+overlay.classList.remove("active")
 
 setTimeout(()=>{
 
-activeOriginImg.style.visibility="visible";
+originImg.style.visibility="visible"
 
-zoomImg.style.display="none";
+zoomClone.remove()
 
-activeOriginImg=null;
+zoomClone=null
+originImg=null
 
-originRect=null;
-
-},520);
+},550)
 
 }
 
-lightbox.onclick=closeSmoothZoom;
+overlay.onclick=closeZoom
 
 window.addEventListener("keydown",e=>{
-if(e.key==="Escape")closeSmoothZoom();
-});
+if(e.key==="Escape")closeZoom()
+})
 
-/* reveal */
-
-function initReveal(){
-
-const elements=document.querySelectorAll(".image-section .img-wrapper");
-
-const observer=new IntersectionObserver(entries=>{
-
-entries.forEach(entry=>{
-if(entry.isIntersecting){
-entry.target.classList.add("reveal");
-}
-});
-
-},{threshold:.15});
-
-elements.forEach(el=>observer.observe(el));
-
-}
-
-loadProduct();
+loadProduct()
 
 </script>
 
