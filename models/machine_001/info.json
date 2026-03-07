@@ -13,36 +13,26 @@
 
   "media": {
     "thumbnail": "images/hero.webp",
-    "hero": "images/hero.webp",
+    "hero": "images/hero.webp"
 
-    "gallery": [
-      "images/preview.webp",
-      "images/preview_1.webp",
-      "images/preview_2.webp",
-      "images/preview_3.webp",
-      "images/preview_a.webp",
-      "images/gray.webp",
-      "images/wireframe.webp",
-      "images/normal.webp"
-    ]
   },
 
   "technical": {
-    "scale": "real-world",
-    "unit": "cm",
+    "scale": "Real-World",
+    "unit": "Cm",
 
     "polycount": {
-      "Total": "259k triangles"
+      "Total": "259K Triangles"
     },
 
     "textures": "4K PBR",
 
     "software": [
-      "blender 5",
-      "substance painter"
+      "Blender 5",
+      "Substance Painter"
     ],
 
-    "render_engine": "cycles",
+    "render_engine": "Cycles",
 
     "formats": [
       "glb",
