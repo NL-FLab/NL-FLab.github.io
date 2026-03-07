@@ -51,6 +51,7 @@
         }
         .img-wrapper:hover .img-caption { opacity:1; transform:translateY(0); }
 
+        /* Animation class */
         .img-reveal-container { opacity:0; transform:translateY(30px); transition: opacity .8s ease, transform .8s cubic-bezier(.22,1,.36,1); }
         .img-reveal-container.reveal { opacity:1; transform:translateY(0); }
 
@@ -104,12 +105,18 @@
         return name.replace(/_/g,' ').toUpperCase();
     }
 
+    // Góp ý số 1 & 2 của Nghĩa: Observer duy nhất & Dataset check
     let revealObserver;
     function initReveal(){
         if(!revealObserver){
             revealObserver = new IntersectionObserver(entries => {
-                entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add("reveal"); });
-            }, {threshold:.1});
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) {
+                        entry.target.classList.add("reveal");
+                        revealObserver.unobserve(entry.target); // Hiện xong thì ngừng theo dõi cho nhẹ GPU
+                    }
+                });
+            }, {threshold: 0.1});
         }
         document.querySelectorAll(".img-reveal-container").forEach(el => {
             if(!el.dataset.observed){
@@ -136,7 +143,7 @@
                 <li><span>Pipeline</span><b>${tech.software[0]} / ${tech.render_engine}</b></li>
             `;
 
-            // Hero Image
+            // Hero Image - Xử lý độc lập
             const heroImg = new Image();
             heroImg.src = `models/${projectSlug}/${data.media.hero}`;
             heroImg.onload = () => {
@@ -145,30 +152,31 @@
                 document.getElementById("heroCaption").innerText = formatCaption(data.media.hero);
                 document.getElementById("heroReveal").style.display = "block";
                 document.getElementById("heroWrapper").onclick = () => openSmoothZoom(heroEl);
-                initReveal();
+                initReveal(); // Kích hoạt hiệu ứng cho Hero
             };
             heroImg.onerror = () => document.querySelector(".hero-section").style.display = "none";
 
-            // Gallery Rendering (Fixed Logic)
+            // GALLERY RENDERING - KHÔNG HIỆN KHOẢNG TRỐNG NẾU LỖI
             const configRes = await fetch("models/gallery_config.json");
             const config = await configRes.json();
             const gallery = document.getElementById("gallery");
 
             config.order.forEach(name => {
-                // Tạo khung trước để đảm bảo thứ tự
-                const revealContainer = document.createElement("div");
-                revealContainer.className = "img-reveal-container";
-                const wrapper = document.createElement("div");
-                wrapper.className = "img-wrapper";
-                gallery.appendChild(revealContainer); // Append ngay lập tức vào DOM
-
                 const tempImg = new Image();
                 tempImg.loading = "lazy";
                 tempImg.src = `models/${projectSlug}/images/${name}`;
                 
                 tempImg.onload = () => {
+                    // CHỈ tạo và append khi ảnh đã load thành công
+                    const revealContainer = document.createElement("div");
+                    revealContainer.className = "img-reveal-container";
+                    
+                    const wrapper = document.createElement("div");
+                    wrapper.className = "img-wrapper";
+                    
                     const img = document.createElement("img");
                     img.src = tempImg.src;
+                    
                     const cap = document.createElement("div");
                     cap.className = "img-caption";
                     cap.innerText = formatCaption(name);
@@ -176,9 +184,13 @@
                     wrapper.append(img, cap);
                     wrapper.onclick = () => openSmoothZoom(img);
                     revealContainer.append(wrapper);
-                    initReveal(); // Gọi reveal sau khi ảnh thực sự xuất hiện
+                    
+                    gallery.appendChild(revealContainer); 
+                    
+                    // Quan trọng: Gọi initReveal ngay sau khi append vào DOM
+                    initReveal();
                 };
-                tempImg.onerror = () => revealContainer.remove();
+                // Nếu ảnh lỗi (404), tempImg.onerror sẽ chạy và không append gì vào gallery -> Không có khoảng trống.
             });
 
             if(data.viewer?.enabled) document.getElementById("viewer").src=`viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
@@ -190,7 +202,7 @@
         }
     }
 
-    // Lightbox Zoom logic (giữ nguyên bản mượt nhất của Nghĩa)
+    // LIGHTBOX ZOOM (Keep Nghĩa's smooth logic)
     const lightbox = document.getElementById("lightbox");
     const zoomImg = document.getElementById("zoom-img");
     let activeOriginImg = null;
@@ -237,7 +249,7 @@
         zoomImg.style.transform = `translate3d(${rect.left}px,${rect.top}px,0) scale(1)`;
         lightbox.classList.remove("active");
         setTimeout(() => {
-            activeOriginImg.style.visibility = "visible";
+            if(activeOriginImg) activeOriginImg.style.visibility = "visible";
             zoomImg.style.display = "none";
             document.body.classList.remove("lock-scroll");
             document.body.style.paddingRight = "0px";
