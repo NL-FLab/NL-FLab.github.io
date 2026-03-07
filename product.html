@@ -11,47 +11,68 @@
             --bg: #0c0c0c;
             --text-main: #e5e5e5;
             --text-dim: #888;
-            --accent: #222;
-            --glow-color: rgba(0, 255, 255, 0.6); 
+            --accent: #333;
+            /* Màu phát sáng Cyan Cyan mới, hiện đại hơn */
+            --glow-cyan: rgba(0, 255, 255, 0.7); 
             --ease: cubic-bezier(0.2, 0, 0.2, 1); 
         }
 
         body{margin:0;background:var(--bg);color:var(--text-main);font-family:'Inter',sans-serif;overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased;}
         body.lock-scroll{overflow:hidden!important;}
 
+        /* Container Fade-in lúc vào trang */
         .container {
-            max-width:1100px; margin:0 auto; padding:0 10% 80px 10%;
-            opacity: 0; transform: translateY(15px);
-            transition: opacity 1.5s var(--ease), transform 1.5s var(--ease);
+            max-width:1100px;
+            margin:0 auto;
+            padding:0 10% 80px 10%;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 1.2s ease, transform 1.2s cubic-bezier(0.2, 0, 0.2, 1);
         }
-        .container.page-loaded { opacity: 1; transform: translateY(0); }
+        .container.page-loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
         
-        .back{padding:40px 10% 10px 10%; max-width:1100px; margin:0 auto;}
-        .back a{font-size:10px; color:var(--accent); text-decoration:none; text-transform:uppercase; letter-spacing:2px; transition:.3s;}
+        .back{padding:40px 10% 10px 10%;max-width:1100px;margin:0 auto;}
+        .back a{font-size:10px;color:var(--accent);text-decoration:none;text-transform:uppercase;letter-spacing:2px;transition:.3s;}
         .back a:hover{color:#fff;}
 
-        h1{font-weight:300; font-size:clamp(24px, 4vw, 32px); margin:0 0 48px 0; color:#fff; letter-spacing:-0.02em;}
+        h1{font-weight:300;font-size:clamp(26px,4vw,36px);margin:0 0 48px 0;color:#fff;letter-spacing:-0.5px;}
 
+        /* TOP SECTION - Grid 1:1.2 cân đối */
         .top-section{
-            display:grid; grid-template-columns: 1fr 1.2fr; gap: 80px;
-            margin-bottom: 80px; align-items: start;
+            display:grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 64px;
+            margin-bottom: 96px;
+            align-items: start;
         }
 
         .info-block { margin-bottom: 40px; }
-        .info-block strong { 
-            color: #fff; font-size: 10px; text-transform: uppercase; 
-            letter-spacing: 2px; display: block; margin-bottom: 16px;
+        .info-block:last-child { margin-bottom: 0; }
+        .info-block strong {
+            color: #fff;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: block;
+            margin-bottom: 16px;
             border-left: 2px solid #222; padding-left: 12px;
         }
 
-        #description { color: var(--text-dim); font-size: 14px; line-height: 1.8; margin: 0; text-align: justify; }
+        #description { color: var(--text-dim); font-size: 14px; line-height: 1.8; margin: 0; text-align: justify; letter-spacing: 0.01em;}
 
-        .tech-list{list-style:none; padding:0; margin:0;}
+        .tech-list{list-style:none;padding:0;margin:0;}
         .tech-list li{
-            padding: 12px 0; border-bottom: 1px solid #161616;
-            font-size: 12px; display: flex; justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #161616;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .tech-list li span{color: var(--accent); text-transform: uppercase; letter-spacing: 1px;}
+        .tech-list li span{color: var(--accent); text-transform: uppercase; letter-spacing: 1px; font-size: 10px;}
         .tech-list li b{font-weight: 400; color: #aaa;}
 
         .viewer-container {
@@ -62,7 +83,7 @@
         .viewer-container.loaded { opacity: 1; }
         .viewer-container iframe{ width:100%; height:100%; border:none; }
 
-        /* HERO - 40% Width */
+        /* Hero Image - 40% Width & Căn giữa */
         .hero-section {
             margin: 0 auto 60px auto;
             width: 40%;
@@ -70,6 +91,7 @@
             justify-content: center;
         }
 
+        /* SECTION DIVIDER - Neon Line */
         .section-divider {
             height: 1px; width: 100%;
             background: linear-gradient(90deg, transparent, #222, transparent);
@@ -93,48 +115,30 @@
         .img-wrapper{
             position:relative; border-radius:12px; cursor:zoom-in;
             background:#111; overflow:visible; /* Để lộ phần shadow phát sáng */
+            transition:transform 0.6s var(--ease);
             aspect-ratio: 1/1;
-            transition: transform 0.6s var(--ease);
+            /* Cần border mỏng cố định để tính toán viền sáng chính xác */
+            border: 1px solid rgba(255,255,255,0.05);
+            will-change: transform;
         }
         
         .img-wrapper img{
             width:100%; height:100%; object-fit:cover;
             border-radius:12px;
             opacity:0; transition:opacity 1.2s var(--ease);
-            border: 1px solid rgba(255,255,255,0.05);
         }
         .img-wrapper img.loaded{opacity:1;}
 
-        /* HIỆU ỨNG PHÁT SÁNG U-SHAPE (DI CHUỘT) */
+        /* HIỆU ỨNG PHÁT SÁNG "U-SHAPE" NÂNG CAO - FIX LỆCH VÀ MƯỢT HƠN */
         .img-wrapper:hover {
             transform: translateY(-10px);
-        }
-
-        .img-wrapper::after {
-            content: '';
-            position: absolute;
-            inset: -2px; /* Lệch ra ngoài một chút để tạo viền */
-            border-radius: 14px;
-            /* Gradient cho viền: Trên trong suốt, dưới Cyan */
-            background: linear-gradient(to bottom, transparent 30%, var(--glow-color) 100%);
-            -webkit-mask: 
-                linear-gradient(#fff 0 0) content-box, 
-                linear-gradient(#fff 0 0);
-            mask: 
-                linear-gradient(#fff 0 0) content-box, 
-                linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            padding: 2px; /* Độ dày của viền sáng */
-            opacity: 0;
-            transition: opacity 0.5s var(--ease);
-            pointer-events: none;
-        }
-
-        .img-wrapper:hover::after {
-            opacity: 1;
-            /* Thêm shadow phát sáng lan tỏa vùng dưới */
-            box-shadow: 0 15px 30px -10px var(--glow-color);
+            /* Bỏ Outline, chuyển sang Box-Shadow đa tầng ôm khít ảnh */
+            box-shadow: 
+                0 0 0 1px var(--glow-cyan), /* Viền Cyan ôm sát (thay outline) */
+                0 0 15px 2px var(--glow-cyan), /* Toả Cyan Cyan nhẹ */
+                10px 10px 15px -8px var(--glow-cyan), /* Đẩy sáng mạnh cạnh đáy-bên */
+                -10px 10px 15px -8px var(--glow-cyan),
+                0 15px 35px 2px rgba(0,0,0,0.6); /* Bóng đổ cho ảnh nổi lên */
         }
 
         .img-caption{
@@ -150,20 +154,37 @@
         .img-reveal-container { opacity:0; transform:translateY(25px); transition: 1.2s var(--ease); }
         .img-reveal-container.reveal { opacity:1; transform:translateY(0); }
 
-        /* LIGHTBOX */
-        #lightbox{
-            position:fixed; inset:0; background:rgba(0,0,0,0); 
-            z-index:9999; pointer-events:none; 
-            transition: background 0.8s var(--ease), backdrop-filter 0.8s var(--ease);
+        /* LIGHTBOX - DOUBLE LAYER FIX GIẬT */
+        #lightbox {
+            position: fixed; inset: 0; z-index: 9999;
+            pointer-events: none;
+            overflow: hidden;
+            will-change: transform;
         }
-        #lightbox.active{
-            background:rgba(0,0,0,.94); pointer-events:auto; 
-            backdrop-filter: blur(20px);
+        #lightbox.active { pointer-events: auto; }
+
+        /* Lớp nền đen - Biến mất nhanh khi thu nhỏ (0.4s) */
+        .lightbox-bg {
+            position: absolute; inset: 0;
+            background: rgba(0,0,0,0);
+            z-index: 9999;
+            transition: background 0.6s var(--ease);
         }
+        #lightbox.active .lightbox-bg { background: rgba(0,0,0,.9); }
+
+        /* Lớp sương mờ - Biến mất chậm khi thu nhỏ (0.7s) - FIX GIẬT */
+        .lightbox-blur {
+            position: absolute; inset: 0;
+            backdrop-filter: blur(0px);
+            z-index: 9998;
+            transition: backdrop-filter 0.8s var(--ease);
+        }
+        #lightbox.active .lightbox-blur { backdrop-filter: blur(20px); }
 
         #zoom-img{
             position:fixed; top:0; left:0; z-index:10000;
             object-fit:cover; border-radius:12px; display:none;
+            pointer-events:none;
             will-change: transform; transform-origin: top left;
         }
 
@@ -211,7 +232,11 @@
     <div class="image-section" id="gallery"></div>
 </div>
 
-<div id="lightbox"><img id="zoom-img"></div>
+<div id="lightbox">
+    <div class="lightbox-blur"></div>
+    <div class="lightbox-bg"></div>
+    <img id="zoom-img">
+</div>
 
 <script>
     const params = new URLSearchParams(window.location.search);
@@ -248,7 +273,7 @@
             document.getElementById("title").innerText = data.info.title;
             document.getElementById("description").innerText = data.info.description;
             
-            // DỮ LIỆU CHUẨN: Lấy đúng biến polycount
+            // Fix Specs: Đã lấy đúng biến polycount (TRIS)
             const tech = data.technical;
             document.getElementById("techDetails").innerHTML = `
                 <li><span>Dimensions</span><b>${tech.scale} ${tech.unit}</b></li>
@@ -308,6 +333,7 @@
         } catch(err) { console.error(err); }
     }
 
+    // ZOOM ENGINE - Double Layer Fix Giật
     const lightbox = document.getElementById("lightbox");
     const zoomImg = document.getElementById("zoom-img");
     let activeOriginImg = null;
@@ -363,9 +389,14 @@
         if(!activeOriginImg || animating) return;
         animating = true;
         const rect = activeOriginImg.getBoundingClientRect();
+        
+        // Fix Giật: Thu nhỏ ảnh trước
         zoomImg.style.transition = "transform 0.5s var(--ease)";
         zoomImg.style.transform = `translate3d(${rect.left}px, ${rect.top}px, 0) scale(1)`;
+        
+        // Tắt lightbox
         lightbox.classList.remove("active");
+        
         setTimeout(() => {
             activeOriginImg.style.visibility = "visible";
             zoomImg.style.display = "none";
@@ -375,7 +406,10 @@
         }, 500);
     }
 
-    lightbox.onclick = closeSmoothZoom;
+    // Gắn sự kiện vào 2 lớp nền
+    document.querySelector('.lightbox-bg').onclick = closeSmoothZoom;
+    document.querySelector('.lightbox-blur').onclick = closeSmoothZoom;
+    
     window.addEventListener("keydown", e => { if(e.key === "Escape") closeSmoothZoom(); });
 
     loadProduct();
