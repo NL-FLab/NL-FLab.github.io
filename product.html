@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <title>NL F.Lab | Portfolio Details</title>
-
     <style>
         :root {
             --bg: #0c0c0c;
             --text-main: #e5e5e5;
             --text-dim: #888;
             --apple-bezier: cubic-bezier(0.28, 0.84, 0.42, 1);
-            --radius: 15px; /* Đồng bộ viền 15px */
+            --radius: 15px;
         }
 
         body { margin:0; background:var(--bg); color:var(--text-main); font-family:'Inter',sans-serif; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
@@ -34,27 +33,25 @@
         .tech-list li b { color:#aaa; font-weight:400; }
         .viewer iframe { width:100%; aspect-ratio:16/9; border:none; border-radius:var(--radius); background:#111; }
 
-        /* Hero Section Fix */
-        .hero-section { margin-bottom:60px; width:100%; display: flex; justify-content: center; }
-        #heroReveal { width:100%; display:none; }
-        #hero { width:100%; height:auto; border-radius:var(--radius); object-fit: cover; cursor: zoom-in; }
+        /* Hero */
+        .hero-section { margin-bottom:60px; width:100%; display: flex; justify-content: center; min-height: 100px; }
+        #heroReveal { width:100%; display:none; opacity:0; transform:translateY(30px); transition: opacity .8s ease, transform .8s var(--apple-bezier); }
+        #heroReveal.reveal { display:block; opacity:1; transform:translateY(0); }
+        #hero { width:100%; height:auto; border-radius:var(--radius); object-fit: cover; cursor: zoom-in; display: block; }
 
         /* Gallery 3 Columns */
         .image-section { display:grid; grid-template-columns: repeat(3, 1fr); gap:30px; }
-        
         .img-reveal-container { opacity:0; transform:translateY(30px); transition: opacity .8s ease, transform .8s var(--apple-bezier); }
         .img-reveal-container.reveal { opacity:1; transform:translateY(0); }
 
         .img-wrapper { position:relative; border-radius:var(--radius); overflow:hidden; cursor:zoom-in; background:#111; transition: transform 0.5s var(--apple-bezier); }
         .img-wrapper:hover { transform: translateY(-8px); }
-        .img-wrapper img { width:100%; display: block; border-radius:var(--radius); opacity: 0; transition: opacity 1s ease; }
-        .img-wrapper img.loaded { opacity: 1; }
+        .img-wrapper img { width:100%; display: block; border-radius:var(--radius); transition: opacity 0.5s ease; }
 
         .img-caption {
             position:absolute; bottom:20px; left:20px; font-size:9px; color:#fff;
             text-transform:uppercase; letter-spacing:2px; background:rgba(0,0,0,0.6);
-            backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
-            padding:6px 14px; border-radius:2px; opacity:0; transform:translateY(10px); transition: .4s ease;
+            backdrop-filter:blur(10px); padding:6px 14px; border-radius:2px; opacity:0; transform:translateY(10px); transition: .4s ease;
         }
         .img-wrapper:hover .img-caption { opacity:1; transform:translateY(0); }
 
@@ -68,10 +65,7 @@
             transform-origin: top left; 
         }
 
-        @media(max-width:900px){ 
-            .image-section { grid-template-columns: repeat(2, 1fr); }
-            .top-section { grid-template-columns: 1fr; gap: 40px; }
-        }
+        @media(max-width:900px){ .image-section { grid-template-columns: repeat(2, 1fr); } }
         @media(max-width:600px){ .image-section { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -92,7 +86,7 @@
     </div>
 
     <div class="hero-section">
-        <div class="img-reveal-container" id="heroReveal">
+        <div id="heroReveal">
             <div class="img-wrapper" id="heroWrapper">
                 <img id="hero">
                 <div class="img-caption" id="heroCaption"></div>
@@ -110,7 +104,6 @@
     const projectSlug = params.get("project");
     const lightbox = document.getElementById("lightbox");
     const zoomImg = document.getElementById("zoom-img");
-    
     let activeOriginImg = null;
     let animating = false;
     const appleBezier = "cubic-bezier(0.28, 0.84, 0.42, 1)";
@@ -119,7 +112,7 @@
         return n.split('/').pop().split('.').slice(0,-1).join('.').replace(/_/g,' ').toUpperCase();
     }
 
-    let revealObserver = new IntersectionObserver(entries => {
+    const revealObserver = new IntersectionObserver(entries => {
         entries.forEach(e => {
             if(e.isIntersecting) { e.target.classList.add("reveal"); revealObserver.unobserve(e.target); }
         });
@@ -142,53 +135,66 @@
                 <li><span>Materials</span><b>4K PBR WORKFLOW</b></li>
             `;
 
-            // Fix Hero Loading
-            if(data.media && data.media.hero) {
+            // XỬ LÝ HERO (Dùng Promise để đợi ảnh load xong mới hiện)
+            if(data.media?.hero) {
                 const heroEl = document.getElementById("hero");
                 const heroReveal = document.getElementById("heroReveal");
-                // Thử path images/ vì hero thường nằm trong đó
-                heroEl.src = `models/${projectSlug}/images/${data.media.hero}`;
+                const heroPath = `models/${projectSlug}/images/${data.media.hero}`;
                 
+                heroEl.src = heroPath;
                 heroEl.onload = () => {
-                    heroEl.classList.add("loaded");
                     heroReveal.style.display = "block";
-                    revealObserver.observe(heroReveal);
+                    setTimeout(() => heroReveal.classList.add("reveal"), 50);
                 };
+                heroEl.onerror = () => { console.warn("Hero not found at:", heroPath); };
+                
                 document.getElementById("heroCaption").innerText = formatCaption(data.media.hero);
                 document.getElementById("heroWrapper").onclick = () => openSmoothZoom(heroEl);
             }
 
-            // Gallery Rendering - 3 Columns
+            // XỬ LÝ GALLERY (Chỉ hiển thị ảnh tồn tại, giữ đúng thứ tự)
             const configRes = await fetch("models/gallery_config.json");
             const config = await configRes.json();
             const gallery = document.getElementById("gallery");
 
-            config.order.forEach(name => {
-                const container = document.createElement("div");
-                container.className = "img-reveal-container";
-                container.innerHTML = `
-                    <div class="img-wrapper">
-                        <img src="models/${projectSlug}/images/${name}">
-                        <div class="img-caption">${formatCaption(name)}</div>
-                    </div>`;
-                gallery.appendChild(container);
-                revealObserver.observe(container);
-                
-                const img = container.querySelector('img');
-                img.onload = () => img.classList.add("loaded");
-                container.querySelector('.img-wrapper').onclick = () => openSmoothZoom(img);
+            // Tạo các container rỗng trước để giữ đúng thứ tự trong lúc load
+            const placeholders = config.order.map(() => {
+                const div = document.createElement("div");
+                gallery.appendChild(div);
+                return div;
+            });
+
+            config.order.forEach((name, index) => {
+                const imgPath = `models/${projectSlug}/images/${name}`;
+                const tempImg = new Image();
+                tempImg.src = imgPath;
+
+                tempImg.onload = () => {
+                    placeholders[index].className = "img-reveal-container";
+                    placeholders[index].innerHTML = `
+                        <div class="img-wrapper">
+                            <img src="${imgPath}">
+                            <div class="img-caption">${formatCaption(name)}</div>
+                        </div>`;
+                    revealObserver.observe(placeholders[index]);
+                    placeholders[index].querySelector('.img-wrapper').onclick = () => openSmoothZoom(placeholders[index].querySelector('img'));
+                };
+
+                tempImg.onerror = () => {
+                    placeholders[index].remove(); // Xóa bỏ hoàn toàn nếu ảnh lỗi, không để ô trống
+                };
             });
 
             if(data.viewer?.enabled) document.getElementById("viewer").src = `viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
             else document.getElementById("viewerBlock").style.display="none";
 
-        } catch(err) { console.error("Error loading project:", err); }
+        } catch(err) { console.error("Load failed:", err); }
     }
 
+    // ZOOM LOGIC (Fix Opacity chỉ cho Zoom-out)
     function openSmoothZoom(originImg){
         if(animating) return;
         activeOriginImg = originImg;
-        
         const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
         document.body.style.paddingRight = scrollBarWidth + "px";
         document.body.classList.add("lock-scroll");
@@ -196,14 +202,13 @@
         const rect = originImg.getBoundingClientRect();
         zoomImg.src = originImg.src;
         zoomImg.style.display = "block";
-        zoomImg.style.opacity = "1";
+        zoomImg.style.opacity = "1"; // Zoom-in luôn sáng
         zoomImg.style.width = rect.width + "px";
         zoomImg.style.height = rect.height + "px";
         zoomImg.style.transition = "none";
         zoomImg.style.transform = `translate3d(${rect.left}px, ${rect.top}px, 0) scale(1)`;
         
         zoomImg.offsetHeight; 
-
         const winW = window.innerWidth;
         const winH = window.innerHeight;
         const imgRatio = rect.width / rect.height;
@@ -224,7 +229,7 @@
         originImg.style.visibility = "hidden";
 
         requestAnimationFrame(() => {
-            zoomImg.style.transition = `transform 0.5s ${appleBezier}, opacity 0.3s ease`;
+            zoomImg.style.transition = `transform 0.5s ${appleBezier}`; // Bỏ opacity ở đây
             zoomImg.style.transform = `translate3d(${targetX}px, ${targetY}px, 0) scale(${scale})`;
         });
     }
@@ -232,15 +237,13 @@
     function closeSmoothZoom(){
         if(!activeOriginImg || animating) return;
         animating = true;
-        
         const rect = activeOriginImg.getBoundingClientRect();
         
-        zoomImg.style.transition = `transform 0.45s ${appleBezier}, opacity 0.4s ease`;
+        zoomImg.style.transition = `transform 0.45s ${appleBezier}, opacity 0.4s ease-in`;
         zoomImg.style.transform = `translate3d(${rect.left}px, ${rect.top}px, 0) scale(1)`;
-        zoomImg.style.opacity = "0";
+        zoomImg.style.opacity = "0"; // Chỉ Zoom-out mới mờ dần
         
         lightbox.classList.remove("active");
-
         setTimeout(() => {
             if(activeOriginImg) activeOriginImg.style.visibility = "visible";
             zoomImg.style.display = "none";
@@ -253,8 +256,6 @@
 
     lightbox.onclick = closeSmoothZoom;
     window.addEventListener("keydown", e => { if(e.key === "Escape") closeSmoothZoom(); });
-    window.addEventListener("resize", () => { if(activeOriginImg) closeSmoothZoom(); });
-
     loadProduct();
 </script>
 </body>
