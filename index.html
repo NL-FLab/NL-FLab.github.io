@@ -31,7 +31,6 @@
         .subtitle { font-size: 17px; color: #aaa; font-weight: 300; margin: 0; }
         .hero-role { margin-top: 4px; font-size: 11px; color: #555; letter-spacing: 3px; text-transform: uppercase; }
 
-        /* THANH NGANG PHÁT SÁNG */
         .hero-divider {
             width: 150px; height: 1px; margin: 35px auto 12px auto;
             background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 80%);
@@ -42,7 +41,7 @@
         .section { padding: 40px 12%; }
 
         /* =================================================
-        ABOUT & CORE VALUES
+        ABOUT & CORE VALUES (FULL CONTENT RESTORED)
         ================================================= */
         .about { max-width: 900px; }
         .about h2 { font-size: 18px; font-weight: 500; color: #fff; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
@@ -64,7 +63,7 @@
         .skill { border: 1px solid #222; padding: 6px 16px; font-size: 11px; border-radius: 30px; background: #111; color: #777; }
 
         /* CV DOWNLOAD */
-        .cv-container { margin-top: 50px; padding-bottom: 20px; }
+        .cv-container { margin-top: 50px; }
         .cv-download-btn {
             display: inline-flex; align-items: center; padding: 12px 28px;
             background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
@@ -75,18 +74,16 @@
         .cv-download-btn:hover { background: #fff; color: #000; transform: translateY(-3px); border-color: #fff; }
 
         /* =================================================
-        PORTFOLIO SECTION - RESTRUCTURED
+        PORTFOLIO SECTION
         ================================================= */
-        .portfolio-header {
-            margin-top: 100px; /* Tạo khoảng cách lớn để chia phần */
+        .portfolio-divider {
+            margin-top: 60px; 
             border-top: 1px solid #1a1a1a;
-            padding-top: 60px;
-            margin-bottom: 40px;
+            padding-top: 40px;
         }
-        .section-tag { font-size: 10px; letter-spacing: 4px; color: #444; text-transform: uppercase; display: block; margin-bottom: 15px; }
-        .section-title { font-size: 24px; font-weight: 400; color: #fff; margin: 0; }
+        .section-title { font-size: 20px; font-weight: 400; color: #fff; margin: 0 0 35px 0; letter-spacing: 1px; }
 
-        .filter-container { display: flex; margin-bottom: 45px; }
+        .filter-container { display: flex; margin-bottom: 40px; }
         .filter {
             display: inline-flex; padding: 4px; position: relative;
             background: rgba(255, 255, 255, 0.02);
@@ -124,7 +121,7 @@
         .project:hover .project-title { opacity: 1; transform: translate(-50%, -50%); }
 
         /* CONTACT */
-        .contact { border-top: 1px solid #1a1a1a; margin-top: 100px; padding-top: 80px; }
+        .contact { border-top: 1px solid #1a1a1a; margin-top: 80px; padding-top: 60px; }
         .contact h2 { font-size: 19px; font-weight: 500; color: #fff; margin-bottom: 25px; }
         .contact-links { display: flex; flex-wrap: wrap; gap: 45px; }
         .contact-links a { 
@@ -159,21 +156,41 @@
         <h2>Profile</h2>
         <div class="about-intro">
             Senior 3D Artist and Team Leader with over 7 years of expertise in <strong>High-end Product Visualization</strong>. 
-            Leveraging a background in <strong>Information Technology</strong>, I specialize in bridging the gap between artistic precision and technical efficiency.
+            Leveraging a background in <strong>Information Technology</strong>, I specialize in bridging the gap between artistic precision and technical efficiency, 
+            developing optimized production pipelines that meet international industry standards.
         </div>
 
         <div class="core-values">
             <div class="value-item">
                 <div class="v-title">01. Precision</div>
-                <div class="v-text">Executing models with absolute geometric accuracy and real-world scale.</div>
+                <div class="v-text">Executing models with absolute geometric accuracy and real-world scale, ensuring seamless integration for high-fidelity rendering.</div>
             </div>
             <div class="value-item">
                 <div class="v-title">02. Optimization</div>
-                <div class="v-text">Implementing smart topology and automated workflows.</div>
+                <div class="v-text">Implementing smart topology and automated workflows to enhance performance without compromising visual complexity.</div>
             </div>
             <div class="value-item">
                 <div class="v-title">03. Leadership</div>
-                <div class="v-text">Proven track record in mentoring teams and managing large-scale 3D projects.</div>
+                <div class="v-text">Proven track record in mentoring teams and managing large-scale 3D projects from conceptual modeling to final delivery.</div>
+            </div>
+        </div>
+
+        <div class="about-highlights">
+            <div>
+                <div class="highlight-title">Expertise</div>
+                <div class="highlight-text">
+                    • Hard Surface Modeling & Retopology<br>
+                    • PBR Texturing & Material Development<br>
+                    • Lighting & Studio Environment Setup
+                </div>
+            </div>
+            <div>
+                <div class="highlight-title">Technical Stack</div>
+                <div class="highlight-text">
+                    • 3dsMax, Blender, Zbrush, V-Ray, Corona <br>
+                    • Substance Painter, Adobe Photoshop<br>
+                    • Workflow Scripting & Automation
+                </div>
             </div>
         </div>
 
@@ -185,7 +202,7 @@
         </div>
 
         <div class="cv-container">
-            <a href="cv/nghiale_cv.pdf" download class="cv-download-btn">
+            <a href="cv/nghiale_cv.pdf" download="NghiaLe_CV_3DArtist" class="cv-download-btn">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:10px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                 Download CV
             </a>
@@ -193,15 +210,14 @@
     </section>
 
     <section class="section fade">
-        <div class="portfolio-header">
-            <span class="section-tag">Archive</span>
-            <h2 class="section-title">Selected Portfolio</h2>
+        <div class="portfolio-divider">
+            <h2 class="section-title">Visual Archive</h2>
         </div>
 
         <div class="filter-container">
             <div class="filter" id="filterBar">
                 <div class="tab-indicator" id="tabIndicator"></div>
-                </div>
+            </div>
         </div>
 
         <div class="grid" id="projectGrid"></div>
