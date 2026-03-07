@@ -42,8 +42,10 @@ h1{font-weight:300; font-size:clamp(24px,4vw,32px); margin:0 0 48px 0; color:#ff
 .info-block{margin-bottom:40px;}
 .info-block strong{
 color:#eaeaea; font-size:11px; text-transform:uppercase; letter-spacing:2px;
-display:block; margin-bottom:16px; border-left:2px solid #222; padding-left:12px;
+display:block; margin-bottom:166px; border-left:2px solid #222; padding-left:12px;
 }
+/* Fix margin lỡ tay ở trên */
+.info-block strong { margin-bottom: 16px; }
 
 #description{color:var(--text-dim); font-size:14px; line-height:1.8; margin:0; text-align:justify;}
 
@@ -111,7 +113,7 @@ opacity:0; transition:opacity .8s var(--ease); z-index:-1;
 position:fixed; top:0; left:0; z-index:10000; 
 object-fit:cover; border-radius:12px;
 display:none; will-change:transform; 
-transform-origin: 0 0; /* Quan trọng nhất để zoom out chuẩn */
+transform-origin: 0 0;
 pointer-events:none;
 }
 
@@ -125,9 +127,7 @@ pointer-events:none;
 
 <body>
 
-<div class="back">
-<a href="index.html">← Back to Portfolio</a>
-</div>
+<div class="back"><a href="index.html">← Back to Portfolio</a></div>
 
 <div class="container" id="mainContainer">
 <h1 id="title">Loading...</h1>
@@ -146,14 +146,12 @@ pointer-events:none;
 <iframe id="viewer"></iframe>
 </div>
 </div>
-
 <div class="hero-section" id="heroReveal">
 <div class="img-wrapper" id="heroWrapper">
 <img id="hero">
 <div class="img-caption" id="heroCaption"></div>
 </div>
 </div>
-
 <div class="section-divider img-reveal-container"></div>
 <div class="image-section" id="gallery"></div>
 </div>
@@ -195,10 +193,8 @@ async function loadProduct(){
     try {
         const res = await fetch(`models/${projectSlug}/info.json`);
         const data = await res.json();
-        
         document.getElementById("title").innerText = data.info.title;
         document.getElementById("description").innerText = data.info.description;
-
         const tech = data.technical;
         document.getElementById("techDetails").innerHTML = `
             <li><span>Dimensions</span><b>${tech.scale} (${tech.unit})</b></li>
@@ -207,10 +203,7 @@ async function loadProduct(){
             <li><span>Software</span><b>${tech.software.join(' / ')}</b></li>
             <li><span>Render Engine</span><b>${tech.render_engine}</b></li>
         `;
-
-        setTimeout(() => {
-            document.getElementById("mainContainer").classList.add("page-loaded");
-        }, 100);
+        setTimeout(() => { document.getElementById("mainContainer").classList.add("page-loaded"); }, 100);
 
         if(data.viewer?.enabled){
             const vBlock = document.getElementById("viewerBlock");
@@ -239,30 +232,18 @@ async function loadProduct(){
         config.order.forEach(name => {
             const container = document.createElement("div");
             container.className = "img-reveal-container";
-            container.innerHTML = `
-                <div class="img-wrapper">
-                    <img data-src="models/${projectSlug}/images/${name}" class="pending-img">
-                    <div class="img-caption">${formatCaption(name)}</div>
-                </div>
-            `;
+            container.innerHTML = `<div class="img-wrapper"><img data-src="models/${projectSlug}/images/${name}" class="pending-img"><div class="img-caption">${formatCaption(name)}</div></div>`;
             gallery.appendChild(container);
             revealObserver.observe(container);
-
             const imgElement = container.querySelector('.pending-img');
-            const imgUrl = imgElement.getAttribute('data-src');
-
-            validateImage(imgUrl).then(imgObj => {
+            validateImage(imgElement.getAttribute('data-src')).then(imgObj => {
                 imgElement.src = imgObj.src;
                 imgElement.classList.add("loaded");
                 container.querySelector('.img-wrapper').onclick = () => openSmoothZoom(imgElement);
-            }).catch(() => container.remove());
+            });
         });
-
         revealObserver.observe(document.querySelector('.section-divider'));
-
-    } catch(err) {
-        console.error(err);
-    }
+    } catch(err) { console.error(err); }
 }
 
 const lightbox = document.getElementById("lightbox");
@@ -280,8 +261,6 @@ function openSmoothZoom(originImg){
     document.body.classList.add("lock-scroll");
 
     const rect = originImg.getBoundingClientRect();
-    
-    // Khởi tạo trạng thái ban đầu tại đúng vị trí ảnh gốc
     zoomImg.style.transition = "none";
     zoomImg.src = originImg.src;
     zoomImg.style.width = rect.width + "px";
@@ -292,49 +271,48 @@ function openSmoothZoom(originImg){
     requestAnimationFrame(() => {
         lightbox.classList.add("active");
         zoomImg.offsetHeight;
-
         const winW = window.innerWidth - sw;
         const winH = window.innerHeight;
         const imgAspect = originImg.naturalWidth / originImg.naturalHeight;
         const winAspect = winW / winH;
-
         let targetW, targetH;
-        if(imgAspect > winAspect){
-            targetW = winW * 0.88;
-            targetH = targetW / imgAspect;
-        } else {
-            targetH = winH * 0.88;
-            targetW = targetH * imgAspect;
-        }
-
+        if(imgAspect > winAspect){ targetW = winW * 0.88; targetH = targetW / imgAspect; }
+        else { targetH = winH * 0.88; targetW = targetH * imgAspect; }
         const scaleX = targetW / rect.width;
         const scaleY = targetH / rect.height;
         const moveX = ((winW - targetW) / 2) - rect.left;
         const moveY = ((winH - targetH) / 2) - rect.top;
-
         originImg.style.visibility = "hidden";
-
         requestAnimationFrame(() => {
             zoomImg.style.transition = "transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)";
-            // Di chuyển và scale đồng thời
             zoomImg.style.transform = `translate3d(${rect.left + moveX}px, ${rect.top + moveY}px, 0) scale(${scaleX}, ${scaleY})`;
         });
     });
-
     setTimeout(() => { animating = false; }, 800);
 }
 
+// --- UPDATED FUNCTION THEO TƯ VẤN ---
 function closeSmoothZoom(){
     if(!activeOriginImg || animating) return;
     animating = true;
 
-    // Lấy lại tọa độ hiện tại của ảnh gốc (trường hợp scroll)
     const rect = activeOriginImg.getBoundingClientRect();
-    
-    // Thu nhỏ về đúng tọa độ và scale(1)
+    const current = zoomImg.getBoundingClientRect();
+
+    // Tính toán tỷ lệ nghịch đảo để quay về scale(1) của ảnh gốc
+    const scaleX = rect.width / (zoomImg.offsetWidth || 1);
+    const scaleY = rect.height / (zoomImg.offsetHeight || 1);
+
+    // Tính toán khoảng cách di chuyển từ vị trí hiện tại về vị trí gốc
+    const moveX = rect.left - current.left;
+    const moveY = rect.top - current.top;
+
+    // Sử dụng translate3d kết hợp với tọa độ hiện tại + delta move
     zoomImg.style.transition = "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)";
-    zoomImg.style.transform = `translate3d(${rect.left}px, ${rect.top}px, 0) scale(1)`;
-    
+    // Lưu ý: Chúng ta cộng thêm moveX, moveY vào transform hiện tại để đưa nó về đúng rect.left/top
+    // Nhưng vì transform-origin là 0 0, ta chỉ cần đưa nó về rect gốc một cách trực tiếp
+    zoomImg.style.transform = `translate3d(${rect.left}px, ${rect.top}px, 0) scale(${scaleX}, ${scaleY})`;
+
     lightbox.classList.remove("active");
 
     setTimeout(() => {
@@ -348,12 +326,8 @@ function closeSmoothZoom(){
 }
 
 document.querySelector('.lightbox-bg').onclick = closeSmoothZoom;
-window.addEventListener("keydown", e => {
-    if(e.key === "Escape") closeSmoothZoom();
-});
-
+window.addEventListener("keydown", e => { if(e.key === "Escape") closeSmoothZoom(); });
 loadProduct();
 </script>
-
 </body>
 </html>
