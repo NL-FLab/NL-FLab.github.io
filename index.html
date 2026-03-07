@@ -8,45 +8,41 @@
     <title>NL F.Lab – High-end 3D Visualization</title>
 
     <style>
-                /* =================================================
-        AMBIENT BACKGROUND (ĐÃ TĂNG ISO - DỄ THẤY HƠN)
+                        /* =================================================
+        AMBIENT BACKGROUND (FIXED NO-TILE)
         ================================================= */
-        body {
-            margin: 0; background: #0c0c0c; color: #e5e5e5;
-            font-family: 'Inter', -apple-system, sans-serif;
-            overflow-x: hidden; position: relative;
-        }
-
-        /* Đốm sáng 1: Góc trên bên trái */
         body::before {
             content: "";
-            position: fixed; top: -20%; left: -10%;
-            width: 80%; height: 80%;
-            /* Tăng opacity lên 0.06 (6%) để dễ thấy hơn */
-            background: radial-gradient(circle, rgba(100, 150, 255, 0.08) 0%, transparent 60%);
-            z-index: -1; pointer-events: none;
-            animation: ambientMove1 20s infinite alternate ease-in-out;
+            position: fixed; 
+            top: -25%; left: -25%; /* Đẩy lùi ra xa để tâm sáng nằm giữa */
+            width: 150vmax; height: 150vmax; /* Cho tràn hẳn ra ngoài khung hình */
+            background: radial-gradient(circle at center, rgba(100, 150, 255, 0.06) 0%, transparent 40%);
+            background-repeat: no-repeat;
+            z-index: -1; 
+            pointer-events: none;
+            animation: ambientMove1 30s infinite alternate ease-in-out;
         }
 
-        /* Đốm sáng 2: Góc dưới bên phải */
         body::after {
             content: "";
-            position: fixed; bottom: -20%; right: -10%;
-            width: 70%; height: 70%;
-            /* Tăng opacity lên 0.04 (4%) */
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 60%);
-            z-index: -1; pointer-events: none;
-            animation: ambientMove2 25s infinite alternate-reverse ease-in-out;
+            position: fixed; 
+            bottom: -25%; right: -25%;
+            width: 130vmax; height: 130vmax;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, transparent 40%);
+            background-repeat: no-repeat;
+            z-index: -1; 
+            pointer-events: none;
+            animation: ambientMove2 40s infinite alternate-reverse ease-in-out;
         }
 
         @keyframes ambientMove1 {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            100% { transform: translate(15%, 10%) rotate(10deg); }
+            0% { transform: translate(-10%, -10%); }
+            100% { transform: translate(10%, 10%); }
         }
 
         @keyframes ambientMove2 {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(-10%, -15%); }
+            0% { transform: translate(10%, 10%); }
+            100% { transform: translate(-10%, -10%); }
         }
 
 
