@@ -11,67 +11,73 @@
             --bg: #0c0c0c;
             --text-main: #e5e5e5;
             --text-dim: #888;
-            --accent: #555;
-            /* Đường cong chuyển động mượt hơn */
-            --ease: cubic-bezier(0.4, 0, 0.2, 1); 
+            --accent: #444;
+            --ease: cubic-bezier(0.2, 0, 0.2, 1); 
         }
 
         body{margin:0;background:var(--bg);color:var(--text-main);font-family:'Inter',sans-serif;overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased;}
         body.lock-scroll{overflow:hidden!important;}
 
         .container {
-            max-width:1100px;
-            margin:0 auto;
-            padding:0 10% 80px 10%;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 1.5s var(--ease), transform 1.5s var(--ease);
+            max-width:1100px; margin:0 auto; padding:0 10% 80px 10%;
+            opacity: 0; transform: translateY(15px);
+            transition: opacity 1.2s var(--ease), transform 1.2s var(--ease);
         }
         .container.page-loaded { opacity: 1; transform: translateY(0); }
         
-        .back{padding:40px 10% 10px 10%;max-width:1100px;margin:0 auto;}
-        .back a{font-size:10px;color:var(--accent);text-decoration:none;text-transform:uppercase;letter-spacing:2px;transition:.4s;}
+        .back{padding:40px 10% 10px 10%; max-width:1100px; margin:0 auto;}
+        .back a{font-size:10px; color:var(--accent); text-decoration:none; text-transform:uppercase; letter-spacing:2px; transition:.3s;}
         .back a:hover{color:#fff;}
 
-        h1{font-weight:300;font-size:clamp(26px,4vw,36px);margin:0 0 48px 0;color:#fff;letter-spacing:-0.5px;}
+        h1{font-weight:300; font-size:clamp(24px, 4vw, 32px); margin:0 0 48px 0; color:#fff; letter-spacing:-0.02em;}
 
+        /* TOP SECTION - Grid chuẩn */
         .top-section{
-            display:grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 64px;
-            margin-bottom: 96px;
-            align-items: start;
+            display:grid; grid-template-columns: 1fr 1.2fr; gap: 80px;
+            margin-bottom: 80px; align-items: start;
         }
 
-        .info-block { margin-bottom: 40px; }
-        .info-block strong { color: #fff; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 16px; }
-        #description { color: var(--text-dim); font-size: 14px; line-height: 1.8; margin: 0; text-align: justify; }
+        .info-block { margin-bottom: 48px; }
+        .info-block strong { 
+            color: #fff; font-size: 10px; text-transform: uppercase; 
+            letter-spacing: 2px; display: block; margin-bottom: 20px;
+            border-left: 2px solid #333; padding-left: 12px;
+        }
 
-        .tech-list{list-style:none;padding:0;margin:0;}
+        #description { 
+            color: var(--text-dim); font-size: 14px; line-height: 1.8; 
+            margin: 0; text-align: justify; letter-spacing: 0.01em;
+        }
+
+        .tech-list{list-style:none; padding:0; margin:0;}
         .tech-list li{
-            padding: 12px 0; border-bottom: 1px solid #1a1a1a;
-            font-size: 12px; display: flex; justify-content: space-between; align-items: center;
+            padding: 14px 0; border-bottom: 1px solid #161616;
+            font-size: 12px; display: flex; justify-content: space-between;
         }
-        .tech-list li span{color: var(--accent); text-transform: uppercase; letter-spacing: 1px; font-size: 10px;}
-        .tech-list li b{font-weight: 400; color: #ccc;}
+        .tech-list li span{color: var(--accent); text-transform: uppercase; letter-spacing: 1px;}
+        .tech-list li b{font-weight: 400; color: #aaa; letter-spacing: 0.02em;}
 
-        /* 3D Viewer Fade */
+        /* 3D Viewer */
         .viewer-container {
-            width:100%; aspect-ratio:16/9; border-radius:12px;
-            background:#111; overflow:hidden;
-            box-shadow:0 30px 60px rgba(0,0,0,.4);
-            opacity: 0;
-            transform: scale(0.98);
-            transition: opacity 1.5s var(--ease), transform 1.5s var(--ease);
+            width:100%; aspect-ratio:16/9; border-radius:8px;
+            background:#111; overflow:hidden; opacity: 0;
+            transition: opacity 1.5s var(--ease);
         }
-        .viewer-container.loaded { opacity: 1; transform: scale(1); }
+        .viewer-container.loaded { opacity: 1; }
         .viewer-container iframe{ width:100%; height:100%; border:none; }
 
-        .hero-section{margin-bottom:64px; display:none; justify-content:center; width:100%;}
+        /* Hero Image - 40% Width */
+        .hero-section {
+            margin: 0 auto 100px auto;
+            width: 40%; /* Thu nhỏ theo ý Nghĩa */
+            display: none; 
+            justify-content: center;
+        }
+
         .image-section{display:grid; grid-template-columns:1fr 1fr; gap:40px;}
 
         .img-wrapper{
-            position:relative; border-radius:15px; cursor:zoom-in;
+            position:relative; border-radius:12px; cursor:zoom-in;
             background:#111; overflow:hidden;
             transition:transform 0.6s var(--ease);
             aspect-ratio: 1/1;
@@ -79,49 +85,52 @@
         
         .img-wrapper img{
             width:100%; height:100%; object-fit:cover;
-            border-radius:15px; display:block;
-            opacity:0; will-change: opacity;
-            transition:opacity 1.2s var(--ease);
+            opacity:0; transition:opacity 1s var(--ease);
         }
         .img-wrapper img.loaded{opacity:1;}
-        .img-wrapper:hover{transform:translateY(-8px); box-shadow:0 20px 40px rgba(0,255,255,.1);}
+        .img-wrapper:hover{transform:translateY(-5px);}
 
         .img-caption{
-            position:absolute; bottom:20px; left:20px; font-size:9px; color:#fff;
+            position:absolute; bottom:15px; left:15px; font-size:8px; color:#fff;
             text-transform:uppercase; letter-spacing:2px;
-            background:rgba(0,0,0,.6); backdrop-filter:blur(10px);
-            padding:6px 14px; border-radius:2px;
-            opacity:0; transform:translateY(10px); transition:.5s var(--ease); pointer-events:none;
+            background:rgba(0,0,0,0.7); backdrop-filter: blur(5px);
+            padding:5px 10px; border-radius:2px;
+            opacity:0; transition:.4s var(--ease);
         }
-        .img-wrapper:hover .img-caption{opacity:1; transform:translateY(0);}
+        .img-wrapper:hover .img-caption{opacity:1;}
 
-        /* Fade cho từng phần tử khi scroll */
-        .img-reveal-container {
-            opacity:0; transform:translateY(30px);
-            transition: opacity 1.2s var(--ease), transform 1.2s var(--ease);
-        }
+        .img-reveal-container { opacity:0; transform:translateY(20px); transition: 1s var(--ease); }
         .img-reveal-container.reveal { opacity:1; transform:translateY(0); }
 
-        #lightbox{position:fixed; inset:0; background:rgba(0,0,0,0); z-index:9999; pointer-events:none; transition:background .6s var(--ease);}
-        #lightbox.active{background:rgba(0,0,0,.96); pointer-events:auto; backdrop-filter: blur(12px);}
+        /* LIGHTBOX - Fix Blur Transition */
+        #lightbox{
+            position:fixed; inset:0; background:rgba(0,0,0,0); 
+            z-index:9999; pointer-events:none; 
+            transition: background 0.6s var(--ease), backdrop-filter 0.6s var(--ease);
+            backdrop-filter: blur(0px);
+        }
+        #lightbox.active{
+            background:rgba(0,0,0,.9); pointer-events:auto; 
+            backdrop-filter: blur(15px);
+        }
 
         #zoom-img{
             position:fixed; top:0; left:0; z-index:10000;
-            object-fit:cover; border-radius:15px;
-            display:none; pointer-events:none;
+            object-fit:cover; border-radius:8px; display:none;
             will-change: transform; transform-origin: top left;
         }
 
         @media(max-width:850px){
-            .top-section{grid-template-columns:1fr; gap:48px;}
+            .top-section{grid-template-columns:1fr; gap:40px;}
             .image-section{grid-template-columns:1fr;}
+            .hero-section{width: 80%;}
         }
     </style>
 </head>
 
 <body>
 
-<div class="back"><a href="index.html">← Back to Portfolio</a></div>
+<div class="back"><a href="index.html">← Back</a></div>
 
 <div class="container" id="mainContainer">
     <h1 id="title">Loading...</h1>
@@ -172,7 +181,6 @@
         });
     }, { threshold: 0.1 });
 
-    // Cải tiến hàm kiểm tra ảnh: Chỉ dựng DOM khi ảnh thực sự tồn tại
     function validateImage(url) {
         return new Promise((resolve, reject) => {
             const img = new Image();
@@ -195,16 +203,11 @@
             document.getElementById("techDetails").innerHTML = `
                 <li><span>Dimensions</span><b>${tech.scale} ${tech.unit}</b></li>
                 <li><span>Geometry</span><b>${tech.polycount.pair} TRIS</b></li>
-                <li><span>Materials</span><b>PBR WORKFLOW</b></li>
                 <li><span>Pipeline</span><b>${tech.software[0]} / ${tech.render_engine}</b></li>
             `;
 
-            // Fade-in container chính
-            setTimeout(() => {
-                document.getElementById("mainContainer").classList.add("page-loaded");
-            }, 100);
+            setTimeout(() => { document.getElementById("mainContainer").classList.add("page-loaded"); }, 100);
 
-            // Xử lý 3D Viewer
             if(data.viewer?.enabled) {
                 const vBlock = document.getElementById("viewerBlock");
                 const iframe = document.getElementById("viewer");
@@ -214,28 +217,26 @@
                 document.getElementById("viewerBlock").style.display = "none";
             }
 
-            // Hero Image - Check trước rồi mới hiện
+            // Hero
             const heroUrl = `models/${projectSlug}/${data.media.hero}`;
             validateImage(heroUrl).then((imgObj) => {
-                const heroImg = document.getElementById("hero");
-                heroImg.src = imgObj.src;
-                heroImg.classList.add("loaded");
+                const hImg = document.getElementById("hero");
+                hImg.src = imgObj.src;
+                hImg.classList.add("loaded");
                 document.getElementById("heroCaption").innerText = formatCaption(data.media.hero);
                 document.getElementById("heroReveal").style.display = "flex";
                 revealObserver.observe(document.getElementById("heroReveal"));
-                document.getElementById("heroWrapper").onclick = () => openSmoothZoom(heroImg);
+                document.getElementById("heroWrapper").onclick = () => openSmoothZoom(hImg);
             }).catch(() => {});
 
-            // Gallery - TUYỆT ĐỐI KHÔNG HIỆN Ô ĐEN
+            // Gallery - Clean Check
             const configRes = await fetch("models/gallery_config.json");
             const config = await configRes.json();
             const gallery = document.getElementById("gallery");
 
             config.order.forEach(name => {
                 const imgUrl = `models/${projectSlug}/images/${name}`;
-                // Kiểm tra sự tồn tại của file trước
                 validateImage(imgUrl).then((imgObj) => {
-                    // File tồn tại -> Dựng thẻ HTML
                     const container = document.createElement("div");
                     container.className = "img-reveal-container";
                     container.innerHTML = `
@@ -246,19 +247,16 @@
                     `;
                     gallery.appendChild(container);
                     revealObserver.observe(container);
-                    
                     container.querySelector('.img-wrapper').onclick = function() {
                         openSmoothZoom(this.querySelector('img'));
                     };
-                }).catch(() => {
-                    // File không tồn tại -> Hoàn toàn không tạo thẻ, không có ô đen
-                });
+                }).catch(() => {});
             });
 
-        } catch(err) { console.error("Lỗi:", err); }
+        } catch(err) { console.error(err); }
     }
 
-    // ZOOM ENGINE (Giữ nguyên logic GPU mượt)
+    // ZOOM ENGINE - Refined
     const lightbox = document.getElementById("lightbox");
     const zoomImg = document.getElementById("zoom-img");
     let activeOriginImg = null;
@@ -290,9 +288,9 @@
 
         let targetW, targetH;
         if (imgAspect > winAspect) {
-            targetW = winW * 0.92; targetH = targetW / imgAspect;
+            targetW = winW * 0.9; targetH = targetW / imgAspect;
         } else {
-            targetH = winH * 0.92; targetW = targetH * imgAspect;
+            targetH = winH * 0.9; targetW = targetH * imgAspect;
         }
 
         const scaleX = targetW / rect.width;
@@ -304,19 +302,17 @@
         originImg.style.visibility = "hidden";
 
         requestAnimationFrame(() => {
-            zoomImg.style.transition = "transform 0.5s var(--ease)";
+            zoomImg.style.transition = "transform 0.6s var(--ease)";
             zoomImg.style.transform = `translate3d(${rect.left + moveX}px, ${rect.top + moveY}px, 0) scale(${scaleX}, ${scaleY})`;
-            setTimeout(() => { zoomImg.style.objectFit = "contain"; }, 50);
         });
-        setTimeout(() => { animating = false; }, 500);
+        setTimeout(() => { animating = false; }, 600);
     }
 
     function closeSmoothZoom(){
         if(!activeOriginImg || animating) return;
         animating = true;
         const rect = activeOriginImg.getBoundingClientRect();
-        zoomImg.style.objectFit = "cover";
-        zoomImg.style.transition = "transform 0.45s var(--ease)";
+        zoomImg.style.transition = "transform 0.5s var(--ease)";
         zoomImg.style.transform = `translate3d(${rect.left}px, ${rect.top}px, 0) scale(1)`;
         lightbox.classList.remove("active");
         setTimeout(() => {
@@ -324,12 +320,10 @@
             zoomImg.style.display = "none";
             document.body.classList.remove("lock-scroll");
             document.body.style.paddingRight = "0px";
-            activeOriginImg = null;
-            animating = false;
-        }, 450);
+            activeOriginImg = null; animating = false;
+        }, 500);
     }
 
-    window.addEventListener("resize", () => { if(activeOriginImg) closeSmoothZoom(); });
     lightbox.onclick = closeSmoothZoom;
     window.addEventListener("keydown", e => { if(e.key === "Escape") closeSmoothZoom(); });
 
