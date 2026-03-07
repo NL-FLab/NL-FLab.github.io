@@ -9,22 +9,53 @@
 
     <style>
         /* =================================================
-        GLOBAL & BASE
+        GLOBAL & AMBIENT BACKGROUND
         ================================================= */
         body {
             margin: 0; background: #0c0c0c; color: #e5e5e5;
             font-family: 'Inter', -apple-system, sans-serif;
             letter-spacing: 0.02em; line-height: 1.6;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        header { padding: 80px 12% 20px 12%; position: relative; overflow: hidden; }
-        header::before {
-            content: ""; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
-            width: 800px; height: 800px; background: radial-gradient(circle, rgba(255,255,255,0.05), transparent 60%);
-            filter: blur(100px); pointer-events: none;
+        /* Đốm sáng mờ 1 - Chạy chậm phía trên */
+        body::before {
+            content: "";
+            position: fixed; top: -10%; left: -10%;
+            width: 70%; height: 70%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.018) 0%, transparent 70%);
+            z-index: -1; pointer-events: none;
+            animation: ambientMove1 25s infinite alternate ease-in-out;
         }
 
+        /* Đốm sáng mờ 2 - Chạy chậm phía dưới */
+        body::after {
+            content: "";
+            position: fixed; bottom: -10%; right: -10%;
+            width: 60%; height: 60%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.012) 0%, transparent 70%);
+            z-index: -1; pointer-events: none;
+            animation: ambientMove2 30s infinite alternate-reverse ease-in-out;
+        }
+
+        @keyframes ambientMove1 {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(10%, 5%) scale(1.1); }
+            100% { transform: translate(-5%, 15%) scale(0.9); }
+        }
+
+        @keyframes ambientMove2 {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-8%, -10%) scale(1.2); }
+            100% { transform: translate(8%, -5%) scale(1); }
+        }
+
+        /* =================================================
+        HEADER & HERO
+        ================================================= */
+        header { padding: 80px 12% 20px 12%; position: relative; z-index: 1; }
         .brand { display: flex; align-items: flex-start; gap: 24px; margin-bottom: 5px; }
         .logo { width: 100px; height: 100px; object-fit: contain; margin-top: 15px; }
         h1 { font-size: 40px; font-weight: 400; letter-spacing: -0.02em; margin: 0; color: #fff; }
@@ -34,18 +65,17 @@
         .hero-divider {
             width: 150px; height: 1px; margin: 35px auto 12px auto;
             background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 80%);
-            box-shadow: 0 0 10px rgba(255,255,255,0.1);
         }
         .hero-note { text-align: center; font-size: 10px; letter-spacing: 3px; color: #444; text-transform: uppercase; margin-bottom: 30px; }
 
-        .section { padding: 40px 12%; } /* Padding chuẩn cho các khối lớn */
+        .section { padding: 40px 12%; position: relative; z-index: 1; }
 
         /* =================================================
-        ABOUT & CORE VALUES
+        ABOUT & CONTENT (REVERTED TO FULL)
         ================================================= */
         .about { max-width: 900px; }
         .about h2 { font-size: 18px; font-weight: 500; color: #fff; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
-        .about-intro { font-size: 16px; color: #eee; margin-bottom: 50px; line-height: 1.8; font-weight: 300; }
+        .about-intro { font-size: 16px; color: #eee; margin-bottom: 40px; line-height: 1.8; font-weight: 300; }
         .about-intro strong { color: #fff; font-weight: 500; }
 
         .core-values { 
@@ -55,10 +85,7 @@
         .value-item .v-title { font-size: 10px; letter-spacing: 3px; color: #555; text-transform: uppercase; margin-bottom: 12px; }
         .value-item .v-text { font-size: 13px; color: #888; font-weight: 300; line-height: 1.7; }
 
-        .about-highlights { 
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
-            gap: 35px; margin-top: 50px; 
-        }
+        .about-highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 35px; margin-top: 50px; }
         .highlight-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #555; margin-bottom: 10px; }
         .highlight-text { color: #bbb; font-size: 13px; font-weight: 300; line-height: 1.7; }
 
@@ -76,12 +103,9 @@
         .cv-download-btn:hover { background: #fff; color: #000; transform: translateY(-2px); border-color: #fff; }
 
         /* =================================================
-        PORTFOLIO SECTION
+        PORTFOLIO SECTION (CLEAN & SEAMLESS)
         ================================================= */
-        .portfolio-header {
-            margin-top: 10px; /* Sát nút Download CV hơn */
-            margin-bottom: 25px;
-        }
+        .portfolio-header { margin-top: 10px; margin-bottom: 25px; }
         .section-title { font-size: 11px; font-weight: 400; color: #555; margin: 0; letter-spacing: 4px; text-transform: uppercase; }
 
         .filter-container { display: flex; margin-bottom: 35px; }
@@ -108,6 +132,7 @@
             position: relative; overflow: hidden; border-radius: 12px; aspect-ratio: 1 / 1; 
             background: #111; opacity: 0; transform: translateY(15px);
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255,255,255,0.03);
         }
         .project.is-visible { opacity: 1; transform: translateY(0); }
         .project img { width: 100%; height: 100%; object-fit: cover; transition: 1.2s cubic-bezier(0.2, 1, 0.2, 1); }
