@@ -1,126 +1,92 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>NL-FLab | Advanced 3D Engine</title>
-    <script src="https://cdn.babylonjs.com/babylon.js"></script>
-    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
-    <style>
-        html, body { width: 100%; height: 100%; margin: 0; background: #111; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
-        canvas { width: 100%; height: 100%; outline: none; }
-        
-        #ui-panel {
-            position: absolute; top: 20px; right: 20px; width: 220px;
-            background: rgba(25, 25, 25, 0.9); border: 1px solid #444; border-radius: 8px;
-            padding: 15px; z-index: 100; color: #eee; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        h3 { font-size: 11px; color: #00bcd4; text-transform: uppercase; margin: 0 0 15px 0; letter-spacing: 1px; border-bottom: 1px solid #333; padding-bottom: 5px; }
-        .group { margin-bottom: 15px; }
-        .label { font-size: 9px; color: #666; margin-bottom: 8px; text-transform: uppercase; font-weight: bold; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-        
-        button {
-            background: #222; border: 1px solid #444; color: #aaa; padding: 10px;
-            cursor: pointer; font-size: 10px; border-radius: 4px; transition: 0.2s;
-        }
-        button:hover { background: #333; border-color: #00bcd4; color: #fff; }
-        button.active { background: #004d40; border-color: #00bcd4; color: #fff; }
-    </style>
+<meta charset="utf-8">
+<title>NL-FLab 3D Viewer | Diagnostics</title>
+
+<script src="https://cdn.babylonjs.com/viewer/babylon.viewer.js"></script>
+
+<style>
+    html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        background: #1e1e1e;
+        overflow: hidden;
+    }
+    babylon {
+        width: 100%;
+        height: 100%;
+    }
+    /* Nút bấm để mở bảng tính năng của Babylon */
+    #debug-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        padding: 10px 15px;
+        background: #00bcd4;
+        color: #000;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-family: sans-serif;
+        font-weight: bold;
+        z-index: 1000;
+        text-transform: uppercase;
+        font-size: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    #debug-btn:hover {
+        background: #ffffff;
+    }
+</style>
 </head>
 <body>
 
-<div id="ui-panel">
-    <h3>NL-FLab | Engine</h3>
-    <div class="group">
-        <div class="label">Render Mode</div>
-        <div class="grid">
-            <button id="btn-shaded" class="active" onclick="setMode('shaded')">Shaded</button>
-            <button id="btn-wire" onclick="setMode('wireframe')">Wireframe</button>
-        </div>
-    </div>
-    <div class="group">
-        <div class="label">Analysis</div>
-        <div class="grid">
-            <button id="btn-normal" onclick="setMode('normal')">Normals</button>
-            <button onclick="resetCamera()">Reset</button>
-        </div>
-    </div>
-</div>
+<button id="debug-btn">Check Materials / Wireframe</button>
 
-<canvas id="renderCanvas"></canvas>
+<babylon id="viewer"
+    model=""
+    camera-behavior="auto"
+    environment="https://assets.babylonjs.com/environments/environmentSpecular.env"
+    engine-antialiasing="true"
+    hardware-scaling-level="1">
+</babylon>
 
 <script>
-    const canvas = document.getElementById("renderCanvas");
-    const engine = new BABYLON.Engine(canvas, true);
-    let scene, camera;
-
-    // 1. Lấy Model từ URL
+function getModelFromURL() {
     const params = new URLSearchParams(window.location.search);
-    const modelUrl = params.get("model");
+    return params.get("model");
+}
 
-    const createScene = async function () {
-        scene = new BABYLON.Scene(engine);
-        scene.clearColor = new BABYLON.Color4(0.08, 0.08, 0.08, 1);
+const modelPath = getModelFromURL();
+const viewerElement = document.getElementById("viewer");
 
-        // Environment
-        const hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData("https://assets.babylonjs.com/environments/environmentSpecular.env", scene);
-        scene.environmentTexture = hdrTexture;
-        scene.createDefaultSkybox(hdrTexture, true, 1000, 0.1);
+if (modelPath) {
+    viewerElement.setAttribute("model", modelPath);
+} else {
+    alert("No model specified in URL.");
+}
 
-        if (modelUrl) {
-            // Load model
-            const result = await BABYLON.SceneLoader.ImportMeshAsync("", "", modelUrl, scene);
-            
-            // Setup Camera chuẩn, không bị giật
-            scene.createDefaultCameraOrLight(true, true, true);
-            camera = scene.activeCamera;
-            camera.useFramingBehavior = true; // Chỉ bật lúc đầu để căn chỉnh model
-            camera.setTarget(BABYLON.Vector3.Zero());
-            
-            // Sau khi load xong thì khóa framing để không bị giật khi bấm nút
-            setTimeout(() => { camera.useFramingBehavior = false; }, 500);
+// Khi nhấn nút, gọi bảng Debug của Babylon
+document.getElementById('debug-btn').onclick = function() {
+    // Truy cập vào scene bên trong viewer và hiện Inspector
+    const viewerInstance = BabylonViewer.viewerManager.getViewerById("viewer");
+    if (viewerInstance && viewerInstance.sceneManager.scene) {
+        const scene = viewerInstance.sceneManager.scene;
+        
+        // Hiện bảng điều khiển có sẵn của Babylon
+        if (scene.debugLayer.isVisible()) {
+            scene.debugLayer.hide();
         } else {
-            alert("No model specified in URL.");
+            scene.debugLayer.show({
+                overlay: true,
+                handleResize: true,
+                enablePopup: false
+            });
         }
-
-        return scene;
-    };
-
-    // 2. Logic xử lý mode hiển thị
-    window.setMode = function(mode) {
-        if (!scene) return;
-
-        scene.materials.forEach(mat => {
-            // Reset các mode
-            mat.wireframe = (mode === 'wireframe');
-            // Mode Normal check: dùng debugMode của PBRMaterial
-            if (mat instanceof BABYLON.PBRMaterial || mat.albedoTexture) {
-                mat.debugMode = (mode === 'normal' ? 1 : 0);
-            }
-        });
-
-        // Update UI
-        document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-        if (mode === 'shaded') document.getElementById('btn-shaded').classList.add('active');
-        if (mode === 'wireframe') document.getElementById('btn-wire').classList.add('active');
-        if (mode === 'normal') document.getElementById('btn-normal').classList.add('active');
-    };
-
-    window.resetCamera = function() {
-        if (camera) camera.restoreState();
-    };
-
-    // Khởi chạy engine
-    createScene().then(scene => {
-        engine.runRenderLoop(() => {
-            scene.render();
-        });
-    });
-
-    // Resize window
-    window.addEventListener("resize", () => {
-        engine.resize();
-    });
+    }
+};
 </script>
 
 </body>
