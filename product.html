@@ -19,13 +19,15 @@ font-family:'Inter',sans-serif;
 line-height:1.6;
 }
 
-/* layout */
+/* container */
 
 .container{
 max-width:1200px;
 margin:auto;
-padding:0 10% 80px;
+padding:0 10% 90px;
 }
+
+/* back */
 
 .back{
 padding:40px 10% 20px;
@@ -33,52 +35,59 @@ padding:40px 10% 20px;
 
 .back a{
 font-size:10px;
-color:#555;
+color:#666;
 text-decoration:none;
 letter-spacing:2px;
 text-transform:uppercase;
 }
 
+/* title */
+
 h1{
 font-weight:300;
 font-size:clamp(26px,4vw,36px);
-margin:10px 0 40px;
+margin:10px 0 45px;
+letter-spacing:-0.02em;
 }
 
-/* top */
+/* top section */
 
 .top-section{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:80px;
 align-items:start;
-margin-bottom:80px;
+margin-bottom:90px;
 }
 
-/* info */
+/* description */
 
 .info{
+max-width:420px;
 color:#aaa;
 font-size:14px;
-max-width:420px;
 }
 
 .info strong{
 display:block;
-font-size:11px;
+font-size:10px;
 letter-spacing:2px;
 margin-bottom:18px;
 color:#fff;
 text-transform:uppercase;
 }
 
-/* TECH GRID */
+/* tech grid */
 
 .tech-grid{
 
 display:grid;
+
 grid-template-columns:1fr 1fr;
-gap:18px 40px;
+
+gap:22px 50px;
+
+margin-top:10px;
 
 }
 
@@ -88,7 +97,7 @@ display:block;
 
 font-size:10px;
 
-letter-spacing:1.5px;
+letter-spacing:2px;
 
 text-transform:uppercase;
 
@@ -100,11 +109,11 @@ margin-bottom:4px;
 
 .tech-item b{
 
-font-weight:400;
+font-weight:500;
 
-color:#e5e5e5;
+color:#fff;
 
-font-size:14px;
+font-size:15px;
 
 }
 
@@ -114,7 +123,7 @@ font-size:14px;
 width:100%;
 aspect-ratio:16/9;
 border:none;
-border-radius:24px;
+border-radius:22px;
 background:#111;
 }
 
@@ -123,19 +132,19 @@ background:#111;
 .hero-section{
 display:flex;
 justify-content:center;
-margin-bottom:60px;
+margin-bottom:70px;
 }
 
 .hero-section .img-wrapper{
 width:55%;
 }
 
-/* image */
+/* images */
 
 .img-wrapper{
 position:relative;
 overflow:hidden;
-border-radius:16px;
+border-radius:14px;
 cursor:pointer;
 background:#111;
 }
@@ -143,7 +152,7 @@ background:#111;
 .img-wrapper img{
 width:100%;
 display:block;
-transition:transform .4s ease;
+transition:transform .45s ease;
 }
 
 .img-wrapper:hover img{
@@ -159,7 +168,7 @@ left:16px;
 font-size:10px;
 letter-spacing:2px;
 color:#fff;
-background:rgba(0,0,0,.6);
+background:rgba(0,0,0,.65);
 padding:6px 12px;
 border-radius:20px;
 opacity:0;
@@ -215,7 +224,7 @@ grid-template-columns:1fr;
 position:fixed;
 inset:0;
 
-background:rgba(0,0,0,.94);
+background:rgba(0,0,0,.95);
 
 display:flex;
 align-items:center;
@@ -244,7 +253,7 @@ transform:scale(.96);
 
 transition:transform .28s ease;
 
-border-radius:12px;
+border-radius:10px;
 
 }
 
@@ -310,6 +319,7 @@ transform:scale(1);
 <script>
 
 const params=new URLSearchParams(window.location.search)
+
 const projectSlug=params.get("project")
 
 function formatCaption(fileName){
@@ -331,16 +341,18 @@ if(!projectSlug)return
 try{
 
 const res=await fetch(`models/${projectSlug}/info.json`)
+
 const data=await res.json()
 
 title.innerText=data.info.title
+
 description.innerText=data.info.description
 
 const tech=data.technical
 
 let techHTML=""
 
-/* Polygon */
+/* polycount */
 
 if(tech.polycount && tech.polycount.total){
 
@@ -348,7 +360,7 @@ techHTML+=`
 
 <div class="tech-item">
 
-<span>Polygon</span>
+<span>Polycount</span>
 
 <b>${tech.polycount.total}</b>
 
@@ -358,7 +370,7 @@ techHTML+=`
 
 }
 
-/* Scale */
+/* scale */
 
 if(tech.scale){
 
@@ -366,7 +378,7 @@ let scaleText=tech.scale
 
 if(tech.unit){
 
-scaleText+=" "+tech.unit
+scaleText+=" ("+tech.unit+")"
 
 }
 
@@ -384,9 +396,15 @@ techHTML+=`
 
 }
 
-/* Software */
+/* software */
 
 if(tech.software){
+
+let softwareText=Array.isArray(tech.software)
+
+? tech.software.join(" / ")
+
+: tech.software
 
 techHTML+=`
 
@@ -394,7 +412,7 @@ techHTML+=`
 
 <span>Software</span>
 
-<b>${tech.software}</b>
+<b>${softwareText}</b>
 
 </div>
 
@@ -402,7 +420,7 @@ techHTML+=`
 
 }
 
-/* Render */
+/* render */
 
 if(tech.render_engine){
 
@@ -420,7 +438,7 @@ techHTML+=`
 
 }
 
-/* Textures */
+/* textures */
 
 if(tech.textures){
 
@@ -428,7 +446,7 @@ techHTML+=`
 
 <div class="tech-item">
 
-<span>Textures</span>
+<span>Texture Set</span>
 
 <b>${tech.textures}</b>
 
@@ -449,12 +467,15 @@ heroCaption.innerText=formatCaption(data.media.hero)
 heroWrapper.onclick=()=>openZoom(hero)
 
 hero.onerror=()=>{
+
 document.querySelector(".hero-section").style.display="none"
+
 }
 
 /* gallery */
 
 const configRes=await fetch("models/gallery_config.json")
+
 const config=await configRes.json()
 
 config.order.forEach(name=>{
@@ -483,6 +504,8 @@ gallery.append(wrapper)
 
 })
 
+/* viewer */
+
 if(data.viewer?.enabled){
 
 viewer.src=`viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`
@@ -504,11 +527,13 @@ console.error(e)
 /* zoom */
 
 const lightbox=document.getElementById("lightbox")
+
 const lightboxImg=document.getElementById("lightbox-img")
 
 function openZoom(img){
 
 lightboxImg.src=img.src
+
 lightbox.classList.add("active")
 
 }
@@ -522,7 +547,9 @@ lightbox.classList.remove("active")
 lightbox.onclick=closeZoom
 
 window.addEventListener("keydown",e=>{
+
 if(e.key==="Escape")closeZoom()
+
 })
 
 loadProduct()
