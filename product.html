@@ -45,13 +45,13 @@ font-size:clamp(26px,4vw,36px);
 margin:10px 0 40px;
 }
 
-/* top section */
+/* top */
 
 .top-section{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:80px;
-align-items:center;
+align-items:start;
 margin-bottom:80px;
 }
 
@@ -67,37 +67,45 @@ max-width:420px;
 display:block;
 font-size:11px;
 letter-spacing:2px;
-margin-bottom:14px;
+margin-bottom:18px;
 color:#fff;
 text-transform:uppercase;
 }
 
-/* tech list */
+/* TECH GRID */
 
-.tech-list{
-list-style:none;
-padding:0;
-margin:0;
+.tech-grid{
+
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:18px 40px;
+
 }
 
-.tech-list li{
-display:flex;
-justify-content:space-between;
-font-size:13px;
-padding:10px 0;
-border-bottom:1px solid #1a1a1a;
-}
+.tech-item span{
 
-.tech-list li span{
-color:#666;
-letter-spacing:1px;
-text-transform:uppercase;
+display:block;
+
 font-size:10px;
+
+letter-spacing:1.5px;
+
+text-transform:uppercase;
+
+color:#666;
+
+margin-bottom:4px;
+
 }
 
-.tech-list li b{
-color:#e5e5e5;
+.tech-item b{
+
 font-weight:400;
+
+color:#e5e5e5;
+
+font-size:14px;
+
 }
 
 /* viewer */
@@ -194,6 +202,10 @@ grid-template-columns:1fr;
 width:100%;
 }
 
+.tech-grid{
+grid-template-columns:1fr;
+}
+
 }
 
 /* lightbox */
@@ -261,9 +273,11 @@ transform:scale(1);
 
 <div id="description"></div>
 
+<br>
+
 <strong>Technical Specs</strong>
 
-<ul class="tech-list" id="techDetails"></ul>
+<div class="tech-grid" id="techDetails"></div>
 
 </div>
 
@@ -301,6 +315,7 @@ const projectSlug=params.get("project")
 function formatCaption(fileName){
 
 let base=fileName.split('/').pop()
+
 let name=base.split('.').slice(0,-1).join('.')
 
 return name.replace(/_/g,' ').toUpperCase()
@@ -323,13 +338,103 @@ description.innerText=data.info.description
 
 const tech=data.technical
 
-/* render technical specs */
-
 let techHTML=""
 
-for(const key in tech){
+/* Polygon */
 
-techHTML+=`<li><span>${key}</span><b>${tech[key]}</b></li>`
+if(tech.polycount && tech.polycount.total){
+
+techHTML+=`
+
+<div class="tech-item">
+
+<span>Polygon</span>
+
+<b>${tech.polycount.total}</b>
+
+</div>
+
+`
+
+}
+
+/* Scale */
+
+if(tech.scale){
+
+let scaleText=tech.scale
+
+if(tech.unit){
+
+scaleText+=" "+tech.unit
+
+}
+
+techHTML+=`
+
+<div class="tech-item">
+
+<span>Scale</span>
+
+<b>${scaleText}</b>
+
+</div>
+
+`
+
+}
+
+/* Software */
+
+if(tech.software){
+
+techHTML+=`
+
+<div class="tech-item">
+
+<span>Software</span>
+
+<b>${tech.software}</b>
+
+</div>
+
+`
+
+}
+
+/* Render */
+
+if(tech.render_engine){
+
+techHTML+=`
+
+<div class="tech-item">
+
+<span>Render</span>
+
+<b>${tech.render_engine}</b>
+
+</div>
+
+`
+
+}
+
+/* Textures */
+
+if(tech.textures){
+
+techHTML+=`
+
+<div class="tech-item">
+
+<span>Textures</span>
+
+<b>${tech.textures}</b>
+
+</div>
+
+`
 
 }
 
@@ -396,7 +501,7 @@ console.error(e)
 
 }
 
-/* zoom simple */
+/* zoom */
 
 const lightbox=document.getElementById("lightbox")
 const lightboxImg=document.getElementById("lightbox-img")
