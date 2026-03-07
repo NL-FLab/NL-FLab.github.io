@@ -11,7 +11,7 @@
         body.lock-scroll { overflow:hidden!important; }
         
         .container { max-width:1100px; margin:0 auto; padding:0 10% 80px 10%; transition: padding-right 0s; }
-        .back { padding:40px 10% 20px 10%; max-width:1100px; margin:0 auto; transition: padding-right 0s; }
+        .back { padding:40px 10% 20px 10%; max-width:1100px; margin:0 auto; }
         .back a { font-size:10px; color:#555; text-decoration:none; text-transform:uppercase; letter-spacing:2px; transition:.3s; }
         .back a:hover { color:#fff; }
         
@@ -27,9 +27,11 @@
         .tech-list li b { color:#aaa; font-weight:400; }
         .viewer iframe { width:100%; aspect-ratio:16/9; border:none; border-radius:12px; background:#111; box-shadow:0 30px 60px rgba(0,0,0,.4); }
 
-        .hero-section { margin-bottom:60px; display:flex; justify-content:center; width:100%; }
-        .hero-section .img-reveal-container { width:65%; display: none; } /* Mặc định ẩn, chỉ hiện khi có ảnh */
+        /* HERO SECTION */
+        .hero-section { margin-bottom:60px; display:flex; justify-content:center; width:100%; min-height:400px; }
+        .hero-section .img-reveal-container { width:65%; display: none; }
 
+        /* GALLERY SECTION */
         .image-section { display:grid; grid-template-columns:1fr 1fr; gap:40px; }
 
         .img-wrapper { 
@@ -37,24 +39,22 @@
             background:#111; overflow:hidden;
             transition: transform .5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow .5s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .img-wrapper img { width:100%; height:auto; border-radius:15px; transition: filter .4s ease; display: block; }
+        .img-wrapper img { 
+            width:100%; height:auto; border-radius:15px; transition: filter .4s ease; display: block; 
+            will-change: transform; 
+        }
         .img-wrapper:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0, 255, 255, 0.15), 0 0 0 1px rgba(0, 255, 255, 0.3); }
-        .img-wrapper:hover img { filter: brightness(1.1); }
 
         .img-caption {
             position:absolute; bottom:20px; left:20px; font-size:9px; font-weight:300; color:#fff;
             text-transform:uppercase; letter-spacing:2px; background:rgba(0,0,0,0.6);
             backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
-            padding:6px 14px; border-radius:2px; 
-            opacity:0; transform:translateY(10px); transition: .4s ease; z-index: 5;
-            pointer-events: none;
+            padding:6px 14px; border-radius:2px; opacity:0; transform:translateY(10px); transition: .4s ease; z-index: 5;
         }
         .img-wrapper:hover .img-caption { opacity:1; transform:translateY(0); }
 
         .img-reveal-container { opacity:0; transform:translateY(30px); transition: opacity .8s ease, transform .8s cubic-bezier(.22,1,.36,1); }
         .img-reveal-container.reveal { opacity:1; transform:translateY(0); }
-
-        .section-divider { width:100px; height:1px; margin:80px auto; background:radial-gradient(circle,rgba(255,255,255,0.3),transparent); }
 
         #lightbox { position:fixed; inset:0; background:rgba(0,0,0,0); z-index:9999; pointer-events:none; transition:background .4s ease; }
         #lightbox.active { background:rgba(0,0,0,.97); pointer-events:auto; }
@@ -74,7 +74,6 @@
 
 <div class="container">
     <h1 id="title">Loading...</h1>
-    
     <div class="top-section">
         <div class="info">
             <strong>Project Insight</strong>
@@ -82,9 +81,8 @@
             <strong>Technical Specs</strong>
             <ul class="tech-list" id="techDetails"></ul>
         </div>
-        <div class="viewer" id="viewerBlock"><iframe id="viewer"></iframe></div>
+        <div class="viewer" id="viewerBlock"><iframe id="viewer" loading="lazy"></iframe></div>
     </div>
-    
     <div class="hero-section">
         <div class="img-reveal-container" id="heroReveal">
             <div class="img-wrapper" id="heroWrapper">
@@ -93,8 +91,6 @@
             </div>
         </div>
     </div>
-
-    <div class="section-divider"></div>
     <div class="image-section" id="gallery"></div>
 </div>
 
@@ -108,6 +104,21 @@
         let baseName = fileName.split('/').pop();
         let name = baseName.split('.').slice(0,-1).join('.');
         return name.replace(/_/g,' ').toUpperCase();
+    }
+
+    let revealObserver;
+    function initReveal(){
+        if(!revealObserver){
+            revealObserver = new IntersectionObserver(entries => {
+                entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add("reveal"); });
+            }, {threshold:.1});
+        }
+        document.querySelectorAll(".img-reveal-container").forEach(el => {
+            if(!el.dataset.observed){
+                revealObserver.observe(el);
+                el.dataset.observed = "true";
+            }
+        });
     }
 
     async function loadProduct(){
@@ -125,8 +136,9 @@
                 <li><span>Pipeline</span><b>${tech.software[0]} / ${tech.render_engine}</b></li>
             `;
 
-            // Xử lý HERO IMAGE: Chỉ hiện khi load thành công
+            // Hero Image Loading
             const heroImg = new Image();
+            heroImg.loading = "lazy";
             heroImg.src = `models/${projectSlug}/${data.media.hero}`;
             heroImg.onload = () => {
                 const heroEl = document.getElementById("hero");
@@ -134,16 +146,20 @@
                 document.getElementById("heroCaption").innerText = formatCaption(data.media.hero);
                 document.getElementById("heroReveal").style.display = "block";
                 document.getElementById("heroWrapper").onclick = () => openSmoothZoom(heroEl);
-                initReveal(); // Chạy lại observer sau khi chèn Hero
+                initReveal();
+            };
+            heroImg.onerror = () => {
+                document.querySelector(".hero-section").style.display = "none";
             };
 
             const configRes = await fetch("models/gallery_config.json");
             const config = await configRes.json();
             const gallery = document.getElementById("gallery");
 
-            // Xử lý GALLERY IMAGES: Chỉ render khi ảnh tồn tại
+            // Gallery Rendering
             config.order.forEach(name => {
                 const tempImg = new Image();
+                tempImg.loading = "lazy"; // Tối ưu preload
                 tempImg.src = `models/${projectSlug}/images/${name}`;
                 
                 tempImg.onload = () => {
@@ -160,10 +176,11 @@
                     wrapper.append(img, cap);
                     wrapper.onclick = () => openSmoothZoom(img);
                     revealContainer.append(wrapper);
-                    gallery.append(revealContainer);
-                    initReveal(); // Cập nhật observer cho ảnh mới
+                    
+                    // FIX: Thêm append vào gallery và gọi initReveal ngay sau đó
+                    gallery.appendChild(revealContainer); 
+                    initReveal();
                 };
-                // Nếu lỗi 404 hoặc file hỏng, hàm onload không chạy -> không sinh ra thẻ gì cả
             });
 
             if(data.viewer?.enabled) document.getElementById("viewer").src=`viewer/babylon_viewer.html?model=../models/${projectSlug}/${data.viewer.model}`;
@@ -171,6 +188,7 @@
         } catch(err) { console.error(err); }
     }
 
+    // ZOOM LOGIC
     const lightbox = document.getElementById("lightbox");
     const zoomImg = document.getElementById("zoom-img");
     let activeOriginImg = null;
@@ -226,15 +244,12 @@
         }, 470);
     }
 
+    window.addEventListener("resize", () => {
+        if(activeOriginImg) closeSmoothZoom();
+    });
+
     lightbox.onclick = closeSmoothZoom;
     window.addEventListener("keydown", e => { if(e.key === "Escape") closeSmoothZoom(); });
-
-    function initReveal(){
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add("reveal"); });
-        }, {threshold:.1});
-        document.querySelectorAll(".img-reveal-container").forEach(el => observer.observe(el));
-    }
     loadProduct();
 </script>
 </body>
