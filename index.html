@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -9,43 +8,49 @@
     <title>NL F.Lab – High-end 3D Visualization</title>
 
     <style>
-                        /* =================================================
-        AMBIENT BACKGROUND (FIXED NO-TILE)
+        /* =================================================
+        GLOBAL & AMBIENT BACKGROUND (NO-TILE FIX)
         ================================================= */
-        body::before {
-            content: "";
-            position: fixed; 
-            top: -25%; left: -25%; /* Đẩy lùi ra xa để tâm sáng nằm giữa */
-            width: 150vmax; height: 150vmax; /* Cho tràn hẳn ra ngoài khung hình */
-            background: radial-gradient(circle at center, rgba(100, 150, 255, 0.06) 0%, transparent 40%);
-            background-repeat: no-repeat;
-            z-index: -1; 
-            pointer-events: none;
-            animation: ambientMove1 30s infinite alternate ease-in-out;
+        body {
+            margin: 0; background: #0c0c0c; color: #e5e5e5;
+            font-family: 'Inter', -apple-system, sans-serif;
+            letter-spacing: 0.02em; line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            position: relative;
         }
 
+        /* Đốm sáng 1: Soft & Large */
+        body::before {
+            content: "";
+            position: fixed; top: -50%; left: -50%;
+            width: 200vmax; height: 200vmax; /* Cực to để không bao giờ thấy mép */
+            background: radial-gradient(circle at center, rgba(100, 150, 255, 0.05) 0%, transparent 35%);
+            background-repeat: no-repeat;
+            z-index: -1; pointer-events: none;
+            animation: ambientMove1 35s infinite alternate ease-in-out;
+        }
+
+        /* Đốm sáng 2: Soft & Subtle */
         body::after {
             content: "";
-            position: fixed; 
-            bottom: -25%; right: -25%;
-            width: 130vmax; height: 130vmax;
-            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, transparent 40%);
+            position: fixed; bottom: -50%; right: -50%;
+            width: 180vmax; height: 180vmax;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.03) 0%, transparent 35%);
             background-repeat: no-repeat;
-            z-index: -1; 
-            pointer-events: none;
-            animation: ambientMove2 40s infinite alternate-reverse ease-in-out;
+            z-index: -1; pointer-events: none;
+            animation: ambientMove2 45s infinite alternate-reverse ease-in-out;
         }
 
         @keyframes ambientMove1 {
-            0% { transform: translate(-10%, -10%); }
-            100% { transform: translate(10%, 10%); }
+            0% { transform: translate(-5%, -5%); }
+            100% { transform: translate(5%, 10%); }
         }
 
         @keyframes ambientMove2 {
-            0% { transform: translate(10%, 10%); }
-            100% { transform: translate(-10%, -10%); }
+            0% { transform: translate(5%, 5%); }
+            100% { transform: translate(-10%, -5%); }
         }
-
 
         /* =================================================
         HEADER & HERO
@@ -66,17 +71,14 @@
         .section { padding: 40px 12%; position: relative; z-index: 1; }
 
         /* =================================================
-        ABOUT & CONTENT (REVERTED TO FULL)
+        ABOUT & PROFILE
         ================================================= */
         .about { max-width: 900px; }
         .about h2 { font-size: 18px; font-weight: 500; color: #fff; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
         .about-intro { font-size: 16px; color: #eee; margin-bottom: 40px; line-height: 1.8; font-weight: 300; }
         .about-intro strong { color: #fff; font-weight: 500; }
 
-        .core-values { 
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
-            gap: 40px; margin-bottom: 50px;
-        }
+        .core-values { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 50px; }
         .value-item .v-title { font-size: 10px; letter-spacing: 3px; color: #555; text-transform: uppercase; margin-bottom: 12px; }
         .value-item .v-text { font-size: 13px; color: #888; font-weight: 300; line-height: 1.7; }
 
@@ -98,7 +100,7 @@
         .cv-download-btn:hover { background: #fff; color: #000; transform: translateY(-2px); border-color: #fff; }
 
         /* =================================================
-        PORTFOLIO SECTION (CLEAN & SEAMLESS)
+        PORTFOLIO (CLEAN SPACING)
         ================================================= */
         .portfolio-header { margin-top: 10px; margin-bottom: 25px; }
         .section-title { font-size: 11px; font-weight: 400; color: #555; margin: 0; letter-spacing: 4px; text-transform: uppercase; }
@@ -106,8 +108,7 @@
         .filter-container { display: flex; margin-bottom: 35px; }
         .filter {
             display: inline-flex; padding: 4px; position: relative;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 40px; border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.02); border-radius: 40px; border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .filter-btn {
             background: transparent; border: none; color: #555; font-size: 10px;
@@ -142,7 +143,7 @@
         .project:hover .project-title { opacity: 1; transform: translate(-50%, -50%); }
 
         /* =================================================
-        CONTACT
+        CONTACT & FOOTER
         ================================================= */
         .contact { margin-top: 40px; padding-bottom: 80px; }
         .contact h2 { font-size: 18px; font-weight: 500; color: #fff; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
@@ -236,13 +237,11 @@
         <div class="portfolio-header">
             <h2 class="section-title">Visual Archive</h2>
         </div>
-
         <div class="filter-container">
             <div class="filter" id="filterBar">
                 <div class="tab-indicator" id="tabIndicator"></div>
             </div>
         </div>
-
         <div class="grid" id="projectGrid"></div>
     </section>
 
