@@ -2,31 +2,37 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>NL-FLab 3D Viewer</title>
+<title>NL-FLab 3D Mobile Viewer</title>
 
 <script src="https://cdn.babylonjs.com/viewer/babylon.viewer.js"></script>
-<script src="https://cdn.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
 
 <style>
-html, body {
-    width: 100%; height: 100%; margin: 0;
-    background: #1e1e1e; overflow: hidden;
-}
-babylon { width: 100%; height: 100%; }
+    html, body { width: 100%; height: 100%; margin: 0; background: #121212; overflow: hidden; font-family: sans-serif; }
+    babylon { width: 100%; height: 100%; }
 
-#debug-btn {
-    position: absolute; top: 20px; right: 20px;
-    padding: 12px 20px; background: #00bcd4; color: #000;
-    border: none; border-radius: 4px; cursor: pointer;
-    font-family: sans-serif; font-weight: bold; z-index: 1000;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-}
-#debug-btn:active { transform: scale(0.95); }
+    /* Thanh điều khiển dưới cùng để dễ bấm bằng ngón cái trên điện thoại */
+    #toolbar {
+        position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+        display: flex; gap: 10px; z-index: 100; width: 90%; max-width: 400px;
+    }
+
+    .btn {
+        flex: 1; padding: 15px 5px; background: rgba(0, 188, 212, 0.9);
+        color: #000; border: none; border-radius: 8px; font-weight: bold;
+        font-size: 12px; text-transform: uppercase; cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5); text-align: center;
+    }
+
+    .btn.active { background: #fff; border: 2px solid #00bcd4; }
 </style>
 </head>
 <body>
 
-<button id="debug-btn">CHECK MATERIALS / WIREFRAME</button>
+<div id="toolbar">
+    <button class="btn active" id="btn-shaded">Shaded</button>
+    <button class="btn" id="btn-wire">Wireframe</button>
+    <button class="btn" id="btn-normal">Normals</button>
+</div>
 
 <babylon id="viewer"
     model=""
@@ -36,34 +42,61 @@ babylon { width: 100%; height: 100%; }
 </babylon>
 
 <script>
-const viewerElement = document.getElementById("viewer");
+    const viewerElement = document.getElementById("viewer");
+    let sceneInternal = null;
 
-// Lấy Model từ URL
-const params = new URLSearchParams(window.location.search);
-const modelPath = params.get("model");
-if (modelPath) {
-    viewerElement.setAttribute("model", modelPath);
-}
-
-document.getElementById('debug-btn').onclick = function() {
-    // Truy cập trực tiếp qua Viewer Manager
-    const viewerInstance = BabylonViewer.viewerManager.getViewerById("viewer");
-    
-    if (viewerInstance && viewerInstance.sceneManager && viewerInstance.sceneManager.scene) {
-        const scene = viewerInstance.sceneManager.scene;
-        
-        // Kiểm tra xem Inspector có sẵn chưa và hiển thị
-        if (scene.debugLayer) {
-            scene.debugLayer.show({
-                overlay: true,
-                handleResize: true,
-                enablePopup: false // Để nó hiện ngay trong cửa sổ web, không mở tab mới
-            });
-        }
-    } else {
-        console.error("Viewer chưa sẵn sàng. Hãy đợi model load xong.");
+    // 1. Lấy Model từ URL
+    const params = new URLSearchParams(window.location.search);
+    const modelPath = params.get("model");
+    if (modelPath) {
+        viewerElement.setAttribute("model", modelPath);
     }
-};
+
+    // 2. Khi Scene khởi tạo xong
+    viewerElement.onSceneInitObservable.add((scene) => {
+        sceneInternal = scene;
+        
+        // Fix lỗi nhảy view: Khóa camera ngay khi load xong
+        if (scene.activeCamera && scene.activeCamera.framingBehavior) {
+            scene.activeCamera.framingBehavior.enabled = false;
+        }
+        console.log("Hệ thống đã sẵn sàng");
+    });
+
+    // 3. Hàm xử lý chuyển đổi (Logic tay cho chắc chắn)
+    function switchMode(mode) {
+        if (!sceneInternal) {
+            // Nếu chưa có scene, thử lấy lại qua manager
+            const v = BabylonViewer.viewerManager.getViewerById("viewer");
+            if (v && v.sceneManager.scene) sceneInternal = v.sceneManager.scene;
+        }
+
+        if (sceneInternal) {
+            sceneInternal.materials.forEach(mat => {
+                // Reset về mặc định
+                mat.wireframe = false;
+                if (mat.debugMode !== undefined) mat.debugMode = 0;
+
+                if (mode === 'wireframe') {
+                    mat.wireframe = true;
+                } else if (mode === 'normal') {
+                    mat.debugMode = 1; // 1 là hiện Normal Map
+                }
+            });
+
+            // Cập nhật giao diện nút
+            document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+            if (mode === 'shaded') document.getElementById('btn-shaded').classList.add('active');
+            if (mode === 'wireframe') document.getElementById('btn-wire').classList.add('active');
+            if (mode === 'normal') document.getElementById('btn-normal').classList.add('active');
+        }
+    }
+
+    // Gán sự kiện click cho các nút
+    document.getElementById('btn-shaded').onclick = () => switchMode('shaded');
+    document.getElementById('btn-wire').onclick = () => switchMode('wireframe');
+    document.getElementById('btn-normal').onclick = () => switchMode('normal');
+
 </script>
 
 </body>
